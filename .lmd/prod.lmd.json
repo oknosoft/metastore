@@ -1,0 +1,15 @@
+{
+  "name": "1c web shop prod",
+  "root": "../",
+  "www_root": "../",
+  "output": "src/main.js",
+  "modules": {
+    "main": [
+      "src/init.js"
+    ]
+  },
+  "main": "main",
+  "optimize": true,
+  "pack": true,
+  "ie": false
+}

@@ -1,0 +1,15 @@
+{
+  "name": "1c web shop debug",
+  "root": "../",
+  "www_root": "../",
+  "output": "src/main.js",
+  "modules": {
+    "main": [
+      "src/init.js",
+      "src/view_catalog.js"
+    ]
+  },
+  "main": "main",
+  "optimize": true,
+  "ie": false
+}
