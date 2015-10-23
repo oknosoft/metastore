@@ -39,12 +39,57 @@ $p.iface.set_view_catalog = function (cell) {
 			if(hprm.obj != id)
 				$p.iface.set_hash(id, hprm.ref, hprm.frm, hprm.view);
 
-			console.log($p.cat.Номенклатура.path(id));
 		});
 
 		$p.iface._catalog.goods = document.createElement('div');
-		$p.iface._catalog.goods.innerHTML = "123";
 		$p.iface._catalog.layout.cells("b").attachObject($p.iface._catalog.goods);
+
+		$p.iface._catalog.path = new (function CatalogPath (parent) {
+
+			this.id = "";
+
+			this.div = document.createElement('div');
+			parent.appendChild(this.div);
+
+			// Обработчик маршрутизации
+			this.hash_route = function (hprm) {
+				if(this.id != hprm.obj){
+					this.id = hprm.obj;
+
+					var child,
+						// получаем массив пути
+						path = $p.cat.Номенклатура.path(this.id);
+
+					// удаляем предыдущие элементы
+					while(child = this.div.lastChild){
+						this.div.removeChild(child);
+					}
+
+					// строим новый путь
+					while(child = path.pop()){
+						var a;
+						if(this.div.children.length){
+							a = document.createElement('span');
+							a.innerHTML = " / ";
+							this.div.appendChild(a);
+						}
+						a = document.createElement('a');
+						a.innerHTML = child.presentation;
+						a.ref = child.ref;
+						a.href = "#";
+						a.onclick = function (e) {
+							var hprm = $p.job_prm.parse_url();
+							if(hprm.obj != this.ref)
+								$p.iface.set_hash(this.ref, hprm.ref, hprm.frm, hprm.view);
+							return $p.cancel_bubble(e)
+						};
+						this.div.appendChild(a);
+					}
+
+				}
+			}
+
+		})($p.iface._catalog.goods);
 
 		/**
 		 * Обработчик маршрутизации
@@ -57,6 +102,9 @@ $p.iface.set_view_catalog = function (cell) {
 			if(hprm.obj && $p.iface._catalog.tree.getSelectedItemId() != hprm.obj){
 				$p.iface._catalog.tree.selectItem(hprm.obj);
 			}
+
+			$p.iface._catalog.path.hash_route(hprm);
+
 			return false;
 		});
 	}
