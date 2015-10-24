@@ -39,9 +39,6 @@ $p.settings = function (prm, modifiers) {
 	// используем русскоязычные синонимы классов и методов
 	prm.russian_names = true;
 
-	// разрешаем покидать страницу без лишних вопросов
-	$p.eve.redirect = true;
-
 };
 
 /**
