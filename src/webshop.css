@@ -5,3 +5,87 @@
 div.dhxsidebar_item_text {
 	font-size: 14px;
 }
+
+div.search {
+	margin-top: 4px;
+	float: left;
+	padding: 0;
+	height: 28px;
+}
+
+input.search {
+	-webkit-border-radius: 4px 0 0 4px;
+	-moz-border-radius: 4px 0 0 4px;
+	border-radius: 4px 0 0 4px;
+	font-size: 14px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	padding: 4px 6px;
+	line-height: 20px;
+	color: #333;
+	width: 300px;
+
+}
+
+button.search {
+	-webkit-border-radius: 0 4px 4px 0;
+	-moz-border-radius: 0 4px 4px 0;
+	border-radius: 0 4px 4px 0;
+	font-size: 14px;
+	padding: 4px 12px;
+	line-height: 20px;
+	vertical-align: top;
+	margin-left: -1px;
+	color: #333;
+	text-align: center;
+	cursor: pointer;
+	background-color: #f5f5f5;
+	border: 1px solid #ccc;
+	border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+	border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+	border-bottom-color: #b3b3b3;
+}
+
+button.search:hover, .button.search:focus {
+	background-color: #e6e6e6;
+}
+
+.dhx_pager {
+	position: absolute;
+	bottom: 1px;
+	z-index: 100;
+	left: 1px;
+	background-color: #e6e6e6;
+}
+.paging_text {
+	font-size: 10pt;
+	float: left;
+	padding: 3px 10px 0px 10px;
+}
+.dhx_pager_item, .dhx_pager_item_selected {
+	padding: 0px 4px;
+	margin: 2px 6px;
+	height: auto;
+}
+
+/*
+.dhx_dataview_[css]_item - applied to items in the unselected state
+.dhx_dataview_[css]_item_selected - applied to items in the selected state
+
+.dataview_large {
+	color: #333;
+}
+.dataview_medium {
+	color: #333;
+}
+.dataview_small {
+	color: #333;
+}
+*/
+
+.dhx_dataview_default_item {
+	color: #333;
+}
+.dhx_dataview_default_item_selected {
+	color: #333;
+}

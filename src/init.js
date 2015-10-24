@@ -15,6 +15,7 @@ $p.settings = function (prm, modifiers) {
 
 	// для транспорта используем rest, а не сервис http
 	prm.rest = true;
+	prm.irest_enabled = true;
 
 	// расположение rest-сервиса ut
 	prm.rest_path = "/a/ut11/%1/odata/standard.odata/";
@@ -35,7 +36,7 @@ $p.settings = function (prm, modifiers) {
 	prm.allow_post_message = "*";
 
 	// используем геокодер
-	prm.use_google_geo = true;
+	prm.use_google_geo = false;
 
 	// логин гостевого пользователя
 	prm.guest_name = "АлхимовАА";
@@ -53,72 +54,6 @@ $p.settings = function (prm, modifiers) {
  */
 $p.iface.oninit = function() {
 
-	function onstep(step){
-
-		var stepper = $p.eve.stepper;
-
-		switch(step) {
-
-			case $p.eve.steps.authorization:
-
-				stepper.frm_sync.setItemValue("text_processed", "Авторизация");
-
-				break;
-
-			case $p.eve.steps.load_meta:
-
-				// малое всплывающее сообщение
-				$p.msg.show_msg($p.msg.init_catalogues + $p.msg.init_catalogues_meta, $p.iface.docs);
-
-				if(!$p.iface.sync)
-					$p.iface.wnd_sync();
-				$p.iface.sync.create(stepper);
-
-				break;
-
-			case $p.eve.steps.create_managers:
-
-				stepper.frm_sync.setItemValue("text_processed", "Обработка метаданных");
-				stepper.frm_sync.setItemValue("text_bottom", "Создаём объекты менеджеров данных...");
-
-				break;
-
-			case $p.eve.steps.process_access:
-
-				break;
-
-			case $p.eve.steps.load_data_files:
-
-				stepper.frm_sync.setItemValue("text_processed", "Загрузка начального образа");
-				stepper.frm_sync.setItemValue("text_bottom", "Читаем файлы данных зоны...");
-
-				break;
-
-			case $p.eve.steps.load_data_db:
-
-				stepper.frm_sync.setItemValue("text_processed", "Загрузка изменений из 1С");
-				stepper.frm_sync.setItemValue("text_bottom", "Читаем изменённые справочники");
-
-				break;
-
-			case $p.eve.steps.load_data_wsql:
-
-				break;
-
-			case $p.eve.steps.save_data_wsql:
-
-				stepper.frm_sync.setItemValue("text_processed", "Кеширование данных");
-				stepper.frm_sync.setItemValue("text_bottom", "Сохраняем таблицы в локальном SQL...");
-
-				break;
-
-			default:
-
-				break;
-		}
-
-	};
-
 	function oninit(){
 		var toolbar, items = [
 			{id: "catalog", text: "Каталог", icon: "search_48.png"},
@@ -129,7 +64,9 @@ $p.iface.oninit = function() {
 			{id: "settings", text: "Настройки", icon: "settings_48.png"}
 		] ;
 
-		$p.eve.redirect = true;
+		//$p.eve.redirect = true;
+
+		document.body.removeChild(document.querySelector("#webshop_splash"));
 
 		// при первой возможности создаём layout
 		if($p.device_type == "desktop"){
@@ -137,14 +74,14 @@ $p.iface.oninit = function() {
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
 				icons_path: dhtmlx.image_path + "dhxsidebar_web/",
-				width: 150,
-				template: "tiles",
+				width: 100,
+				template: "icons_text",
 				items: items,
 				offsets: {
-					top: 4,
-					right: 4,
-					bottom: 4,
-					left: 4
+					top: 0,
+					right: 0,
+					bottom: 0,
+					left: 0
 				}
 			});
 
@@ -188,7 +125,73 @@ $p.iface.oninit = function() {
 		$p.iface.main.cells("catalog").setActive(true);
 	}
 
-	$p.eve.log_in(onstep)
+	function log_in(){
+
+		var stepper = $p.eve.stepper,
+			data_url = $p.job_prm.data_url || "/data/",
+			parts = [],
+			mreq, mpatch, p_0, mdd;
+
+
+		stepper.zone = $p.wsql.get_user_param("zone") + "/";
+
+		parts.push($p.ajax.get(data_url + "meta.json?v="+$p.job_prm.files_date));
+		parts.push($p.ajax.get(data_url + "meta_patch.json?v="+$p.job_prm.files_date));
+		parts.push($p.ajax.get(data_url + "zones/" + stepper.zone + "p_0.json?v="+$p.job_prm.files_date));
+
+		// читаем файл метаданных, файл патча метаданных и первый файл снапшота
+		return $p.eve.reduce_promices(parts, function (req) {
+			if(req instanceof XMLHttpRequest && req.status == 200){
+				if(req.responseURL.indexOf("meta.json") != -1)
+					mreq = JSON.parse(req.response);
+
+				else if(req.responseURL.indexOf("meta_patch.json") != -1)
+					mpatch = JSON.parse(req.response);
+
+				else if(req.responseURL.indexOf("p_0.json") != -1)
+					p_0 = JSON.parse(req.response);
+			}else{
+				console.log(req);
+			}
+		})
+			// создаём объект Meta() описания метаданных
+			.then(function () {
+				if(!mreq)
+					throw Error("Ошибка чтения файла метаданных");
+				else
+					return new $p.Meta(mreq, mpatch);
+			})
+
+			// из содержимого первого файла получаем количество файлов и загружаем их все
+			.then(function (req) {
+
+				stepper.files = p_0.files-1;
+				stepper.step_size = p_0.files > 0 ? Math.round(p_0.count_all / p_0.files) : 57;
+				stepper.cat_ini_date = p_0["cat_date"];
+				$p.eve.from_json_to_data_obj(p_0);
+
+			})
+
+			// формируем массив url файлов данных зоны
+			.then(function () {
+
+				parts = [];
+				for(var i=1; i<=stepper.files; i++)
+					parts.push($p.ajax.get(data_url + "zones/" + stepper.zone + "p_" + i + ".json?v="+$p.job_prm.files_date));
+				parts.push($p.ajax.get(data_url + "zones/" + stepper.zone + "ireg.json?v="+$p.job_prm.files_date));
+
+				return $p.eve.reduce_promices(parts, $p.eve.from_json_to_data_obj);
+
+			})
+
+			// читаем справочники с ограниченным доступом, которые могли прибежать вместе с метаданными
+			.then(function () {
+				stepper.step_size = 57;
+			})
+
+	}
+
+	log_in()
 		.then(oninit)
 		.catch(function (err) {
 			console.log(err);

@@ -6,7 +6,12 @@
   "modules": {
     "main": [
       "src/init.js",
-      "src/view_catalog.js"
+      "src/view_catalog.js",
+      "src/view_cart.js",
+      "src/view_compare.js",
+      "src/view_orders.js",
+      "src/view_settings.js",
+      "src/view_user.js"
     ]
   },
   "main": "main",
