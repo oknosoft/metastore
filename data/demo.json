@@ -1,0 +1,22 @@
+{
+  "total_count": 3,
+  "data": [{
+    "id":"1",
+    "name":"acx100-source",
+    "Производитель":"20080210-1.1",
+    "Описание":"Stefano Canepa",
+    "Цена": 100
+  },{
+    "id":"2",
+    "name":"alien-arena-browser",
+    "Производитель":"7.0-1",
+    "Описание":"Debian Games Team",
+    "Цена": 200
+  },{
+    "id":"3",
+    "name":"alien-arena-server",
+    "Производитель":"7.0-1",
+    "Описание":"Debian Games Team",
+    "Цена": 300
+  }]
+}

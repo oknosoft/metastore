@@ -1,8 +1,23 @@
 {
   "enm": {},
-  "cat": {},
+  "cat": {
+    "Номенклатура": {
+      "fields": {
+        "Цена": {
+          "synonym": "Цена",
+          "type": {
+            "types": [
+              "number"
+            ],
+            "digits": 15,
+            "fraction_figits": 2
+          }
+        }
+      }
+    }
+  },
   "doc": {
-    "ЗаказПокупателя": {
+    "ЗаказКлиента": {
       "form": {
         "selection": {
           "fields": [

@@ -9,6 +9,22 @@
 
 $p.iface.set_view_catalog = function (cell) {
 
+	/**
+	 * Обработчик маршрутизации
+	 * @param hprm
+	 * @return {boolean}
+	 */
+	function hash_route(hprm){
+
+		// view отвечает за переключение закладки в SideBar
+		if(hprm.obj)
+			$p.iface._catalog.tree.selectItem(hprm.obj, false, false);
+
+		$p.iface._catalog.path.hash_route(hprm);
+
+		return false;
+	}
+
 	if($p.iface._catalog)
 		return;
 
@@ -17,7 +33,7 @@ $p.iface.set_view_catalog = function (cell) {
 			pattern: "3L",
 			cells: [
 				{id: "a", text: "Каталог", width: 300, header: false},
-				{id: "b", text: "Поиск", height: 74, header: false},
+				{id: "b", text: "Поиск", height: 70, header: false},
 				{id: "c", text: "Товары", header: false}
 			],
 			offsets: {
@@ -54,6 +70,7 @@ $p.iface.set_view_catalog = function (cell) {
 		this.id = undefined;
 
 		this.div = document.createElement('div');
+		this.div.style.marginTop = "-4px"
 		parent.appendChild(this.div);
 
 		// Обработчик маршрутизации
@@ -102,8 +119,8 @@ $p.iface.set_view_catalog = function (cell) {
 		};
 
 		setTimeout(function () {
-			$p.iface._catalog.path.hash_route($p.job_prm.parse_url());
-		}, 10);
+			hash_route($p.job_prm.parse_url());
+		}, 50);
 
 	})($p.iface._catalog.goods);
 
@@ -129,10 +146,19 @@ $p.iface.set_view_catalog = function (cell) {
 	// элементы управления режимом dataview
 	$p.iface._catalog.dataview_tools = document.createElement('div');
 	$p.iface._catalog.dataview_tools.style.float = "right";
-	$p.iface._catalog.dataview_tools.innerHTML = "123";
 	$p.iface._catalog.top.appendChild($p.iface._catalog.dataview_tools);
-	// appendObject
-	//<div style="float: right;">123</div>
+	new $p.iface.OTooolBar({
+		wrapper: $p.iface._catalog.dataview_tools, width: '88px', height: '28px', bottom: '8px', right: '14px', name: 'dataview_tools',
+		image_path: 'data/',
+		buttons: [
+			{name: 'large', img: 'dataview_large.png', title: 'Список (детально)', float: 'left'},
+			{name: 'medium', img: 'dataview_medium.png', title: 'Средние значки', float: 'left'},
+			{name: 'small', img: 'dataview_small.png', title: 'Мелкие значки', float: 'left'}
+		],
+		onclick: function (name) {
+
+		}
+	});
 
 	// карусель с dataview и страницей товара
 	$p.iface._catalog.carousel = $p.iface._catalog.layout.cells("c").attachCarousel({
@@ -147,61 +173,43 @@ $p.iface.set_view_catalog = function (cell) {
 	$p.iface._catalog.carousel.addCell("goods");
 
 	$p.iface._catalog.div_pager = document.createElement('div');
-	$p.iface._catalog.dataview = $p.iface._catalog.carousel.cells("dataview").attachDynDataView($p.cat.Номенклатура, {
-		type: {
-			template:"http->data/dataview_large.html",
-			height:70,
-			margin:5,
-			padding:0,
-			image: function () {
+	$p.iface._catalog.dataview = $p.iface._catalog.carousel.cells("dataview").attachDynDataView(
+		{
+			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
+			class_name: "cat.Номенклатура"
+		},
+		{
+			type: {
+				template:"http->data/dataview_large.html",
+				template_loading:"Загрузка данных...",
+				height:80,
+				margin:2,
+				padding:0,
+				image: function () {
 				return "";
 			}
-		},
-		autowidth: 1,
-		pager: {
-			container: $p.iface._catalog.div_pager,
-			size:20,
-			template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
-		}
+			},
+			autowidth: 1,
+			pager: {
+				container: $p.iface._catalog.div_pager,
+				size:20,
+				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
+			},
+			fields: ["ref", "name", "Производитель", "Описание", "Цена"],
+			selection: {
+				is_folder: false,
+				parent: "cbcf4929-55bc-11d9-848a-00112f43529a"
+			}
 	});
 
 	$p.iface._catalog.carousel.cells("dataview").cell.appendChild($p.iface._catalog.div_pager);
 
-	$p.iface._catalog.dataview.parse([{
-		"id":"1",
-		"name":"acx100-source",
-		"Производитель":"20080210-1.1",
-		"Описание":"Stefano Canepa",
-		"Цена": 100
-	},{
-		"id":"2",
-		"name":"alien-arena-browser",
-		"Производитель":"7.0-1",
-		"Описание":"Debian Games Team",
-		"Цена": 200
-	},{
-		"id":"3",
-		"name":"alien-arena-server",
-		"Производитель":"7.0-1",
-		"Описание":"Debian Games Team",
-		"Цена": 300
-	}],"json");
+	//$p.iface._catalog.dataview.load("data/demo.json", "json", function(v){
+	//	if(v){
+	//
+	//	}
+	//});
 
 
-	/**
-	 * Обработчик маршрутизации
-	 * @param hprm
-	 * @return {boolean}
-	 */
-	$p.eve.hash_route.push(function (hprm) {
-
-		// view отвечает за переключение закладки в SideBar
-		if(hprm.obj && $p.iface._catalog.tree.getSelectedItemId() != hprm.obj){
-			$p.iface._catalog.tree.selectItem(hprm.obj);
-		}
-
-		$p.iface._catalog.path.hash_route(hprm);
-
-		return false;
-	});
+	$p.eve.hash_route.push(hash_route);
 };

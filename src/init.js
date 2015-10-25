@@ -55,7 +55,8 @@ $p.settings = function (prm, modifiers) {
 $p.iface.oninit = function() {
 
 	function oninit(){
-		var toolbar, items = [
+
+		var toolbar, hprm, items = [
 			{id: "catalog", text: "Каталог", icon: "search_48.png"},
 			{id: "compare", text: "Сравнение", icon: "compare_48.png"},
 			{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
@@ -100,7 +101,7 @@ $p.iface.oninit = function() {
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
 				icons_path: dhtmlx.image_path + "dhxsidebar_web/",
-				width: 140,
+				width: 180,
 				header: true,
 				template: "tiles",
 				autohide: true,
@@ -114,7 +115,7 @@ $p.iface.oninit = function() {
 			if($p.device_type == "desktop")
 				toolbar.setItemText("title", window.dhx4.template("<span style='font-weight: bold; font-size: 14px;'>#text#</span>", {text: this.cells(id).getText().text}));
 
-			var hprm = $p.job_prm.parse_url();
+			hprm = $p.job_prm.parse_url();
 			if(hprm.view != id)
 				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, id);
 
@@ -122,7 +123,11 @@ $p.iface.oninit = function() {
 
 		});
 
-		$p.iface.main.cells("catalog").setActive(true);
+		hprm = $p.job_prm.parse_url();
+		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1)
+			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, "catalog");
+		else
+			setTimeout($p.iface.hash_route, 10);
 	}
 
 	function log_in(){

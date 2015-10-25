@@ -68,6 +68,11 @@ button.search:hover, .button.search:focus {
 	height: auto;
 }
 
+.wb-tools {
+	padding: 0 0 0 4px;
+	border-radius: 4px;
+}
+
 /*
 .dhx_dataview_[css]_item - applied to items in the unselected state
 .dhx_dataview_[css]_item_selected - applied to items in the selected state
