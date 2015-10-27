@@ -46,6 +46,7 @@ $p.iface.set_view_catalog = function (cell) {
 	};
 	$p.iface._catalog.layout.cells("b").fixSize(false, true);
 	$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({
+		arrows_mode:        "auto",
 		tabs: [
 			{id: "tree", text: "Разделы", active: true},
 			{id: "filter", text: "Фильтр"}
