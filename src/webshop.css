@@ -14,9 +14,6 @@ div.search {
 }
 
 input.search {
-	-webkit-border-radius: 4px 0 0 4px;
-	-moz-border-radius: 4px 0 0 4px;
-	border-radius: 4px 0 0 4px;
 	font-size: 14px;
 	background-color: #fff;
 	border: 1px solid #ccc;
@@ -28,9 +25,6 @@ input.search {
 }
 
 button.search {
-	-webkit-border-radius: 0 4px 4px 0;
-	-moz-border-radius: 0 4px 4px 0;
-	border-radius: 0 4px 4px 0;
 	font-size: 14px;
 	padding: 4px 12px;
 	line-height: 20px;
@@ -52,10 +46,10 @@ button.search:hover, .button.search:focus {
 
 .dhx_pager {
 	position: absolute;
-	bottom: 1px;
+	bottom: 2px;
 	z-index: 100;
-	left: 1px;
-	background-color: #e6e6e6;
+	left: 2px;
+	background-color: #fff;
 }
 .paging_text {
 	font-size: 10pt;
@@ -68,9 +62,8 @@ button.search:hover, .button.search:focus {
 	height: auto;
 }
 
-.wb-tools {
-	padding: 0 0 0 4px;
-	border-radius: 4px;
+.dhx_pager_item:hover{
+	background-color: #ccc;
 }
 
 /*

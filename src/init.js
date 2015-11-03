@@ -17,6 +17,9 @@ $p.settings = function (prm, modifiers) {
 	prm.rest = true;
 	prm.irest_enabled = true;
 
+	// разделитель для localStorage
+	prm.local_storage_prefix = "webshop_";
+
 	// расположение rest-сервиса ut
 	prm.rest_path = "/a/ut11/%1/odata/standard.odata/";
 

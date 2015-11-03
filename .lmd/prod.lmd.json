@@ -5,6 +5,7 @@
   "output": "src/main.js",
   "modules": {
     "main": [
+      "src/wdg_filter_prop.js",
       "src/init.js",
       "src/view_catalog.js",
       "src/view_cart.js",

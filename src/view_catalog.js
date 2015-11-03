@@ -9,11 +9,7 @@
 
 $p.iface.set_view_catalog = function (cell) {
 
-	/**
-	 * Обработчик маршрутизации
-	 * @param hprm
-	 * @return {boolean}
-	 */
+	// Обработчик маршрутизации
 	function hash_route(hprm){
 
 		// view отвечает за переключение закладки в SideBar
@@ -23,6 +19,17 @@ $p.iface.set_view_catalog = function (cell) {
 		$p.iface._catalog.path.hash_route(hprm);
 
 		return false;
+	}
+
+	// Динамический фильтр
+	function prop_filter(){
+		if(!$p.iface._catalog.filter){
+
+			$p.iface._catalog.filter = $p.iface._catalog.navigation.cells("filter").attachPropFilter($p.cat.Номенклатура);
+
+		}
+
+		return true;
 	}
 
 	if($p.iface._catalog)
@@ -45,14 +52,18 @@ $p.iface.set_view_catalog = function (cell) {
 		})
 	};
 	$p.iface._catalog.layout.cells("b").fixSize(false, true);
+
+	// Tabbar - дерево и фильтр
 	$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({
-		arrows_mode:        "auto",
+		arrows_mode:    "auto",
 		tabs: [
 			{id: "tree", text: "Разделы", active: true},
 			{id: "filter", text: "Фильтр"}
 		]
 	});
+	$p.iface._catalog.navigation.attachEvent("onSelect", prop_filter);
 
+	// Динамическое дерево
 	$p.iface._catalog.tree = $p.iface._catalog.navigation.cells("tree").attachDynTree($p.cat.Номенклатура);
 	$p.iface._catalog.tree.attachEvent("onSelect", function(id){
 
@@ -62,104 +73,91 @@ $p.iface.set_view_catalog = function (cell) {
 
 	});
 
-	$p.iface._catalog.goods = document.createElement('div');
-	$p.iface._catalog.layout.cells("b").attachObject($p.iface._catalog.goods);
 
-	// хлебные крошки
-	$p.iface._catalog.path = new (function CatalogPath (parent) {
+	// Область строки поиска
+	(function(){
+		$p.iface._catalog.goods = document.createElement('div');
+		$p.iface._catalog.layout.cells("b").attachObject($p.iface._catalog.goods);
 
-		this.id = undefined;
+		// хлебные крошки
+		$p.iface._catalog.path = new (function CatalogPath (parent) {
 
-		this.div = document.createElement('div');
-		this.div.style.marginTop = "-4px"
-		parent.appendChild(this.div);
+			this.id = undefined;
 
-		// Обработчик маршрутизации
-		this.hash_route = function (hprm) {
-			if(this.id != hprm.obj){
-				this.id = hprm.obj;
+			this.div = document.createElement('div');
+			this.div.style.marginTop = "-4px";
+			parent.appendChild(this.div);
 
-				var child,
-				// получаем массив пути
-					path = $p.cat.Номенклатура.path(this.id);
+			// Обработчик маршрутизации
+			this.hash_route = function (hprm) {
+				if(this.id != hprm.obj){
+					this.id = hprm.obj;
 
-				// удаляем предыдущие элементы
-				while(child = this.div.lastChild){
-					this.div.removeChild(child);
-				}
+					var child,
+					// получаем массив пути
+						path = $p.cat.Номенклатура.path(this.id);
 
-				var a = document.createElement('span');
-				if(path.length && path[0].presentation)
-					a.innerHTML = "Раздел: ";
-				else
-					a.innerHTML = "Поиск во всех разделах каталога";
-				this.div.appendChild(a);
+					// удаляем предыдущие элементы
+					while(child = this.div.lastChild){
+						this.div.removeChild(child);
+					}
 
-				// строим новый путь
-				while(child = path.pop()){
+					var a = document.createElement('span');
+					if(path.length && path[0].presentation)
+						a.innerHTML = "Раздел: ";
+					else
+						a.innerHTML = "Поиск во всех разделах каталога";
+					this.div.appendChild(a);
 
-					if(this.div.children.length > 1){
-						a = document.createElement('span');
-						a.innerHTML = " / ";
+					// строим новый путь
+					while(child = path.pop()){
+
+						if(this.div.children.length > 1){
+							a = document.createElement('span');
+							a.innerHTML = " / ";
+							this.div.appendChild(a);
+						}
+						a = document.createElement('a');
+						a.innerHTML = child.presentation;
+						a.ref = child.ref;
+						a.href = "#";
+						a.onclick = function (e) {
+							var hprm = $p.job_prm.parse_url();
+							if(hprm.obj != this.ref)
+								$p.iface.set_hash(this.ref, hprm.ref, hprm.frm, hprm.view);
+							return $p.cancel_bubble(e)
+						};
 						this.div.appendChild(a);
 					}
-					a = document.createElement('a');
-					a.innerHTML = child.presentation;
-					a.ref = child.ref;
-					a.href = "#";
-					a.onclick = function (e) {
-						var hprm = $p.job_prm.parse_url();
-						if(hprm.obj != this.ref)
-							$p.iface.set_hash(this.ref, hprm.ref, hprm.frm, hprm.view);
-						return $p.cancel_bubble(e)
-					};
-					this.div.appendChild(a);
+
 				}
+			};
 
-			}
-		};
+			setTimeout(function () {
+				hash_route($p.job_prm.parse_url());
+			}, 50);
 
-		setTimeout(function () {
-			hash_route($p.job_prm.parse_url());
-		}, 50);
+		})($p.iface._catalog.goods);
 
-	})($p.iface._catalog.goods);
+		// строка поиска
+		$p.iface._catalog.top = document.createElement('div');
+		$p.iface._catalog.goods.appendChild($p.iface._catalog.top);
 
-	// строка поиска
-	$p.iface._catalog.top = document.createElement('div');
-	$p.iface._catalog.goods.appendChild($p.iface._catalog.top);
+		$p.iface._catalog.search = document.createElement('div');
+		$p.iface._catalog.search.className = "search";
+		$p.iface._catalog.top.appendChild($p.iface._catalog.search);
 
-	$p.iface._catalog.search = document.createElement('div');
-	$p.iface._catalog.search.className = "search";
-	$p.iface._catalog.top.appendChild($p.iface._catalog.search);
+		$p.iface._catalog.search_input = document.createElement('input');
+		$p.iface._catalog.search_input.className = "search";
+		$p.iface._catalog.search_input.type = "search";
+		$p.iface._catalog.search_input.placeholder = "Введите артикул или текст";
+		$p.iface._catalog.search.appendChild($p.iface._catalog.search_input);
 
-	$p.iface._catalog.search_input = document.createElement('input');
-	$p.iface._catalog.search_input.className = "search";
-	$p.iface._catalog.search_input.type = "search";
-	$p.iface._catalog.search_input.placeholder = "Введите артикул или текст";
-	$p.iface._catalog.search.appendChild($p.iface._catalog.search_input);
-
-	$p.iface._catalog.search_button = document.createElement('button');
-	$p.iface._catalog.search_button.className = "search";
-	$p.iface._catalog.search_button.innerHTML = "Найти";
-	$p.iface._catalog.search.appendChild($p.iface._catalog.search_button);
-
-	// элементы управления режимом dataview
-	$p.iface._catalog.dataview_tools = document.createElement('div');
-	$p.iface._catalog.dataview_tools.style.float = "right";
-	$p.iface._catalog.top.appendChild($p.iface._catalog.dataview_tools);
-	new $p.iface.OTooolBar({
-		wrapper: $p.iface._catalog.dataview_tools, width: '88px', height: '28px', bottom: '8px', right: '14px', name: 'dataview_tools',
-		image_path: 'data/',
-		buttons: [
-			{name: 'large', img: 'dataview_large.png', title: 'Список (детально)', float: 'left'},
-			{name: 'medium', img: 'dataview_medium.png', title: 'Средние значки', float: 'left'},
-			{name: 'small', img: 'dataview_small.png', title: 'Мелкие значки', float: 'left'}
-		],
-		onclick: function (name) {
-
-		}
-	});
+		$p.iface._catalog.search_button = document.createElement('button');
+		$p.iface._catalog.search_button.className = "search";
+		$p.iface._catalog.search_button.innerHTML = "Найти";
+		$p.iface._catalog.search.appendChild($p.iface._catalog.search_button);
+	})();
 
 	// карусель с dataview и страницей товара
 	$p.iface._catalog.carousel = $p.iface._catalog.layout.cells("c").attachCarousel({
@@ -173,7 +171,11 @@ $p.iface.set_view_catalog = function (cell) {
 	$p.iface._catalog.carousel.addCell("dataview");
 	$p.iface._catalog.carousel.addCell("goods");
 
+	// пагинация
 	$p.iface._catalog.div_pager = document.createElement('div');
+	$p.iface._catalog.div_pager.classList.add("wb-tools");
+
+	// DataView
 	$p.iface._catalog.dataview = $p.iface._catalog.carousel.cells("dataview").attachDynDataView(
 		{
 			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
@@ -198,18 +200,11 @@ $p.iface.set_view_catalog = function (cell) {
 			},
 			fields: ["ref", "name", "Производитель", "Описание", "Цена"],
 			selection: {
-				is_folder: false,
-				parent: "cbcf4929-55bc-11d9-848a-00112f43529a"
+				is_folder: false
 			}
 	});
 
 	$p.iface._catalog.carousel.cells("dataview").cell.appendChild($p.iface._catalog.div_pager);
-
-	//$p.iface._catalog.dataview.load("data/demo.json", "json", function(v){
-	//	if(v){
-	//
-	//	}
-	//});
 
 
 	$p.eve.hash_route.push(hash_route);
