@@ -176,32 +176,30 @@ $p.iface.set_view_catalog = function (cell) {
 	$p.iface._catalog.div_pager.classList.add("wb-tools");
 
 	// DataView
+	function getImageStyle(o){
+		if(o.ФайлКартинки != $p.blank.guid){
+
+		}
+		return "";
+	}
+	require('templates')(getImageStyle);
 	$p.iface._catalog.dataview = $p.iface._catalog.carousel.cells("dataview").attachDynDataView(
 		{
 			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
 			class_name: "cat.Номенклатура"
 		},
 		{
-			type: {
-				template:"http->data/dataview_large.html",
-				template_loading:"Загрузка данных...",
-				height:80,
-				margin:2,
-				padding:0,
-				image: function () {
-				return "";
-			}
-			},
+			type: "list",
+			custom_css: true,
 			autowidth: 1,
+			//height:"auto",
 			pager: {
 				container: $p.iface._catalog.div_pager,
-				size:20,
+				size:30,
 				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
 			},
-			fields: ["ref", "name", "Производитель", "Описание", "Цена"],
-			selection: {
-				is_folder: false
-			}
+			fields: ["ref", "name"],
+			selection: {}
 	});
 
 	$p.iface._catalog.carousel.cells("dataview").cell.appendChild($p.iface._catalog.div_pager);

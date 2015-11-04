@@ -70,9 +70,6 @@ button.search:hover, .button.search:focus {
 .dhx_dataview_[css]_item - applied to items in the unselected state
 .dhx_dataview_[css]_item_selected - applied to items in the selected state
 
-.dataview_large {
-	color: #333;
-}
 .dataview_medium {
 	color: #333;
 }
@@ -81,9 +78,34 @@ button.search:hover, .button.search:focus {
 }
 */
 
-.dhx_dataview_default_item {
-	color: #333;
+.dhx_dataview_list_item {
+	width: 100%;
+	background-color: #fffefa;
+	border-bottom: 1px #ccc dashed;
 }
-.dhx_dataview_default_item_selected {
-	color: #333;
+
+.dhx_dataview_list_item_selected {
+	width: 100%;
+	background-color: #eee;
+	border-bottom: 1px #ccc dashed;
+}
+
+.dhx_dataview_large_item {
+	background-color: #fffefa;
+	border: 1px #ccc dashed;
+}
+
+.dhx_dataview_large_item_selected {
+	background-color: #eee;
+	border: 1px #ccc dashed;
+}
+
+.dhx_dataview_small_item {
+	background-color: #fffefa;
+	border: 1px #ccc dashed;
+}
+
+.dhx_dataview_small_item_selected {
+	background-color: #eee;
+	border: 1px #ccc dashed;
 }

@@ -13,7 +13,8 @@
       "src/view_orders.js",
       "src/view_settings.js",
       "src/view_user.js"
-    ]
+    ],
+    "templates": "templates/templates.js"
   },
   "main": "main",
   "optimize": true,
