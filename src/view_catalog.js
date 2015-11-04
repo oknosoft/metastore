@@ -148,15 +148,16 @@ $p.iface.set_view_catalog = function (cell) {
 		$p.iface._catalog.top.appendChild($p.iface._catalog.search);
 
 		$p.iface._catalog.search_input = document.createElement('input');
+		$p.iface._catalog.search.appendChild($p.iface._catalog.search_input);
 		$p.iface._catalog.search_input.className = "search";
 		$p.iface._catalog.search_input.type = "search";
 		$p.iface._catalog.search_input.placeholder = "Введите артикул или текст";
-		$p.iface._catalog.search.appendChild($p.iface._catalog.search_input);
+		$p.iface._catalog.search_input.title = "Найти товар по части наименования, кода или артикула";
+		$p.iface._catalog.search_input.onchange = function (e) {
+			console.log(this.value);
+		}
 
-		$p.iface._catalog.search_button = document.createElement('button');
-		$p.iface._catalog.search_button.className = "search";
-		$p.iface._catalog.search_button.innerHTML = "Найти";
-		$p.iface._catalog.search.appendChild($p.iface._catalog.search_button);
+
 	})();
 
 	// карусель с dataview и страницей товара
