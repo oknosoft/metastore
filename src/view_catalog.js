@@ -64,7 +64,7 @@ $p.iface.set_view_catalog = function (cell) {
 	$p.iface._catalog.navigation.attachEvent("onSelect", prop_filter);
 
 	// Динамическое дерево
-	$p.iface._catalog.tree = $p.iface._catalog.navigation.cells("tree").attachDynTree($p.cat.Номенклатура);
+	$p.iface._catalog.tree = $p.iface._catalog.navigation.cells("tree").attachDynTree($p.cat.ВидыНоменклатуры, {});
 	$p.iface._catalog.tree.attachEvent("onSelect", function(id){
 
 		var hprm = $p.job_prm.parse_url();
@@ -95,7 +95,7 @@ $p.iface.set_view_catalog = function (cell) {
 
 					var child,
 					// получаем массив пути
-						path = $p.cat.Номенклатура.path(this.id);
+						path = $p.cat.ВидыНоменклатуры.path(this.id);
 
 					// удаляем предыдущие элементы
 					while(child = this.div.lastChild){
@@ -179,7 +179,7 @@ $p.iface.set_view_catalog = function (cell) {
 	// DataView
 	function getImageStyle(o){
 		if(o.ФайлКартинки != $p.blank.guid){
-
+			return "background-image:url(templates/"+o.ФайлКартинки+".png);";
 		}
 		return "";
 	}

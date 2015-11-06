@@ -58,6 +58,41 @@ input.search {
 }
 */
 
+.dhx_dataview_item {
+	font-family: Segoe UI, Tahoma, sans-serif;
+	font-size: 18px;
+}
+
+.dataview_price {
+	float: right;
+	margin: 16px 8px;
+	font-size: 28px;
+}
+
+.dataview_list_image {
+	float: left;
+	margin: 4px;
+	height: 90px;
+	width: 90px;
+	background-size: cover;
+}
+
+.dataview_small_image {
+	float: left;
+	margin: 4px;
+	height: 120px;
+	width: 120px;
+	background-size: cover;
+}
+
+.dataview_large_image {
+	float: left;
+	margin: 4px;
+	height: 200px;
+	width: 200px;
+	background-size: cover;
+}
+
 .dhx_dataview_list_item {
 	width: 100%;
 	background-color: #fffefa;

@@ -25,7 +25,7 @@ module.exports = function(getImageStyle) {
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"large",
 		template:"http->templates/dataview_large.html",
-		height: 180,
+		height: 210,
 		width: 380,
 		margin: 2,
 		padding:2,
