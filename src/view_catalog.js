@@ -25,7 +25,7 @@ $p.iface.set_view_catalog = function (cell) {
 	function prop_filter(){
 		if(!$p.iface._catalog.filter){
 
-			$p.iface._catalog.filter = $p.iface._catalog.navigation.cells("filter").attachPropFilter($p.cat.Номенклатура);
+			$p.iface._catalog.filter = $p.iface._catalog.navigation.cells("filter").attachPropFilter($p.cat.ВидыНоменклатуры);
 
 		}
 
@@ -154,7 +154,8 @@ $p.iface.set_view_catalog = function (cell) {
 		$p.iface._catalog.search_input.placeholder = "Введите артикул или текст";
 		$p.iface._catalog.search_input.title = "Найти товар по части наименования, кода или артикула";
 		$p.iface._catalog.search_input.onchange = function (e) {
-			console.log(this.value);
+			dhx4.callEvent("search_text_change", [this.value]);
+			this.blur();
 		}
 
 
@@ -177,13 +178,7 @@ $p.iface.set_view_catalog = function (cell) {
 	$p.iface._catalog.div_pager.classList.add("wb-tools");
 
 	// DataView
-	function getImageStyle(o){
-		if(o.ФайлКартинки != $p.blank.guid){
-			return "background-image:url(templates/"+o.ФайлКартинки+".png);";
-		}
-		return "";
-	}
-	require('templates')(getImageStyle);
+	require('templates')();
 	$p.iface._catalog.dataview = $p.iface._catalog.carousel.cells("dataview").attachDynDataView(
 		{
 			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",

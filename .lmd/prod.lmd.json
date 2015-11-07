@@ -6,6 +6,8 @@
   "modules": {
     "main": [
       "src/wdg_filter_prop.js",
+      "src/wdg_multi_checkbox.js",
+      "src/wdg_range_slider.js",
       "src/init.js",
       "src/view_catalog.js",
       "src/view_cart.js",

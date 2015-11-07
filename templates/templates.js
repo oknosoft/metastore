@@ -7,9 +7,25 @@
  * @module  templates.js
  */
 
-module.exports = function(getImageStyle) {
-	// определяем представления DataView
+module.exports = function() {
 
+	// строка стиля картинки
+	function get_image_style(o){
+		if(o.ФайлКартинки != $p.blank.guid){
+			return "background-image:url(templates/"+o.ФайлКартинки+".png);";
+		}
+		return "";
+	}
+
+	// строка представления производителя
+	function get_manufacturer(o){
+		if(o.Производитель != $p.blank.guid){
+			return $p.cat.Производители.get(o.Производитель).presentation;
+		}
+		return "";
+	}
+
+	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
 		template:"http->templates/dataview_list.html",
@@ -19,7 +35,8 @@ module.exports = function(getImageStyle) {
 		margin: 2,
 		padding:0,
 		border: 1,
-		image:getImageStyle
+		image:get_image_style,
+		manufacturer: get_manufacturer
 	});
 
 	dhtmlx.Type.add(dhtmlXDataView,{
@@ -30,7 +47,8 @@ module.exports = function(getImageStyle) {
 		margin: 2,
 		padding:2,
 		border: 1,
-		image:getImageStyle
+		image:get_image_style,
+		manufacturer: get_manufacturer
 	});
 
 	dhtmlx.Type.add(dhtmlXDataView,{
@@ -41,6 +59,7 @@ module.exports = function(getImageStyle) {
 		margin: 2,
 		padding:2,
 		border: 1,
-		image:getImageStyle
+		image:get_image_style,
+		manufacturer: get_manufacturer
 	});
 };
