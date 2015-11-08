@@ -27,79 +27,64 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 	if(!attr)
 		attr = {};
 	var _cell = this,
-		_cont = document.createElement("div"),
-		_form = document.createElement("div"),
-		_add = document.createElement("div"),
-		_price = document.createElement("div"),
-		_price_title = document.createElement("div"),
-		_price_slider = document.createElement("div"),
-		_price_min,
-		_price_max,
+		_width = _cell.getWidth ? _cell.getWidth() : _cell.cell.offsetWidth - 44,
+		_add,
+		_price,
+		_filter_prop = {},
 		_parent,
 		pf = new function OPropFilter(){
 			this.children = [];
+			this.form = _cell.attachForm([
+				{ type:"settings" , labelWidth:120, inputWidth:120  },
+				{ type:"container", name:"price", label:"", inputWidth: _width, inputHeight:50, position: "label-top"},
+				{ type:"template" , name:"form_template_2", label:"Доступность", value:"На складе"  },
+				{ type:"container", name:"manufacturer", label:"Производитель", inputWidth: _width, inputHeight:20, position: "label-top"},
+				{ type:"container", name:"_add", label:"Дополнительно", inputWidth: _width, inputHeight:"auto", position: "label-top"},
+				{ type:"template" , name:"form_template_3", label:"Показать"  },
+				{ type:"template" , name:"form_template_1", label:"Больше параметров"  }
+			]);
 		};
 
 	// подключим дополнительные элементы
-	_cell.attachObject(_cont);
-	_cell.cell.firstChild.style.overflow = "auto";
+	//_cell.cell.firstChild.style.overflow = "auto";
 
-	// слайдер цены
-	_cont.appendChild(_price);
-	_price.appendChild(_price_title);
-	_price.style.marginBottom = "8px";
-	_price_title.style.marginBottom = "8px";
-	_price_title.innerHTML = "Цена: <input name='min' /> - <input name='max' />"
-	_price_min = _price_title.querySelector('[name=min]');
-	_price_max = _price_title.querySelector('[name=max]');
-	_price_min.style.width = "33%";
-	_price_max.style.width = "33%";
-
-	_price.appendChild(_price_slider);
-	noUiSlider.create(_price_slider, {
-		start: [ 600, 6000 ], // Handle start position
-		step: 100, // Slider moves in increments of '10'
-		margin: 100, // Handles must be more than '20' apart
-		connect: true, // Display a colored bar between the handles
-		behaviour: 'tap-drag', // Move handle on tap, bar is draggable
-		range: { // Slider can select '0' to '100'
-			'min': 200,
-			'max': 10000
+	function prop_change(v){
+		var changed;
+		for(var key in v){
+			if(!_filter_prop[key])
+				changed = true;
+			else if(typeof v[key] == "object"){
+				for(var j in v[key])
+					if(_filter_prop[key][j] != v[key][j])
+						changed = true;
+			}
+			_filter_prop[key] = v[key];
 		}
-	});
-
-	// When the slider value changes, update the input and span
-	_price_slider.noUiSlider.on('update', function( values, handle ) {
-		if ( handle ) {
-			_price_max.value = values[handle];
-		} else {
-			_price_min.value = values[handle];
-		}
-	});
-	function input_bind(){
-		_price_slider.noUiSlider.set([_price_min.value, _price_max.value]);
+		if(changed)
+			dhx4.callEvent("filter_prop_change", [_filter_prop]);
 	}
 
-	// When the input changes, set the slider value
-	_price_min.addEventListener('change', input_bind);
-	_price_max.addEventListener('change', input_bind);
+	// слайдер цены
+	_price = new ORangeSlider({
+		container: pf.form.getContainer("price"),
+		on_change: prop_change,
+		name: "Цена",
+		synonym: "Цена",
+		range: {min: 200, max: 6000},
+		start: {min: 600, max: 3000}
+	});
 
 	// форма
-	_form.style.width = "100%";
-	_form.style.height = "100px";
-	_cont.appendChild(_form);
+	//_form.style.width = "100%";
+	//_form.style.height = "100px";
+	//_cont.appendChild(_form);
+	//
+	//_add.style.width = "100%";
+	//_add.style.height = "100%";
+	//_cont.appendChild(_add);
 
-	_add.style.width = "100%";
-	_add.style.height = "100%";
-	_cont.appendChild(_add);
 
-
-	pf.form = new dhtmlXForm(_form, [
-		{ type:"settings" , labelWidth:120, inputWidth:120  },
-		{ type:"template" , name:"form_template_2", label:"Доступность", value:"На складе"  },
-		{ type:"template" , name:"form_template_3", label:"Показать"  },
-		{ type:"template" , name:"form_template_1", label:"Больше параметров"  }
-	]);
+	_add = pf.form.getContainer("_add");
 
 	pf.__define({
 
