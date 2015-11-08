@@ -10,6 +10,7 @@
 
 /**
  * ### Визуальный компонент для установки пары min и max значений с полями ввода и ползунком
+ * Унаследован от [noUiSlider](http://refreshless.com/nouislider/)
  *
  * @class ORangeSlider
  * @param attr {Object} - параметры создаваемого компонента
@@ -40,41 +41,58 @@ function ORangeSlider(attr) {
 	_max.style.width = "33%";
 
 	_div.appendChild(_slider);
-	noUiSlider.create(_slider, {
-		start: [ attr.start ? attr.start.min : 100, attr.start ? attr.start.max : 10000 ], // Handle start position
-		step: attr.step || 100, // Slider moves in increments of '10'
-		margin: attr.margin || 100, // Handles must be more than '20' apart
-		connect: true, // Display a colored bar between the handles
-		behaviour: 'tap-drag', // Move handle on tap, bar is draggable
-		range: { // Slider can select '0' to '100'
-			'min': attr.range ? attr.range.min : 200,
-			'max': attr.range ? attr.range.max : 10000
-		}
-	});
 
-	// When the slider value changes, update the input and span
-	_slider.noUiSlider.on('update', function( values, handle ) {
-		if ( handle ) {
-			_max.value = values[handle];
-		} else {
-			_min.value = values[handle];
-		}
-		on_change();
-	});
+	function create(){
+
+		noUiSlider.create(_slider, {
+			start: [ attr.start ? attr.start.min : 100, attr.start ? attr.start.max : 10000 ], // Handle start position
+			step: attr.step || 100, // Slider moves in increments of '10'
+			margin: attr.margin || 100, // Handles must be more than '20' apart
+			connect: true, // Display a colored bar between the handles
+			behaviour: 'tap-drag', // Move handle on tap, bar is draggable
+			range: { // Slider can select '0' to '100'
+				'min': attr.range ? attr.range.min : 200,
+				'max': attr.range ? attr.range.max : 10000
+			}
+		});
+
+		// When the slider value changes, update the input and span
+		_slider.noUiSlider.on('update', function( values, handle ) {
+			if ( handle ) {
+				_max.value = values[handle];
+			} else {
+				_min.value = values[handle];
+			}
+			on_change();
+		});
+	}
+
 	function on_change(){
 		var val = {};
-		val[attr.name] = [parseInt(_min.value), parseInt(_max.value)];
+		val[attr.name] = [parseInt(_min.value) || 0, parseInt(_max.value) || 100000];
 		attr.on_change(val);
 	}
+
 	function input_bind(){
 		_slider.noUiSlider.set([_min.value, _max.value]);
 		on_change();
 	}
 
+	create();
+
 	// When the input changes, set the slider value
 	_min.addEventListener('change', input_bind);
 	_max.addEventListener('change', input_bind);
 
-	return _slider.noUiSlider;
+	_slider.rebuild = function (nattr) {
+		if(nattr.range)
+			attr.range = nattr.range;
+		if(nattr.start)
+			attr.start = nattr.start;
+		_slider.noUiSlider.destroy();
+		create();
+	};
+
+	return _slider;
 
 };

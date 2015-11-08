@@ -25,6 +25,11 @@ module.exports = function() {
 		return "";
 	}
 
+	// цена
+	function get_price(o){
+		return o.Цена_Мин == o.Цена_Макс ? o.Цена_Мин : "от " + o.Цена_Мин.toFixed(0) + " до " + o.Цена_Макс.toFixed(0);
+	}
+
 	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
@@ -36,7 +41,8 @@ module.exports = function() {
 		padding:0,
 		border: 1,
 		image:get_image_style,
-		manufacturer: get_manufacturer
+		manufacturer: get_manufacturer,
+		price: get_price
 	});
 
 	dhtmlx.Type.add(dhtmlXDataView,{
@@ -48,7 +54,8 @@ module.exports = function() {
 		padding:2,
 		border: 1,
 		image:get_image_style,
-		manufacturer: get_manufacturer
+		manufacturer: get_manufacturer,
+		price: get_price
 	});
 
 	dhtmlx.Type.add(dhtmlXDataView,{
@@ -60,6 +67,7 @@ module.exports = function() {
 		padding:2,
 		border: 1,
 		image:get_image_style,
-		manufacturer: get_manufacturer
+		manufacturer: get_manufacturer,
+		price: get_price
 	});
 };

@@ -32,13 +32,13 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 		_price,
 		_filter_prop = {},
 		_parent,
+		_hprm = $p.job_prm.parse_url(),
 		pf = new function OPropFilter(){
 			this.children = [];
 			this.form = _cell.attachForm([
 				{ type:"settings" , labelWidth:120, inputWidth:120  },
 				{ type:"container", name:"price", label:"", inputWidth: _width, inputHeight:50, position: "label-top"},
-				{ type:"template" , name:"form_template_2", label:"Доступность", value:"На складе"  },
-				{ type:"container", name:"manufacturer", label:"Производитель", inputWidth: _width, inputHeight:20, position: "label-top"},
+				{ type:"checkbox" , name:"store", label:"Есть на складе", labelAlign:"left", position:"label-right", tooltip: "Скрыть тованы, которых нет в наличии"  },
 				{ type:"container", name:"_add", label:"Дополнительно", inputWidth: _width, inputHeight:"auto", position: "label-top"},
 				{ type:"template" , name:"form_template_3", label:"Показать"  },
 				{ type:"template" , name:"form_template_1", label:"Больше параметров"  }
@@ -63,16 +63,6 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 		if(changed)
 			dhx4.callEvent("filter_prop_change", [_filter_prop]);
 	}
-
-	// слайдер цены
-	_price = new ORangeSlider({
-		container: pf.form.getContainer("price"),
-		on_change: prop_change,
-		name: "Цена",
-		synonym: "Цена",
-		range: {min: 200, max: 6000},
-		start: {min: 600, max: 3000}
-	});
 
 	// форма
 	//_form.style.width = "100%";
@@ -106,7 +96,16 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 			},
 			set: function (v) {
 				// чистим содержимое контейнера
-				var child;
+				var child,
+					price_prop = {
+						container: pf.form.getContainer("price"),
+						on_change: prop_change,
+						name: "Цена",
+						synonym: "Цена",
+						range: {min: 0, max: 1000000},
+						start: {min: 100, max: 100000}
+					};
+
 				pf.children.forEach(function (child) {
 					if(child.destructor)
 						child.destructor();
@@ -114,26 +113,61 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 				while (child = _add.lastChild)
 					_add.removeChild(child);
 
-				// бежим по свойствам и создаём элементы управления
-				mgr.get(v, true, true).then(function (o) {
-					if(o){
-						_parent = o;
-						o = null;
+				_filter_prop = {};
+
+				if(v == $p.blank.guid){
+					// перестраиваем ценник
+					if(_price){
+						price_prop.range.min = 0;
+						price_prop.range.max = 1000000;
+						price_prop.start.min = 100;
+						price_prop.start.max = 100000;
+						_price.rebuild(price_prop);
+					} else
+						_price = new ORangeSlider(price_prop);
+
+					return;
+				}
+
+				// получаем вид номенклатуры
+				_parent = mgr.get(v);
+
+				// слайдер цены - перестраиваем или создаём новый при старте
+				price_prop.range.min = _parent.Цена_Мин > 500 ? _parent.Цена_Мин - 500 : 0;
+				price_prop.range.max = _parent.Цена_Макс + 500;
+				price_prop.start.min = _parent.Цена_Мин;
+				price_prop.start.max = _parent.Цена_Макс;
+				if(_price)
+					_price.rebuild(price_prop);
+				else
+					_price = new ORangeSlider(price_prop);
+
+
+				// уточняем производителей
+				if(_parent.Производители){
+					var values = _parent.Производители.split(",");
+					if(values.length > 1){
+						child = new OMultiCheckbox({
+							container: _add,
+							property: {},
+							name: "Производители",
+							values: values.map(function (ref) { return $p.cat.Производители.get(ref); })
+						});
+						pf.children.push(child);
 					}
-					//_parent.РеквизитыБыстрогоОтбораНоменклатуры
-					//РеквизитыБыстрогоОтбораХарактеристик
-					//_parent.НаборСвойств.extra_fields.get(0).property
-					_parent.РеквизитыБыстрогоОтбораНоменклатуры.each(function (o) {
-						if(o.property && !o.property.empty()){
-							child = new OMultiCheckbox({
-								container: _add,
-								property: o.property,
-								name: o.ПредставлениеРеквизита
-							});
-							pf.children.push(child);
-						}
-					})
-				})
+				}
+
+				// бежим по свойствам и создаём элементы управления
+				_parent.РеквизитыБыстрогоОтбораНоменклатуры.each(function (o) {
+					if(o.property && !o.property.empty()){
+						child = new OMultiCheckbox({
+							container: _add,
+							property: o.property,
+							name: o.ПредставлениеРеквизита
+						});
+						pf.children.push(child);
+					}
+				});
 
 			},
 			enumerable: false
@@ -154,13 +188,9 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 	});
 
 
-
-
-
-
 	$p.eve.hash_route.push(pf.hash_route);
 	setTimeout(function () {
-		pf.hash_route($p.job_prm.parse_url());
+		pf.hash_route(_hprm);
 	}, 50);
 
 	return pf;

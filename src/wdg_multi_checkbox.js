@@ -21,9 +21,6 @@
  */
 function OMultiCheckbox(attr) {
 
-	if(typeof attr.property == "string")
-		attr.property = $p.cch.properties.get(attr.property);
-
 	var _div = document.createElement("div"),
 		_grid = new dhtmlXGridObject(_div);
 
@@ -44,7 +41,11 @@ function OMultiCheckbox(attr) {
 	_grid.enableAutoHeight(true, 180, true);
 	_grid.init();
 
-	if(attr.property.type.is_ref && attr.property.type.types && attr.property.type.types.length == 1){
+	if(attr.values){
+		attr.values.forEach(function (o) {
+			_grid.addRow(o.ref,[0, o.name]);
+		})
+	}else if(attr.property.type.is_ref && attr.property.type.types && attr.property.type.types.length == 1){
 		$p.md.mgr_by_class_name(attr.property.type.types[0]).find_rows({owner: attr.property}, function (o) {
 			_grid.addRow(o.ref,[0, o.name]);
 		})

@@ -6580,6 +6580,17 @@
 						"fraction_figits": 2
 					}
 				},
+				"Производители": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
 				"parent": {
 					"synonym": "Группа видов номенклатуры",
 					"multiline_mode": false,

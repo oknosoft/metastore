@@ -65,8 +65,13 @@ input.search {
 
 .dataview_price {
 	float: right;
-	margin: 16px 8px;
-	font-size: 28px;
+	margin: 8px;
+	font-size: 24px;
+}
+
+.dhx_dataview_small_item .dataview_price, .dhx_dataview_small_item_selected .dataview_price {
+	font-size: 20px;
+	float: none;
 }
 
 .dataview_list_image {
