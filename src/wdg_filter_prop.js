@@ -19,7 +19,6 @@
  * @class OPropFilter
  * @param mgr {DataManager}
  * @param attr {Object} - параметры создаваемого компонента
- * @param [callback] {Function} - если указано, будет вызвана после инициализации компонента
  * @constructor
  */
 dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {

@@ -16,7 +16,7 @@ $p.iface.set_view_settings = function (cell) {
 		form: cell.attachForm([
 			{ type:"settings", labelWidth:80, offsetLeft: 16, position:"label-left"  },
 
-			{type: "label", labelWidth:400, label: "Тип устройства", className: "label_options"},
+			{type: "label", labelWidth:420, label: "Тип устройства", className: "label_options"},
 			{ type:"block" , name:"form_block_2", list:[
 				{ type:"settings", labelAlign:"left", position:"label-right"  },
 				{ type:"radio" , name:"device_type", label:"Компьютер", value:"desktop"},
@@ -26,20 +26,20 @@ $p.iface.set_view_settings = function (cell) {
 				{ type:"radio" , name:"device_type", label:"Планшет", value:"tablet"}
 			]  },
 			{type:"template", label:"",value:"",
-				note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 400}},
+				note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 420}},
 
-			{type: "label", labelWidth:400, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
+			{type: "label", labelWidth:420, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
 			{type:"input" , inputWidth: 200, name:"zone", label:"Зона", numberFormat: ["0", "", ""], validate:"NotEmpty,ValidInteger"},
 			{type:"template", label:"",value:"",
-				note: {text: "Для неразделенной публикации, зона = 0", width: 400}},
+				note: {text: "Для неразделенной публикации, зона = 0", width: 420}},
 
-			{type: "label", labelWidth:400, label: "Вариант оформления dhtmlx", className: "label_options"},
+			{type: "label", labelWidth:420, label: "Вариант оформления интерфейса", className: "label_options"},
 			{type:"combo" , inputWidth: 200, name:"skin", label:"Скин", options:[
 				{value: "dhx_web", text: "Web"},
 				{value: "dhx_terrace", text: "Terrace"}
 			]},
 			{type:"template", label:"",value:"",
-				note: {text: "Дополнительные свойства оформления можно задать в css", width: 400}},
+				note: {text: "Дополнительные свойства оформления можно задать в css", width: 420}},
 
 		])
 	};

@@ -51,6 +51,9 @@ $p.settings = function (prm, modifiers) {
 	// задаём список файлов css для отложенной загрузки
 	prm.additional_css = ["templates/webshop.css"];
 
+	// скин по умолчанию
+	prm.skin = "dhx_terrace";
+
 	// разрешаем покидать страницу без лишних вопросов
 	$p.eve.redirect = true;
 
