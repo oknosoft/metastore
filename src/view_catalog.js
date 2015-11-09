@@ -40,7 +40,7 @@ $p.iface.set_view_catalog = function (cell) {
 			pattern: "3L",
 			cells: [
 				{id: "a", text: "Каталог", width: 300, header: false},
-				{id: "b", text: "Поиск", height: 70, header: false},
+				{id: "b", text: "Поиск", height: dhtmlx.skin == "dhx_web" ? 62 : 62, header: false},
 				{id: "c", text: "Товары", header: false}
 			],
 			offsets: {
@@ -85,7 +85,6 @@ $p.iface.set_view_catalog = function (cell) {
 			this.id = undefined;
 
 			this.div = document.createElement('div');
-			this.div.style.marginTop = "-4px";
 			parent.appendChild(this.div);
 
 			// Обработчик маршрутизации

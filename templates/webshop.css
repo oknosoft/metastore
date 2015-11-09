@@ -6,6 +6,26 @@ div.dhxsidebar_item_text {
 	font-size: 14px;
 }
 
+.dhxsidebar_base_dhx_web div.dhxcelltop_toolbar,
+.dhxsidebar_base_dhx_terrace div.dhxcelltop_toolbar {
+	padding-bottom: 1px;
+}
+
+.dhxlayout_base_dhx_terrace div.dhx_cell_layout div.dhx_cell_cont_layout,
+.dhxlayout_base_dhx_web div.dhx_cell_layout div.dhx_cell_cont_layout,
+.dhx_cell_hdr_hidden {
+	border: none !important;
+}
+
+.dhxlayout_base_dhx_web div.dhx_cell_layout div.dhx_cell_cont_layout {
+	padding: 0 !important;
+}
+
+.label_options{
+	padding-top: 8px;
+	border-bottom: 1px solid #eee;
+}
+
 div.search {
 	margin-top: 4px;
 	float: left;
@@ -100,33 +120,30 @@ input.search {
 
 .dhx_dataview_list_item {
 	width: 100%;
-	background-color: #fffefa;
 	border-bottom: 1px #ccc dashed;
 }
 
 .dhx_dataview_list_item_selected {
 	width: 100%;
-	background-color: #eee;
+	background-color: #f5f5f5;
 	border-bottom: 1px #ccc dashed;
 }
 
 .dhx_dataview_large_item {
-	background-color: #fffefa;
 	border: 1px #ccc dashed;
 }
 
 .dhx_dataview_large_item_selected {
-	background-color: #eee;
+	background-color: #f5f5f5;
 	border: 1px #ccc dashed;
 }
 
 .dhx_dataview_small_item {
-	background-color: #fffefa;
 	border: 1px #ccc dashed;
 }
 
 .dhx_dataview_small_item_selected {
-	background-color: #eee;
+	background-color: #f5f5f5;
 	border: 1px #ccc dashed;
 }
 

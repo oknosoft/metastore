@@ -36,7 +36,7 @@ dhtmlXCellObject.prototype.attachPropFilter = function(mgr, attr) {
 		pf = new function OPropFilter(){
 			this.children = [];
 			this.form = _cell.attachForm([
-				{ type:"settings" , labelWidth:120, inputWidth:120  },
+				{ type:"settings" , labelWidth:120, inputWidth:120, offsetLeft: dhtmlx.skin == "dhx_web" ? 4 : 8, offsetTop: 8 },
 				{ type:"container", name:"price", label:"", inputWidth: _width, inputHeight:50, position: "label-top"},
 				{ type:"checkbox" , name:"store", label:"Есть на складе", labelAlign:"left", position:"label-right", tooltip: "Скрыть тованы, которых нет в наличии"  },
 				{ type:"container", name:"_add", label:"Дополнительно", inputWidth: _width, inputHeight:"auto", position: "label-top"},

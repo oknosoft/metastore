@@ -47,8 +47,13 @@ $p.settings = function (prm, modifiers) {
 	// пароль гостевого пользователя
 	prm.guest_pwd = "";
 
+	// т.к. стили надо грузить в правильном порядке, а файлы базовых css зависят от скина - их имена на берегу не известны,
+	// задаём список файлов css для отложенной загрузки
+	prm.additional_css = ["templates/webshop.css"];
+
 	// разрешаем покидать страницу без лишних вопросов
 	$p.eve.redirect = true;
+
 
 };
 
@@ -77,7 +82,7 @@ $p.iface.oninit = function() {
 
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
-				icons_path: dhtmlx.image_path + "dhxsidebar_web/",
+				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
 				width: 100,
 				template: "icons_text",
 				items: items,
@@ -91,19 +96,18 @@ $p.iface.oninit = function() {
 
 			toolbar = $p.iface.main.attachToolbar({
 				icons_size: 24,
-				icons_path: dhtmlx.image_path + "dhxsidebar_web/",
+				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
 				items: [
 					{type: "text", id: "title", text: "&nbsp;"},
 					{type: "spacer"},
-					{type: "button", id: "add", img: "add_48.png"},
-					{type: "button", id: "save", img: "save_48.png"}
+					{type: "text", text: "[Город клиента и мантра магазина]"}
 				]
 			});
 
 		}else{
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
-				icons_path: dhtmlx.image_path + "dhxsidebar_web/",
+				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
 				width: 180,
 				header: true,
 				template: "tiles",
