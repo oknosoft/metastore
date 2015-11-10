@@ -71,17 +71,9 @@ input.search {
 	background-color: #ccc;
 }
 
-/*
-.dhx_dataview_[css]_item - applied to items in the unselected state
-.dhx_dataview_[css]_item_selected - applied to items in the selected state
-
-.dataview_medium {
-	color: #333;
+.wb-tools {
+	background: rgba(255,254,250, 0.9);
 }
-.dataview_small {
-	color: #333;
-}
-*/
 
 .dhx_dataview_item {
 	font-family: Segoe UI, Tahoma, sans-serif;

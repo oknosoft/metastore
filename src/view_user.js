@@ -12,6 +12,7 @@ $p.iface.set_view_user = function (cell) {
 	if($p.iface._user)
 		return;
 
+	$p.iface._user = {};
 	cell.attachHTMLString("<div>Пользователь не авторизован</div>");
 
 };

@@ -72,6 +72,7 @@ $p.iface.oninit = function() {
 			{id: "compare", text: "Сравнение", icon: "compare_48.png"},
 			{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
 			{id: "orders", text: "Заказы", icon: "projects_48.png"},
+			{id: "content", text: "Контент", icon: "content_48.png"},
 			{id: "user", text: "Профиль", icon: "contacts_48.png"},
 			{id: "settings", text: "Настройки", icon: "settings_48.png"}
 		] ;

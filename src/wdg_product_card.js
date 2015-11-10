@@ -26,14 +26,13 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		attr = {};
 
 	var _cell = this,
-
 		toolbar = _cell.attachToolbar({
 			icons_size: 24,
 			icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
 			items: [
 				{type: "text", id: "title", text: "&nbsp;"},
 				{type: "spacer"},
-				{type: "button", id: "back", img: "back_48.png"}
+				{type: "button", id: "back", img: "back_48.png", title: "Вернуться к списку"}
 			]
 		}),
 		accordion = _cell.attachAccordion({
@@ -45,7 +44,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 					id:     "main",     // item id, required
 					text:   "Text",     // string, header's text (html allowed)
 					open:   true,       // boolean, true to open/false to close item on init
-					height: 400         // number, cell's height (multimode only)
+					height: 600         // number, cell's height (multimode only)
 				},
 				{
 					id:     "description",
@@ -53,11 +52,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 				},
 				{
 					id:     "notes",
-					text:   "Комментарии и обзоры"
-				},
-				{
-					id:     "queries",
-					text:   "Вопрос-Ответ"
+					text:   "Комментарии, обзоры, вопрос-ответ"
 				},
 				{
 					id:     "download",
@@ -73,6 +68,30 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			}
 
 		});
+
+	if($p.device_type != "desktop")
+		accordion.cells("download").hide();
+
+	function requery(ref){
+
+		// информацию про номенклатуру, полученную ранее используем сразу
+		var nom = $p.cat.Номенклатура.get(ref, false);
+		accordion.cells("main").setText(nom.НаименованиеПолное || nom.name);
+
+		// дополнительное описание получаем с сервера и перезаполняем аккордеон
+		attr.url = "";
+		$p.ajax.default_attr(attr, $p.job_prm.irest_url());
+		attr.url += attr.rest_name + "(guid'" + ref + "')";
+		if(!nom.name)
+			attr.url += "?full=true";
+		if(dhx4.isIE)
+			attr.url = encodeURI(attr.url);
+		$p.ajax.get_ex(attr.url, attr)
+			.then(function (req) {
+				console.log(JSON.parse(req.response));
+			})
+			.catch($p.record_log);
+	}
 
 	toolbar.attachEvent("onClick", function(id){
 		switch (id) {
@@ -102,24 +121,14 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 	// обработчик маршрутизации
 	$p.eve.hash_route.push(function (hprm){
-
-		if(hprm.view == "catalog" && $p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref)){
-
-			// получаем описание номенклатуры с сервера и перезаполняем аккордеон
-			attr.url = "";
-			$p.ajax.default_attr(attr, $p.job_prm.irest_url());
-			attr.url += attr.rest_name + "(guid'" + hprm.ref + "')";
-			if(dhx4.isIE)
-				attr.url = encodeURI(attr.url);
-			$p.ajax.get_ex(attr.url, attr)
-				.then(function (req) {
-
-				})
-				.catch($p.record_log);
-
-		}
-
+		if(hprm.view == "catalog" && $p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref))
+			requery(hprm.ref);
 	});
+
+	if(attr.ref){
+		requery(attr.ref);
+		delete attr.ref;
+	}
 
 	return accordion;
 

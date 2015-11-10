@@ -16,12 +16,13 @@ $p.iface.set_view_catalog = function (cell) {
 	}
 
 	// Карточка товара
-	function product_card(cell){
+	function product_card(cell, ref){
 
 		if(!$p.iface._catalog.product_card)
 			$p.iface._catalog.product_card = cell.attachOProductCard({
 				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СвойстваНоменклатуры",
-				class_name: "cat.Номенклатура"
+				class_name: "cat.Номенклатура",
+				ref: ref
 			});
 
 		cell.setActive();
@@ -36,11 +37,15 @@ $p.iface.set_view_catalog = function (cell) {
 	// Дерево видов номенклатуры
 	function products_tree(cell){
 
-		var tree = cell.attachDynTree($p.cat.ВидыНоменклатуры, {});
+		var tree = cell.attachDynTree($p.cat.ВидыНоменклатуры, {}, function () {
+			$p.cat.ПредопределенныеЭлементы.by_name("ВидНоменклатуры_ПоказыватьВМагазине").Элементы.each(function (o) {
+				tree.openItem(o.Элемент.ref);
+			})
+		});
 		tree.attachEvent("onSelect", function(id){
 			var hprm = $p.job_prm.parse_url();
 			if(hprm.obj != id)
-				$p.iface.set_hash(id, hprm.ref, hprm.frm, hprm.view);
+				$p.iface.set_hash(id, "", hprm.frm, hprm.view);
 		});
 
 		// подписываемся на событие hash_route
@@ -145,7 +150,7 @@ $p.iface.set_view_catalog = function (cell) {
 
 				// при непустой ссылке, показываем карточку товара
 				if($p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref)){
-					product_card($p.iface._catalog.carousel.cells("goods"))
+					product_card($p.iface._catalog.carousel.cells("goods"), hprm.ref)
 
 				}
 				// иначе - переключаемся на закладку списка

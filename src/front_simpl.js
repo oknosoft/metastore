@@ -1,5 +1,5 @@
 /**
- * Основное окно интерфейса UT11 demo
+ * Служебное окно интерфейса UT11 demo
  *
  * Created 22.10.2015<br />
  * &copy; http://www.oknosoft.ru 2014-2015
@@ -71,7 +71,7 @@ $p.iface.oninit = function() {
 				 *  это место можно переопределить и открывать, например, специальную форму списка заказов
 				 */
 				function () {
-					$p.iface.set_hash("doc.ЗаказПокупателя", "", "", "oper");
+					$p.iface.set_hash("cat.Номенклатура", "", "", "oper");
 					setTimeout(function () {
 						$p.iface.tree.closeItem("oper_cat");
 					}, 500);

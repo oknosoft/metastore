@@ -119,9 +119,17 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 	});
 	dataview.attachEvent("onItemDblClick", function (id, ev, html){
 
-		var hprm = $p.job_prm.parse_url();
-		if(hprm.ref != id)
-			$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
+		var hprm = $p.job_prm.parse_url(),
+			dv_obj = ({})._mixin(dataview.get(id));
+		dv_obj.ref = dv_obj.id;
+		dv_obj.id = dv_obj.Код;
+		dv_obj.name = dv_obj.Наименование;
+		delete dv_obj.Код;
+		delete dv_obj.Наименование;
+		$p.cat.Номенклатура.create(dv_obj)
+			.then(function (o) {
+				$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
+			});
 
 		return false;
 	});
@@ -171,7 +179,7 @@ $p.iface.CatalogPath = function CatalogPath(parent, onclick){
 				a.onclick = onclick || function (e) {
 					var hprm = $p.job_prm.parse_url();
 					if(hprm.obj != this.ref)
-						$p.iface.set_hash(this.ref, hprm.ref, hprm.frm, hprm.view);
+						$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
 					return $p.cancel_bubble(e)
 				};
 				div.appendChild(a);

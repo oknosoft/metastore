@@ -66,28 +66,6 @@
 				"synonym": "Праздник"
 			}
 		],
-		"ВидыЛицензийАлкогольнойПродукции": [
-			{
-				"order": 0,
-				"name": "Пиво",
-				"synonym": "Пиво или пивной напиток"
-			},
-			{
-				"order": 1,
-				"name": "АлкогольнаяПродукция",
-				"synonym": "Алкогольная продукция"
-			},
-			{
-				"order": 2,
-				"name": "СпиртосодержащаяПищеваяПродукция",
-				"synonym": "Спиртосодержащая пищевая продукция"
-			},
-			{
-				"order": 3,
-				"name": "СпиртосодержащаяНеПищеваяПродукция",
-				"synonym": "Спиртосодержащая непищевая продукция"
-			}
-		],
 		"ГрадацииКачества": [
 			{
 				"order": 0,
@@ -446,100 +424,6 @@
 				"synonym": "Кладовщик"
 			}
 		],
-		"ТипыОтчетов": [
-			{
-				"order": 0,
-				"name": "Внутренний",
-				"synonym": "Внутренний"
-			},
-			{
-				"order": 1,
-				"name": "Дополнительный",
-				"synonym": "Дополнительный"
-			},
-			{
-				"order": 2,
-				"name": "Расширение",
-				"synonym": "Расширение"
-			},
-			{
-				"order": 3,
-				"name": "Внешний",
-				"synonym": "Внешний"
-			},
-			{
-				"order": 4,
-				"name": "УдалитьОтчет",
-				"synonym": "(не используется) Отчет"
-			},
-			{
-				"order": 5,
-				"name": "УдалитьПользовательский",
-				"synonym": "(не используется) Пользовательский"
-			}
-		],
-		"ТипыПодключаемогоОборудования": [
-			{
-				"order": 0,
-				"name": "СканерШтрихкода",
-				"synonym": "Сканеры штрихкода"
-			},
-			{
-				"order": 1,
-				"name": "СчитывательМагнитныхКарт",
-				"synonym": "Считыватели магнитных карт"
-			},
-			{
-				"order": 2,
-				"name": "ФискальныйРегистратор",
-				"synonym": "Фискальные регистраторы"
-			},
-			{
-				"order": 3,
-				"name": "ПринтерЧеков",
-				"synonym": "Принтеры чеков"
-			},
-			{
-				"order": 4,
-				"name": "ДисплейПокупателя",
-				"synonym": "Дисплеи покупателя"
-			},
-			{
-				"order": 5,
-				"name": "ТерминалСбораДанных",
-				"synonym": "Терминалы сбора данных"
-			},
-			{
-				"order": 6,
-				"name": "ЭквайринговыйТерминал",
-				"synonym": "Эквайринговые терминалы"
-			},
-			{
-				"order": 7,
-				"name": "ЭлектронныеВесы",
-				"synonym": "Электронные весы"
-			},
-			{
-				"order": 8,
-				"name": "ВесыСПечатьюЭтикеток",
-				"synonym": "Весы с печатью этикеток"
-			},
-			{
-				"order": 9,
-				"name": "ККМOffline",
-				"synonym": "ККМ Offline"
-			},
-			{
-				"order": 10,
-				"name": "ПринтерЭтикеток",
-				"synonym": "Принтеры этикеток"
-			},
-			{
-				"order": 11,
-				"name": "WebСервисОборудование",
-				"synonym": "Web-сервис оборудование"
-			}
-		],
 		"ТипыПользователей": [
 			{
 				"order": 0,
@@ -605,38 +489,6 @@
 		]
 	},
 	"cat": {
-		"ВидыАлкогольнойПродукции": {
-			"name": "ВидыАлкогольнойПродукции",
-			"synonym": "Виды алкогольной и спиртосодержащей продукции",
-			"illustration": "",
-			"obj_presentation": "Вид алкогольной (спиртосодержащей) продукции",
-			"list_presentation": "",
-			"input_by_string": [
-				"name",
-				"id"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 3,
-			"fields": {
-				"ВидЛицензии": {
-					"synonym": "Вид лицензии",
-					"multiline_mode": false,
-					"tooltip": "",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"enm.ВидыЛицензийАлкогольнойПродукции"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {},
-			"hide": true
-		},
 		"ВидыПланов": {
 			"name": "ВидыПланов",
 			"synonym": "Виды планов",
@@ -2279,38 +2131,6 @@
 						"fraction_figits": 3
 					}
 				},
-				"ВестиУчетПоГТД": {
-					"synonym": "Вести учет по ГТД",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что для элемента номенклатуры необходимо вести учет по ГТД.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ВестиУчетСертификатовНоменклатуры": {
-					"synonym": "Вести учет сертификатов номенклатуры",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что для элемента номенклатуры используются сертификаты номенклатуры.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ВидАлкогольнойПродукции": {
-					"synonym": "Вид алкогольной (спиртосодержащей) продукции",
-					"multiline_mode": false,
-					"tooltip": "Вид алкогольной продукции, используется в декларации по алкогольной продукции",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ВидыАлкогольнойПродукции"
-						],
-						"is_ref": true
-					}
-				},
 				"ВидНоменклатуры": {
 					"synonym": "Вид номенклатуры",
 					"multiline_mode": false,
@@ -2331,28 +2151,6 @@
 							"cat.ВидыНоменклатуры"
 						],
 						"is_ref": true
-					}
-				},
-				"ГруппаДоступа": {
-					"synonym": "Группа доступа",
-					"multiline_mode": false,
-					"tooltip": "Определяет группу доступа к элементам справочника.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ГруппыДоступаНоменклатуры"
-						],
-						"is_ref": true
-					}
-				},
-				"АлкогольнаяПродукция": {
-					"synonym": "Алкогольная (спиртосодержащая) продукция",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"boolean"
-						]
 					}
 				},
 				"ЕдиницаИзмерения": {
@@ -2390,16 +2188,6 @@
 					"synonym": "Есть товары другого качества",
 					"multiline_mode": false,
 					"tooltip": "",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ИмпортнаяАлкогольнаяПродукция": {
-					"synonym": "Импортная алкогольная (спиртосодержащая) продукция",
-					"multiline_mode": false,
-					"tooltip": "Отечественное либо импортное происхождение, используется при заполнении деклараций по алкогольной продукции",
 					"type": {
 						"types": [
 							"boolean"
@@ -2633,16 +2421,6 @@
 						"str_len": 1024
 					}
 				},
-				"ПодакцизныйТовар": {
-					"synonym": "Подакцизный товар",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
 				"ПоставляетсяВМногооборотнойТаре": {
 					"synonym": "Поставляется в многооборотной таре",
 					"multiline_mode": false,
@@ -2718,18 +2496,6 @@
 						],
 						"digits": 15,
 						"fraction_figits": 0
-					}
-				},
-				"ГруппаФинансовогоУчета": {
-					"synonym": "Группа настроек фин. учета",
-					"multiline_mode": false,
-					"tooltip": "Группа настроек фин. учета",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ГруппыФинансовогоУчетаНоменклатуры"
-						],
-						"is_ref": true
 					}
 				},
 				"ТипНоменклатуры": {
@@ -3124,18 +2890,6 @@
 						]
 					}
 				},
-				"ГруппаАналитическогоУчета": {
-					"synonym": "Группа аналитического учета",
-					"multiline_mode": false,
-					"tooltip": "Группа аналитического учета",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ГруппыАналитическогоУчетаНоменклатуры"
-						],
-						"is_ref": true
-					}
-				},
 				"КодТНВЭД": {
 					"synonym": "Код ТНВЭД",
 					"multiline_mode": false,
@@ -3252,6 +3006,41 @@
 							"cat.ВидыНоменклатуры"
 						],
 						"is_ref": true
+					}
+				},
+				"Цена_Мин": {
+					"synonym": "Цена",
+					"multiline_mode": false,
+					"tooltip": "Назначается для номенклатурной позиции в разрезе характеристики и упаковки в валюте вида цен.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Цена_Макс": {
+					"synonym": "Цена",
+					"multiline_mode": false,
+					"tooltip": "Назначается для номенклатурной позиции в разрезе характеристики и упаковки в валюте вида цен.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Файлы": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
 					}
 				},
 				"parent": {
@@ -3531,46 +3320,6 @@
 			"tabular_sections": {},
 			"cachable": false,
 			"hide": true
-		},
-		"ГруппыАналитическогоУчетаНоменклатуры": {
-			"name": "ГруппыАналитическогоУчетаНоменклатуры",
-			"synonym": "Группы аналитического учета номенклатуры",
-			"illustration": "",
-			"obj_presentation": "Группа аналитического учета номенклатуры",
-			"list_presentation": "Группы аналитического учета номенклатуры",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": true,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {
-				"Описание": {
-					"synonym": "Описание",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 1024
-					}
-				},
-				"parent": {
-					"synonym": "Группа",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"cat.ГруппыАналитическогоУчетаНоменклатуры"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {}
 		},
 		"БанковскиеСчетаКонтрагентов": {
 			"name": "БанковскиеСчетаКонтрагентов",
@@ -7784,229 +7533,6 @@
 				}
 			},
 			"cachable": false,
-			"hide": true
-		},
-		"ГруппыДоступаНоменклатуры": {
-			"name": "ГруппыДоступаНоменклатуры",
-			"synonym": "Группы доступа номенклатуры",
-			"illustration": "",
-			"obj_presentation": "Группа доступа номенклатуры",
-			"list_presentation": "",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {},
-			"tabular_sections": {},
-			"hide": true
-		},
-		"ГруппыФинансовогоУчетаНоменклатуры": {
-			"name": "ГруппыФинансовогоУчетаНоменклатуры",
-			"synonym": "Группы настроек фин. учета номенклатуры",
-			"illustration": "",
-			"obj_presentation": "Группа финансового учета номенклатуры",
-			"list_presentation": "Группы настроек фин. учета номенклатуры",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": true,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {
-				"Описание": {
-					"synonym": "Описание",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 1024
-					}
-				},
-				"СчетУчетаПередачиНаКомиссию": {
-					"synonym": "Передача на комиссию",
-					"multiline_mode": false,
-					"tooltip": "Счет учета передачи собственных товаров на комиссию.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаВыручкиОтПродаж": {
-					"synonym": "Выручка от продаж",
-					"multiline_mode": false,
-					"tooltip": "Счет учета выручки от продажи собственных товаров и услуг.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаСебестоимостиПродаж": {
-					"synonym": "Себестоимость продаж",
-					"multiline_mode": false,
-					"tooltip": "Счет учета себестоимости продажи собственных товаров.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаНДСПриПродаже": {
-					"synonym": "НДС при продаже",
-					"multiline_mode": false,
-					"tooltip": "Счет учета НДС продажи собственных товаров.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаНаСкладе": {
-					"synonym": "На складе",
-					"multiline_mode": false,
-					"tooltip": "Счет учета собственных товаров на складе.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаВПути": {
-					"synonym": "В пути",
-					"multiline_mode": false,
-					"tooltip": "Счет учета собственных товаров отгруженных без перехода права собственности",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаНДСВПути": {
-					"synonym": "НДС товаров в пути",
-					"multiline_mode": false,
-					"tooltip": "Счет учета НДС продажи собственных товаров.",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"СчетУчетаНДСПриЗакупке": {
-					"synonym": "НДС при закупке",
-					"multiline_mode": false,
-					"tooltip": "Счет учета входящего НДС ",
-					"choice_params": [
-						{
-							"name": "Забалансовый",
-							"path": false
-						},
-						{
-							"name": "ЗапретитьИспользоватьВПроводках",
-							"path": false
-						}
-					],
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"parent": {
-					"synonym": "Группа",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"cat.ГруппыФинансовогоУчетаНоменклатуры"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {},
 			"hide": true
 		},
 		"ДоговорыКонтрагентов": {

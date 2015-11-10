@@ -12,6 +12,7 @@ $p.iface.set_view_cart = function (cell) {
 	if($p.iface._cart)
 		return;
 
+	$p.iface._cart = {};
 	cell.attachHTMLString("<div>Корзина пуста</div>");
 
 };
