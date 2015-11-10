@@ -9,259 +9,157 @@
 
 $p.iface.set_view_catalog = function (cell) {
 
-	// Обработчик маршрутизации
-	function hash_route(hprm){
-
-		// view отвечает за переключение закладки в SideBar
-		if(hprm.obj && $p.iface._catalog.tree)
-			$p.iface._catalog.tree.selectItem(hprm.obj, false, false);
-
-		if($p.iface._catalog.path)
-			$p.iface._catalog.path.hash_route(hprm);
-
-		return false;
-	}
-
 	// Динамический фильтр
 	function prop_filter(){
 		if(!$p.iface._catalog.filter)
 			$p.iface._catalog.filter = $p.iface._catalog.navigation.cells("filter").attachPropFilter($p.cat.ВидыНоменклатуры);
-		return;
 	}
 
 	// Карточка товара
 	function product_card(cell){
+
 		if(!$p.iface._catalog.product_card)
-			$p.iface._catalog.product_card = cell.attachOProductCard();
-		return;
+			$p.iface._catalog.product_card = cell.attachOProductCard({
+				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СвойстваНоменклатуры",
+				class_name: "cat.Номенклатура"
+			});
+
+		cell.setActive();
 	}
 
 	// Список товаров
-	function dataview(cell){
+	function products_view(cell){
+		if(!$p.iface._catalog.dataview)
+			$p.iface._catalog.dataview = cell.attachOProductsView();
+	}
 
-		if($p.iface._catalog.dataview)
-			return;
+	// Дерево видов номенклатуры
+	function products_tree(cell){
 
-		// layout используем из-за авторазмеров. можно было бы разместить элементы на форме
-		var layout = cell.attachLayout({
-			pattern: "2E",
-			cells: [
-				{id: "a", text: "Поиск", height: 62, header: false},
-				{id: "b", text: "Товары", header: false}
-			],
-			offsets: {
-				top: 0,
-				right: 0,
-				bottom: 0,
-				left: 0
-			}
+		var tree = cell.attachDynTree($p.cat.ВидыНоменклатуры, {});
+		tree.attachEvent("onSelect", function(id){
+			var hprm = $p.job_prm.parse_url();
+			if(hprm.obj != id)
+				$p.iface.set_hash(id, hprm.ref, hprm.frm, hprm.view);
 		});
-		layout.cells("a").fixSize(false, true);
 
-		// Область строки поиска
-		(function(){
-			$p.iface._catalog.goods = document.createElement('div');
-			layout.cells("a").attachObject($p.iface._catalog.goods);
-			if($p.device_type != "desktop")
-				$p.iface._catalog.goods.style.padding = "4px 8px";
-
-
-			// хлебные крошки
-			$p.iface._catalog.path = new (function CatalogPath (parent) {
-
-				this.id = undefined;
-
-				this.div = document.createElement('div');
-				parent.appendChild(this.div);
-
-				// Обработчик маршрутизации
-				this.hash_route = function (hprm) {
-					if(this.id != hprm.obj){
-						this.id = hprm.obj;
-
-						var child,
-						// получаем массив пути
-							path = $p.cat.ВидыНоменклатуры.path(this.id);
-
-						// удаляем предыдущие элементы
-						while(child = this.div.lastChild){
-							this.div.removeChild(child);
-						}
-
-						var a = document.createElement('span');
-						if(path.length && path[0].presentation)
-							a.innerHTML = "Раздел: ";
-						else
-							a.innerHTML = "Поиск во всех разделах каталога";
-						this.div.appendChild(a);
-
-						// строим новый путь
-						while(child = path.pop()){
-
-							if(this.div.children.length > 1){
-								a = document.createElement('span');
-								a.innerHTML = " / ";
-								this.div.appendChild(a);
-							}
-							a = document.createElement('a');
-							a.innerHTML = child.presentation;
-							a.ref = child.ref;
-							a.href = "#";
-							a.onclick = function (e) {
-								var hprm = $p.job_prm.parse_url();
-								if(hprm.obj != this.ref)
-									$p.iface.set_hash(this.ref, hprm.ref, hprm.frm, hprm.view);
-								return $p.cancel_bubble(e)
-							};
-							this.div.appendChild(a);
-						}
-
-					}
-				};
-
-				setTimeout(function () {
-					hash_route($p.job_prm.parse_url());
-				}, 50);
-
-			})($p.iface._catalog.goods);
-
-			// строка поиска
-			$p.iface._catalog.top = document.createElement('div');
-			$p.iface._catalog.goods.appendChild($p.iface._catalog.top);
-
-			$p.iface._catalog.search = document.createElement('div');
-			$p.iface._catalog.search.className = "search";
-			$p.iface._catalog.top.appendChild($p.iface._catalog.search);
-
-			$p.iface._catalog.search_input = document.createElement('input');
-			$p.iface._catalog.search.appendChild($p.iface._catalog.search_input);
-			$p.iface._catalog.search_input.className = "search";
-			$p.iface._catalog.search_input.type = "search";
-			$p.iface._catalog.search_input.placeholder = "Введите артикул или текст";
-			$p.iface._catalog.search_input.title = "Найти товар по части наименования, кода или артикула";
-			$p.iface._catalog.search_input.onchange = function (e) {
-				dhx4.callEvent("search_text_change", [this.value]);
-				this.blur();
+		// подписываемся на событие hash_route
+		function hash_route(hprm){
+			if(tree){
+				if(!hprm.obj)
+					hprm.obj = $p.blank.guid;
+				tree.selectItem(hprm.obj, false, false);
 			}
+		}
+		$p.eve.hash_route.push(hash_route);
+		setTimeout(function () {
+			hash_route($p.job_prm.parse_url());
+		}, 50);
 
+		return tree;
+	}
 
-		})();
+	// Разбивка в зависимости от типов устройств
+	function main_layout(){
 
-		// пагинация
-		$p.iface._catalog.div_pager = document.createElement('div');
-		$p.iface._catalog.div_pager.classList.add("wb-tools");
-
-		// DataView
-		require('templates')();
-		$p.iface._catalog.dataview = layout.cells("b").attachDynDataView(
-			{
-				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
-				class_name: "cat.Номенклатура"
-			},
-			{
-				type: "list",
-				custom_css: true,
-				autowidth: 1,
-				//height:"auto",
-				pager: {
-					container: $p.iface._catalog.div_pager,
-					size:30,
-					template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
-				},
-				fields: ["ref", "name"],
-				selection: {}
+		$p.iface._catalog = {};
+		if($p.device_type == "desktop"){
+			$p.iface._catalog.layout = cell.attachLayout({
+				pattern: "2U",
+				cells: [
+					{id: "a", text: "Каталог", width: 300, header: false},
+					{id: "b", text: "Товары", header: false}
+				],
+				offsets: {
+					top: 0,
+					right: 0,
+					bottom: 0,
+					left: 0
+				}
 			});
 
-		layout.cells("b").cell.appendChild($p.iface._catalog.div_pager);
+			// Tabbar - дерево и фильтр
+			$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({
+				arrows_mode:    "auto",
+				tabs: [
+					{id: "tree", text: "Разделы", active: true},
+					{id: "filter", text: "Фильтр"}
+				]
+			});
 
-	}
+			// карусель с dataview и страницей товара
+			$p.iface._catalog.carousel = $p.iface._catalog.layout.cells("b").attachCarousel({
+				keys:           false,
+				touch_scroll:   false,
+				offset_left:    0,
+				offset_top:     0,
+				offset_item:    0
+			});
 
-	if($p.iface._catalog)
-		return;
+			setTimeout(function () {
+				products_view($p.iface._catalog.carousel.cells("dataview"));
+			})
 
-	$p.iface._catalog = {};
-	if($p.device_type == "desktop"){
-		$p.iface._catalog.layout = cell.attachLayout({
-			pattern: "2U",
-			cells: [
-				{id: "a", text: "Каталог", width: 300, header: false},
-				{id: "b", text: "Товары", header: false}
-			],
-			offsets: {
-				top: 0,
-				right: 0,
-				bottom: 0,
-				left: 0
+		}else{
+			$p.iface._catalog.navigation = cell.attachTabbar({
+				arrows_mode:    "auto",
+				tabs: [
+					{id: "tree", text: "Разделы", active: true},
+					{id: "filter", text: "Фильтр"},
+					{id: "goods", text: "Товары"}
+				]
+			});
+
+			// карусель с dataview и страницей товара
+			$p.iface._catalog.carousel = $p.iface._catalog.navigation.cells("goods").attachCarousel({
+				keys:           false,
+				touch_scroll:   false,
+				offset_left:    0,
+				offset_top:     0,
+				offset_item:    0
+			});
+		}
+
+		// страницы карусели
+		$p.iface._catalog.carousel.hideControls();
+		$p.iface._catalog.carousel.addCell("dataview");
+		$p.iface._catalog.carousel.addCell("goods");
+
+
+		// обработчик при изменении закладки таббара
+		$p.iface._catalog.navigation.attachEvent("onSelect", function (id) {
+			if(id=="filter")
+				prop_filter();
+			else if(id=="goods")
+				products_view($p.iface._catalog.carousel.cells("dataview"));
+			return true;
+		});
+
+		// Динамическое дерево
+		$p.iface._catalog.tree = products_tree($p.iface._catalog.navigation.cells("tree"));
+
+		// подписываемся на маршрутизацию
+		$p.eve.hash_route.push(function (hprm){
+
+			if(hprm.view == "catalog"){
+
+				// при непустой ссылке, показываем карточку товара
+				if($p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref)){
+					product_card($p.iface._catalog.carousel.cells("goods"))
+
+				}
+				// иначе - переключаемся на закладку списка
+				else
+					$p.iface._catalog.carousel.cells("dataview").setActive();
 			}
+
 		});
 
-		// Tabbar - дерево и фильтр
-		$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({
-			arrows_mode:    "auto",
-			tabs: [
-				{id: "tree", text: "Разделы", active: true},
-				{id: "filter", text: "Фильтр"}
-			]
-		});
-
-		// карусель с dataview и страницей товара
-		$p.iface._catalog.carousel = $p.iface._catalog.layout.cells("b").attachCarousel({
-			keys:           false,
-			touch_scroll:   false,
-			offset_left:    0,
-			offset_top:     0,
-			offset_item:    0
-		});
-
-		setTimeout(function () {
-			dataview($p.iface._catalog.carousel.cells("dataview"));
-		})
-
-	}else{
-		$p.iface._catalog.navigation = cell.attachTabbar({
-			arrows_mode:    "auto",
-			tabs: [
-				{id: "tree", text: "Разделы", active: true},
-				{id: "filter", text: "Фильтр"},
-				{id: "goods", text: "Товары"}
-			]
-		});
-
-		// карусель с dataview и страницей товара
-		$p.iface._catalog.carousel = $p.iface._catalog.navigation.cells("goods").attachCarousel({
-			keys:           false,
-			touch_scroll:   false,
-			offset_left:    0,
-			offset_top:     0,
-			offset_item:    0
-		});
 	}
 
-	// страницы карусели
-	$p.iface._catalog.carousel.hideControls();
-	$p.iface._catalog.carousel.addCell("dataview");
-	$p.iface._catalog.carousel.addCell("goods");
+	// создаём элементы
+	if(!$p.iface._catalog)
+		main_layout();
 
-	// элементы страницы dataview
 
-	$p.iface._catalog.navigation.attachEvent("onSelect", function (id) {
-		if(id=="filter")
-			prop_filter();
-		else if(id=="goods")
-			dataview($p.iface._catalog.carousel.cells("dataview"));
-		return true;
-	});
-
-	// Динамическое дерево
-	$p.iface._catalog.tree = $p.iface._catalog.navigation.cells("tree").attachDynTree($p.cat.ВидыНоменклатуры, {});
-	$p.iface._catalog.tree.attachEvent("onSelect", function(id){
-
-		var hprm = $p.job_prm.parse_url();
-		if(hprm.obj != id)
-			$p.iface.set_hash(id, hprm.ref, hprm.frm, hprm.view);
-
-	});
-
-	// подписываемся на событие hash_route
-	$p.eve.hash_route.push(hash_route);
 };

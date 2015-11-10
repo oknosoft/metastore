@@ -12,7 +12,7 @@ module.exports = function() {
 	// строка стиля картинки
 	function get_image_style(o){
 		if(o.ФайлКартинки != $p.blank.guid){
-			return "background-image:url(templates/"+o.ФайлКартинки+".png);";
+			return "background-image:url(templates/product_pics/"+o.ФайлКартинки+".png);";
 		}
 		return "";
 	}

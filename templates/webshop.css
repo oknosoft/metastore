@@ -26,6 +26,11 @@ div.dhxsidebar_item_text {
 	border-bottom: 1px solid #eee;
 }
 
+.catalog_path {
+	font-family: Arial;
+	font-size: 14px;
+}
+
 div.search {
 	margin-top: 4px;
 	float: left;
