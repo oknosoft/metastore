@@ -82,6 +82,12 @@ $p.iface.set_view_catalog = function (cell) {
 					left: 0
 				}
 			});
+			$p.iface._catalog.layout.attachEvent("onResizeFinish", function(){
+				dhx4.callEvent("layout_resize", [this]);
+			});
+			$p.iface._catalog.layout.attachEvent("onPanelResizeFinish", function(){
+				dhx4.callEvent("layout_resize", [this]);
+			});
 
 			// Tabbar - дерево и фильтр
 			$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({

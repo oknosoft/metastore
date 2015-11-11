@@ -67,30 +67,76 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 				left: 0
 			}
 
-		});
+		}),
+		_main = new CardMain(accordion.cells("main"));
 
 	if($p.device_type != "desktop")
 		accordion.cells("download").hide();
 
+	/**
+	 * Перезаполняет все ячейки аккордеона
+	 * @param ref
+	 */
 	function requery(ref){
 
 		// информацию про номенклатуру, полученную ранее используем сразу
 		var nom = $p.cat.Номенклатура.get(ref, false);
-		accordion.cells("main").setText(nom.НаименованиеПолное || nom.name);
+		_main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
-		attr.url = "";
-		$p.ajax.default_attr(attr, $p.job_prm.irest_url());
-		attr.url += attr.rest_name + "(guid'" + ref + "')";
-		if(!nom.name)
-			attr.url += "?full=true";
-		if(dhx4.isIE)
-			attr.url = encodeURI(attr.url);
-		$p.ajax.get_ex(attr.url, attr)
-			.then(function (req) {
-				console.log(JSON.parse(req.response));
-			})
-			.catch($p.record_log);
+		if(!nom.Файлы){
+			attr.url = "";
+			$p.ajax.default_attr(attr, $p.job_prm.irest_url());
+			attr.url += attr.rest_name + "(guid'" + ref + "')";
+			if(!nom.name)
+				attr.url += "?full=true";
+			if(dhx4.isIE)
+				attr.url = encodeURI(attr.url);
+			$p.ajax.get_ex(attr.url, attr)
+				.then(function (req) {
+					var data = JSON.parse(req.response);
+					data.Файлы = JSON.stringify(data.Файлы);
+					nom._mixin(data);
+					_main.requery_long(nom);
+				})
+				.catch($p.record_log);
+		}else
+			_main.requery_long(nom);
+
+	}
+
+	/**
+	 * Изображение, цена и кнопки купить - сравнить - добавить
+	 * @param cell
+	 * @constructor
+	 */
+	function CardMain(cell){
+
+		var _div = document.createElement('div'),
+			_img = document.createElement('div'),
+			_act = document.createElement('div');
+		cell.attachObject(_div);
+		_div.appendChild(_img);
+		_div.appendChild(_act);
+
+		this.requery_short = function (nom) {
+			cell.setText(nom.НаименованиеПолное || nom.name);
+		};
+
+		this.requery_long = function (nom) {
+			var files = JSON.parse(nom.Файлы);
+			if(files.length){
+				// рисуем карусель
+			}else{
+				// одиночное изображение
+			}
+		};
+
+		// подписываемся на событие изменения размера
+		dhx4.attachEvent("layout_resize", function (layout) {
+
+		});
+
 	}
 
 	toolbar.attachEvent("onClick", function(id){
