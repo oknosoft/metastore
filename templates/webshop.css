@@ -11,6 +11,11 @@ div.dhxsidebar_item_text {
 	padding-bottom: 1px;
 }
 
+.dhxsidebar_base_dhx_terrace div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_icon {
+	left: 6px;
+	width: 24px;
+}
+
 .dhxlayout_base_dhx_terrace div.dhx_cell_layout div.dhx_cell_cont_layout,
 .dhxlayout_base_dhx_web div.dhx_cell_layout div.dhx_cell_cont_layout,
 .dhx_cell_hdr_hidden {
@@ -45,8 +50,7 @@ input.search {
 	padding: 4px 6px;
 	line-height: 20px;
 	color: #333;
-	width: 360px;
-
+	width: 420px;
 }
 
 .dhx_pager {
@@ -148,4 +152,16 @@ input.search {
 	height: 160px;
 	margin: 8px 0;
 	border: none !important;
+}
+
+@media (max-width: 640px) {
+
+	input.search {
+		width: 320px;
+	}
+
+	.dhx_dataview_item {
+		font-size: 14px;
+	}
+
 }
