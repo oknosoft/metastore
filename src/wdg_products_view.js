@@ -26,45 +26,37 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		attr = {};
 
 
+	var _cell = this.cell,
 
-	// layout используем из-за авторазмеров. можно было бы разместить элементы на форме
-	var layout = this.attachLayout({
-			pattern: "2E",
-			cells: [
-				{id: "a", text: "Поиск", height: 62, header: false},
-				{id: "b", text: "Товары", header: false}
-			],
-			offsets: {
-				top: 0,
-				right: 0,
-				bottom: 0,
-				left: 0
-			}
-		}),
-		
-	// пагинация
-		div_pager = document.createElement('div'),
-
-	// шапка
-		div_head = document.createElement('div'),
-
-	// контейнер строки поиска
-		div_search = document.createElement('div'),
-
-	// собственно, строка поиска
-		input_search = document.createElement('input'),
+	// внешний контейнер
+		layout = document.createElement('div'),
 
 	// указатель на хлебные крошки
-		path;
+		path,
 
-	
-	layout.cells("a").fixSize(false, true);
-	div_pager.classList.add("wb-tools");
+	// указатель на dataview
+		dataview;
+
+
+	this.attachObject(layout);
 
 	// Область строки поиска
 	(function(){
-		div_head = document.createElement('div');
-		layout.cells("a").attachObject(div_head);
+
+		// шапка
+		var div_head = document.createElement('div'),
+
+		// контейнер строки поиска
+			div_search = document.createElement('div'),
+
+		// собственно, строка поиска
+			input_search = document.createElement('input'),
+
+		// икона поиска
+			icon_search = document.createElement('i');
+
+		div_head.className = "column340";
+		layout.appendChild(div_head);
 
 		if($p.device_type != "desktop")
 			div_head.style.padding = "4px 8px";
@@ -76,6 +68,8 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		div_search.className = "search";
 		div_head.appendChild(div_search);
 		div_search.appendChild(input_search);
+		div_search.appendChild(icon_search);
+		icon_search.className="icon_search fa fa-search";
 		input_search.className = "search";
 		input_search.type = "search";
 		input_search.placeholder = "Введите артикул или текст";
@@ -87,52 +81,151 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 
 	})();
 
+	// Область сортировки
+	(function(){
 
-	// ODynDataView
-	require('templates')();
-	var dataview = layout.cells("b").attachDynDataView(
-		{
-			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
-			class_name: "cat.Номенклатура"
-		},
-		{
-			type: "list",
-			custom_css: true,
-			autowidth: 1,
-			//height:"auto",
-			pager: {
-				container: div_pager,
-				size:30,
-				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
-			},
-			fields: ["ref", "name"],
-			selection: {}
+		var column340 = document.createElement('div'),
+			ul = document.createElement('ul'), li, div, a,
+			orders = [
+				'по возрастанию цены <i class="fa fa-sort-amount-asc fa-fw"></i>',
+				'по убыванию цены <i class="fa fa-sort-amount-desc fa-fw"></i>',
+				'по наименованию <i class="fa fa-sort-alpha-asc fa-fw"></i>',
+				'по наименованию <i class="fa fa-sort-alpha-desc fa-fw"></i>',
+				'по популярности <i class="fa fa-sort-numeric-asc fa-fw"></i>',
+				'по популярности <i class="fa fa-sort-numeric-desc fa-fw"></i>'
+			];
+
+		column340.className = "column340";
+		layout.appendChild(column340);
+
+		//if($p.device_type == "desktop")
+		//	order_div.style.top = "18px";
+
+		function set_order_text(){
+			a.innerHTML = orders[a.getAttribute("current")];
+		}
+
+		function body_click(){
+			div.classList.remove("open");
+		}
+
+		column340.innerHTML = '<div class="catalog_path dropdown_list">Сортировать:<br /><a href="#" class="dropdown_list" current="0"></a></div>';
+		div = column340.firstChild;
+		a = div.querySelector("a");
+		div.onclick = function (e) {
+			if(!div.classList.contains("open")){
+				div.classList.add("open");
+			}else{
+				if(e.target.tagName == "LI"){
+					for(var i in ul.childNodes){
+						if(ul.childNodes[i] == e.target){
+							a.setAttribute("current", i);
+							set_order_text();
+							break;
+						}
+					}
+				}
+				body_click();
+			}
+			return $p.cancel_bubble(e);
+		};
+		div.appendChild(ul);
+		ul.className = "dropdown_menu catalog_path";
+		for(var i in orders){
+			li = document.createElement('li');
+			var pos = orders[i].indexOf('<i');
+			li.innerHTML = orders[i].substr(pos) + " " + orders[i].substr(0, pos);
+			ul.appendChild(li);
+		};
+
+		document.body.addEventListener("keydown", function (e) {
+			if(e.keyCode == 27) { // закрытие по {ESC}
+				div.classList.remove("open");
+			}
 		});
-	// подключаем пагинацию
-	layout.cells("b").cell.appendChild(div_pager);
+		document.body.addEventListener("click", body_click);
 
-	// подключаем контекстное меню
+		set_order_text();
 
-	// подписываемся на события
-	dataview.attachEvent("onAfterSelect", function (id){
-		// your code here
-	});
-	dataview.attachEvent("onItemDblClick", function (id, ev, html){
 
-		var hprm = $p.job_prm.parse_url(),
-			dv_obj = ({})._mixin(dataview.get(id));
-		dv_obj.ref = dv_obj.id;
-		dv_obj.id = dv_obj.Код;
-		dv_obj.name = dv_obj.Наименование;
-		delete dv_obj.Код;
-		delete dv_obj.Наименование;
-		$p.cat.Номенклатура.create(dv_obj)
-			.then(function (o) {
-				$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
+	})();
+
+	// Область ODynDataView
+	(function(){
+
+		// пагинация
+		var div_pager = document.createElement('div'),
+
+		// контейнер dataview
+			div_dataview = document.createElement('div'),
+
+		// внешний контейнер dataview
+			div_dataview_outer = document.createElement('div');
+
+		// ODynDataView
+		require('templates')();
+		layout.appendChild(div_dataview_outer);
+		div_dataview_outer.appendChild(div_dataview);
+
+		div_pager.classList.add("wb-tools");
+		div_dataview_outer.style.clear = "both";
+		div_dataview_outer.style.height = div_dataview.style.height = _cell.offsetHeight + "px";
+		div_dataview_outer.style.width = div_dataview.style.width = _cell.offsetWidth + "px";
+
+		dataview = dhtmlXCellObject.prototype.attachDynDataView(
+			{
+				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
+				class_name: "cat.Номенклатура"
+			},
+			{
+				container: div_dataview,
+				outer_container: div_dataview_outer,
+				type: "list",
+				custom_css: true,
+				autowidth: 1,
+				pager: {
+					container: div_pager,
+					size:30,
+					template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
+				},
+				fields: ["ref", "name"],
+				selection: {}
 			});
+		// подключаем пагинацию
+		div_dataview_outer.appendChild(div_pager);
 
-		return false;
-	});
+		// подключаем контекстное меню
+
+		// подписываемся на события dataview
+		dataview.attachEvent("onAfterSelect", function (id){
+			// your code here
+		});
+
+		dataview.attachEvent("onItemDblClick", function (id, ev, html){
+
+			var hprm = $p.job_prm.parse_url(),
+				dv_obj = ({})._mixin(dataview.get(id));
+			dv_obj.ref = dv_obj.id;
+			dv_obj.id = dv_obj.Код;
+			dv_obj.name = dv_obj.Наименование;
+			delete dv_obj.Код;
+			delete dv_obj.Наименование;
+			$p.cat.Номенклатура.create(dv_obj)
+				.then(function (o) {
+					$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
+				});
+
+			return false;
+		});
+
+		// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
+		dhx4.attachEvent("layout_resize", function (layout) {
+			$p.record_log("");
+		});
+
+
+	})();
+
 
 	return dataview;
 };

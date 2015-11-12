@@ -41,6 +41,9 @@ $p.settings = function (prm, modifiers) {
 	// используем геокодер
 	prm.use_google_geo = false;
 
+	// полноэкранный режим на мобильных
+	prm.request_full_screen = true;
+
 	// логин гостевого пользователя
 	prm.guest_name = "АлхимовАА";
 
@@ -74,7 +77,8 @@ $p.iface.oninit = function() {
 			{id: "orders", text: "Заказы", icon: "projects_48.png"},
 			{id: "content", text: "Контент", icon: "content_48.png"},
 			{id: "user", text: "Профиль", icon: "contacts_48.png"},
-			{id: "settings", text: "Настройки", icon: "settings_48.png"}
+			{id: "settings", text: "Настройки", icon: "settings_48.png"},
+			{id: "about", text: "О программе", icon: "settings_48.png"}
 		] ;
 
 		//$p.eve.redirect = true;
@@ -116,7 +120,13 @@ $p.iface.oninit = function() {
 				header: true,
 				template: "tiles",
 				autohide: true,
-				items: items
+				items: items,
+				offsets: {
+					top: 0,
+					right: 0,
+					bottom: 0,
+					left: 0
+				}
 			});
 		}
 
