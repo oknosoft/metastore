@@ -93,8 +93,8 @@ $p.iface.set_view_catalog = function (cell) {
 			$p.iface._catalog.navigation = $p.iface._catalog.layout.cells("a").attachTabbar({
 				arrows_mode:    "auto",
 				tabs: [
-					{id: "tree", text: "Разделы", active: true},
-					{id: "filter", text: "Фильтр"}
+					{id: "tree", text: '<i class="fa fa-sitemap"></i> Разделы', active: true},
+					{id: "filter", text: '<i class="fa fa-filter"></i> Фильтр'}
 				]
 			});
 
@@ -115,9 +115,9 @@ $p.iface.set_view_catalog = function (cell) {
 			$p.iface._catalog.navigation = cell.attachTabbar({
 				arrows_mode:    "auto",
 				tabs: [
-					{id: "tree", text: "Разделы", active: true},
-					{id: "filter", text: "Фильтр"},
-					{id: "goods", text: "Товары"}
+					{id: "tree", text: '<i class="fa fa-sitemap"></i> Разделы', active: true},
+					{id: "filter", text: '<i class="fa fa-filter"></i> Фильтр'},
+					{id: "goods", text: '<i class="fa fa-search"></i> Товары'}
 				]
 			});
 

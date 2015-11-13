@@ -55,7 +55,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		// икона поиска
 			icon_search = document.createElement('i');
 
-		div_head.className = "column340";
+		div_head.className = "column320";
 		layout.appendChild(div_head);
 
 		if($p.device_type != "desktop")
@@ -84,9 +84,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 	// Область сортировки
 	(function(){
 
-		var column340 = document.createElement('div'),
-			ul = document.createElement('ul'), li, div, a,
-			orders = [
+		var column320 = document.createElement('div'),
+			sort = document.createElement('div'),
+			values = [
 				'по возрастанию цены <i class="fa fa-sort-amount-asc fa-fw"></i>',
 				'по убыванию цены <i class="fa fa-sort-amount-desc fa-fw"></i>',
 				'по наименованию <i class="fa fa-sort-alpha-asc fa-fw"></i>',
@@ -95,58 +95,21 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 				'по популярности <i class="fa fa-sort-numeric-desc fa-fw"></i>'
 			];
 
-		column340.className = "column340";
-		layout.appendChild(column340);
+		column320.className = "column320";
+		layout.appendChild(column320);
+		column320.appendChild(sort);
 
-		//if($p.device_type == "desktop")
-		//	order_div.style.top = "18px";
-
-		function set_order_text(){
-			a.innerHTML = orders[a.getAttribute("current")];
-		}
-
-		function body_click(){
-			div.classList.remove("open");
-		}
-
-		column340.innerHTML = '<div class="catalog_path dropdown_list">Сортировать:<br /><a href="#" class="dropdown_list" current="0"></a></div>';
-		div = column340.firstChild;
-		a = div.querySelector("a");
-		div.onclick = function (e) {
-			if(!div.classList.contains("open")){
-				div.classList.add("open");
-			}else{
-				if(e.target.tagName == "LI"){
-					for(var i in ul.childNodes){
-						if(ul.childNodes[i] == e.target){
-							a.setAttribute("current", i);
-							set_order_text();
-							break;
-						}
-					}
-				}
-				body_click();
-			}
-			return $p.cancel_bubble(e);
-		};
-		div.appendChild(ul);
-		ul.className = "dropdown_menu catalog_path";
-		for(var i in orders){
-			li = document.createElement('li');
-			var pos = orders[i].indexOf('<i');
-			li.innerHTML = orders[i].substr(pos) + " " + orders[i].substr(0, pos);
-			ul.appendChild(li);
-		};
-
-		document.body.addEventListener("keydown", function (e) {
-			if(e.keyCode == 27) { // закрытие по {ESC}
-				div.classList.remove("open");
-			}
+		$p.iface.ODropdownList({
+			container: sort,
+			title: "Сортировать:" + ($p.device_type == "desktop" ? "<br />" : " "),
+			values: values,
+			class_name: "catalog_path",
+			event_name: "sort_change"
 		});
-		document.body.addEventListener("click", body_click);
 
-		set_order_text();
-
+		dhx4.attachEvent("sort_change", function (v) {
+			$p.record_log(v);
+		});
 
 	})();
 
@@ -252,9 +215,9 @@ $p.iface.CatalogPath = function CatalogPath(parent, onclick){
 
 			var a = document.createElement('span');
 			if(path.length && path[0].presentation)
-				a.innerHTML = "Раздел: ";
+				a.innerHTML = '<i class="fa fa-folder-open-o"></i> ';
 			else
-				a.innerHTML = "Поиск во всех разделах каталога";
+				a.innerHTML = '<i class="fa fa-folder-open-o"></i> Поиск во всех разделах каталога';
 			div.appendChild(a);
 
 			// строим новый путь

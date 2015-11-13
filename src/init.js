@@ -39,7 +39,7 @@ $p.settings = function (prm, modifiers) {
 	prm.allow_post_message = "*";
 
 	// используем геокодер
-	prm.use_google_geo = false;
+	prm.use_google_geo = true;
 
 	// полноэкранный режим на мобильных
 	prm.request_full_screen = true;
@@ -52,7 +52,7 @@ $p.settings = function (prm, modifiers) {
 
 	// т.к. стили надо грузить в правильном порядке, а файлы базовых css зависят от скина - их имена на берегу не известны,
 	// задаём список файлов css для отложенной загрузки
-	prm.additional_css = ["templates/webshop.css"];
+	prm.additional_css = ["templates/webshop.css", "templates/webshop_ie_only.css"];
 
 	// скин по умолчанию
 	prm.skin = "dhx_terrace";
@@ -78,7 +78,7 @@ $p.iface.oninit = function() {
 			{id: "content", text: "Контент", icon: "content_48.png"},
 			{id: "user", text: "Профиль", icon: "contacts_48.png"},
 			{id: "settings", text: "Настройки", icon: "settings_48.png"},
-			{id: "about", text: "О программе", icon: "settings_48.png"}
+			{id: "about", text: "О программе", icon: "about_48.png"}
 		] ;
 
 		//$p.eve.redirect = true;
@@ -91,7 +91,7 @@ $p.iface.oninit = function() {
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
 				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
-				width: 100,
+				width: 110,
 				template: "icons_text",
 				items: items,
 				offsets: {
@@ -108,7 +108,7 @@ $p.iface.oninit = function() {
 				items: [
 					{type: "text", id: "title", text: "&nbsp;"},
 					{type: "spacer"},
-					{type: "text", text: "[Город клиента и мантра магазина]"}
+					{type: "text", id: "right", text: "[Город клиента и мантра магазина]"}
 				]
 			});
 
@@ -150,6 +150,18 @@ $p.iface.oninit = function() {
 		else
 			setTimeout($p.iface.hash_route, 10);
 	}
+
+	// подписываемся на событие геолокатора
+	dhx4.attachEvent("geo_current_position", function(pos){
+		if($p.iface.main && $p.iface.main.getAttachedToolbar){
+			var tb = $p.iface.main.getAttachedToolbar();
+			if(tb){
+				tb.setItemText("right", '<i class="fa fa-map-marker"></i> ' + (pos.city || pos.region).replace("г. ", ""));
+				tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px"
+			}
+		}
+	});
+
 
 	$p.eve.auto_log_in()
 		.then(oninit)

@@ -17,9 +17,11 @@
       "src/view_orders.js",
       "src/view_settings.js",
       "src/view_user.js",
-      "src/view_content.js"
+      "src/view_content.js",
+      "src/view_about.js"
     ],
-    "templates": "templates/templates.js"
+    "templates": "templates/templates.js",
+    "about": "about_ru.html"
   },
   "main": "main",
   "optimize": true,
