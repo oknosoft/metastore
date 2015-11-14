@@ -2,7 +2,7 @@
   "name": "1c web shop prod",
   "root": "../",
   "www_root": "../",
-  "output": "src/main.js",
+  "output": "src/main.min.js",
   "modules": {
     "main": [
       "src/wdg_filter_prop.js",
