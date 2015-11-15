@@ -27,19 +27,24 @@ div.dhxsidebar_item_text {
 	padding: 0 !important;
 }
 
+/* чекбокс в таблице*/
+div.gridbox_dhx_terrace.gridbox table.obj tr td {
+	padding-left: 6px;
+}
+
 .label_options{
 	padding-top: 8px;
 	border-bottom: 1px solid #eee;
 }
 
-.column320 {
+.md_column320 {
 	width: 48%;
 	min-width: 320px;
 	float: left;
 	padding: 8px;
 }
 
-.column1300 {
+.md_column1300 {
 	width: 92%;
 	max-width: 1300px;
 	position: relative;
@@ -48,16 +53,20 @@ div.dhxsidebar_item_text {
 /*	font-size: smaller; */
 	line-height: normal;
 }
-.column1300>ul {
+.md_column1300>ul {
 	padding-left: 20px;
 	margin: 0 0 0.5em 0;
 }
-.column1300>p, .column1300>h1, .column1300>h2, .column1300>h3 {
+.md_column1300>p, .md_column1300>h1, .md_column1300>h2, .md_column1300>h3 {
 	margin: 0.2em 0 0.4em 0;
 }
 
-.muted-color {
+.md_muted_color {
 	color: #4f535f;
+}
+
+.md_form {
+	width: 100%;
 }
 
 .catalog_path {
@@ -210,7 +219,7 @@ input.search {
 		font-size: 14px;
 	}
 
-	.column1300 {
+	.md_column1300 {
 		font-size: smaller;
 	}
 

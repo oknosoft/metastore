@@ -598,7 +598,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		// икона поиска
 			icon_search = document.createElement('i');
 
-		div_head.className = "column320";
+		div_head.className = "md_column320";
 		layout.appendChild(div_head);
 
 		if($p.device_type != "desktop")
@@ -627,7 +627,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 	// Область сортировки
 	(function(){
 
-		var column320 = document.createElement('div'),
+		var md_column320 = document.createElement('div'),
 			sort = document.createElement('div'),
 			values = [
 				'по возрастанию цены <i class="fa fa-sort-amount-asc fa-fw"></i>',
@@ -638,9 +638,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 				'по популярности <i class="fa fa-sort-numeric-desc fa-fw"></i>'
 			];
 
-		column320.className = "column320";
-		layout.appendChild(column320);
-		column320.appendChild(sort);
+		md_column320.className = "md_column320";
+		layout.appendChild(md_column320);
+		md_column320.appendChild(sort);
 
 		$p.iface.ODropdownList({
 			container: sort,
@@ -951,8 +951,7 @@ $p.iface.oninit = function() {
 			setTimeout($p.iface.hash_route, 10);
 	}
 
-	// подписываемся на событие геолокатора
-	dhx4.attachEvent("geo_current_position", function(pos){
+	function geo_current_position(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar){
 			var tb = $p.iface.main.getAttachedToolbar();
 			if(tb){
@@ -960,6 +959,16 @@ $p.iface.oninit = function() {
 				tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px"
 			}
 		}
+	}
+
+	// подписываемся на событие геолокатора
+	dhx4.attachEvent("geo_current_position", function(pos){
+		if($p.iface.main && $p.iface.main.getAttachedToolbar)
+			geo_current_position(pos);
+		else
+			setTimeout(function () {
+				geo_current_position(pos);
+			}, 3000);
 	});
 
 
@@ -1244,47 +1253,89 @@ $p.iface.set_view_settings = function (cell) {
 	if($p.iface._settings)
 		return;
 
-	$p.iface._settings = {
-		form: cell.attachForm([
-			{ type:"settings", labelWidth:80, offsetLeft: 8, position:"label-left"  },
+	$p.iface._settings = {};
+	cell.attachHTMLString(require('settings'));
+	$p.iface._settings._cell = cell.cell.querySelector(".dhx_cell_cont_sidebar");
+	$p.iface._settings._cell.style.overflow = "auto";
+	$p.iface._settings._form1 = $p.iface._settings._cell.querySelector("[name=form1]");
+	$p.iface._settings._form2 = $p.iface._settings._cell.querySelector("[name=form2]");
+	$p.iface._settings._form3 = $p.iface._settings._cell.querySelector("[name=form3]");
 
-			{type: "label", labelWidth:380, label: "Тип устройства", className: "label_options"},
-			{ type:"block" , name:"form_block_2", list:[
-				{ type:"settings", labelAlign:"left", position:"label-right"  },
-				{ type:"radio" , name:"device_type", label:"Компьютер", value:"desktop"},
-				{ type:"newcolumn"   },
-				{ type:"radio" , name:"device_type", label:"Телефон", value:"phone"},
-				{ type:"newcolumn"   },
-				{ type:"radio" , name:"device_type", label:"Планшет", value:"tablet"}
-			]  },
-			{type:"template", label:"",value:"",
-				note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 380}},
+	$p.iface._settings.form1 = new dhtmlXForm($p.iface._settings._form1.firstChild, [
 
-			{type: "label", labelWidth:380, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
-			{type:"input" , inputWidth: 200, name:"zone", label:"Зона", numberFormat: ["0", "", ""], validate:"NotEmpty,ValidInteger"},
-			{type:"template", label:"",value:"",
-				note: {text: "Для неразделенной публикации, зона = 0", width: 380}},
+		{ type:"settings", labelWidth:80, position:"label-left"  },
 
-			{type: "label", labelWidth:380, label: "Вариант оформления интерфейса", className: "label_options"},
-			{type:"combo" , inputWidth: 200, name:"skin", label:"Скин", options:[
-				{value: "dhx_web", text: "Web"},
-				{value: "dhx_terrace", text: "Terrace"}
-			]},
-			{type:"template", label:"",value:"",
-				note: {text: "Дополнительные свойства оформления можно задать в css", width: 380}},
+		{type: "label", labelWidth:320, label: "Тип устройства", className: "label_options"},
+		{ type:"block" , name:"form_block_2", list:[
+			{ type:"settings", labelAlign:"left", position:"label-right"  },
+			{ type:"radio" , name:"device_type", labelWidth:120, label:'<i class="fa fa-desktop"></i> Компьютер', value:"desktop"},
+			{ type:"newcolumn"   },
+			{ type:"radio" , name:"device_type", labelWidth:150, label:'<i class="fa fa-mobile fa-lg"></i> Телефон, планшет', value:"phone"},
+		]  },
+		{type:"template", label:"",value:"",
+			note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 320}},
 
-		])
-	};
+		{type: "label", labelWidth:320, label: "Вариант оформления интерфейса", className: "label_options"},
+		{type:"combo" , inputWidth: 220, name:"skin", label:"Скин", options:[
+			{value: "dhx_web", text: "Web"},
+			{value: "dhx_terrace", text: "Terrace"}
+		]},
+		{type:"template", label:"",value:"",
+			note: {text: "Дополнительные свойства оформления можно задать в css", width: 320}},
 
-	$p.iface._settings.form.checkItem("device_type", $p.wsql.get_user_param("device_type"));
-	["zone", "skin"].forEach(function (prm) {
-		$p.iface._settings.form.setItemValue(prm, $p.wsql.get_user_param(prm));
+		{type: "label", labelWidth:320, label: "Адрес http сервиса 1С", className: "label_options"},
+		{type:"input" , inputWidth: 220, name:"rest_path", label:"Путь", validate:"NotEmpty"},
+		{type:"template", label:"",value:"",
+			note: {text: "Можно указать как относительный, так и абсолютный URL публикации 1С OData. " +
+			"О настройке кроссдоменных запросов к 1С <a href='#'>см. здесь</a>", width: 320}},
+
+		{type: "label", labelWidth:320, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
+		{type:"input" , inputWidth: 220, name:"zone", label:"Зона", numberFormat: ["0", "", ""], validate:"NotEmpty,ValidInteger"},
+		{type:"template", label:"",value:"",
+			note: {text: "Для неразделенной публикации, зона = 0", width: 320}}
+
+	]);
+
+	$p.iface._settings.form2 = new dhtmlXForm($p.iface._settings._form2.firstChild, [
+
+		{ type:"settings", labelWidth:80, position:"label-left"  },
+
+		{type: "label", labelWidth:320, label: "Доступные закладки", className: "label_options"},
+		{
+			type:"container",
+			name: "views",
+			inputWidth: 320,
+			inputHeight: 320
+		},
+		{type:"template", label:"",value:"",
+			note: {text: "Видимость и порядок закладок навигации", width: 320}},
+
+
+	]);
+
+	$p.iface._settings.form3 = new dhtmlXForm($p.iface._settings._form3.firstChild, [
+
+		{ type:"settings", labelWidth:80, position:"label-left"  },
+		{type: "button", name: "save", value: "Применить настройки", offsetTop: 20}
+
+	]);
+
+	$p.iface._settings.form1.checkItem("device_type", $p.wsql.get_user_param("device_type"));
+
+
+	["zone", "skin", "rest_path"].forEach(function (prm) {
+		$p.iface._settings.form1.setItemValue(prm, $p.wsql.get_user_param(prm));
 	});
 
-
-	$p.iface._settings.form.attachEvent("onChange", function (name, value, state){
+	$p.iface._settings.form1.attachEvent("onChange", function (name, value, state){
 		$p.wsql.set_user_param(name, value);
 	});
+
+	$p.iface._settings.form3.attachEvent("onButtonClick", function(name){
+		location.reload();
+	});
+
+
 
 
 };
@@ -1428,5 +1479,6 @@ module.exports = function() {
 };
 
 }),
-"about": "<div class=\"column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore v0.0.3</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"muted-color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"muted-color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"muted-color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"muted-color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"muted-color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"muted-color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"muted-color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"muted-color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"muted-color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"muted-color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"muted-color\">, набор иконок и стилей CSS</span></li>\r\n    </ul>\r\n</div>"
+"about": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore v0.0.3</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"md_muted_color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"md_muted_color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"md_muted_color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"md_muted_color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"md_muted_color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"md_muted_color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"md_muted_color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"md_muted_color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"md_muted_color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"md_muted_color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"md_muted_color\">, набор иконок и стилей CSS</span></li>\r\n    </ul>\r\n\r\n    <p>&nbsp;</p>\r\n    <h2><i class=\"fa fa-question-circle\"></i> Вопросы</h2>\r\n    <p>Если обнаружили ошибку, пожалуйста,\r\n        <a href=\"https://github.com/oknosoft/metastore/issues/new\" target=\"_blank\">зарегистрируйте вопрос в GitHub</a> или\r\n        <a href=\"http://www.oknosoft.ru/metadata/#page-118\" target=\"_blank\">свяжитесь с разработчиком</a> напрямую</p>\r\n\r\n</div>",
+"settings": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-cogs\"></i> Настройки</h1>\r\n    <p>В промышленном режиме, данная страница выключена.<br />\r\n        Внешний вид сайта и параметры подключения к базе данных настраиваются в конфигурационном файле.<br />\r\n        В демо-ражиме страница настроек иллюстрирует использование параметров работы программы клиентской частью приложения.</p>\r\n\r\n    <div class=\"md_column320\" name=\"form1\" style=\"max-width: 420px;\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form2\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form3\"><div></div></div>\r\n</div>"
 },{},{});
