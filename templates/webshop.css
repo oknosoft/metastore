@@ -45,11 +45,19 @@ div.dhxsidebar_item_text {
 	position: relative;
 	left: 50%;
 	margin-left: -46%;
-	font-size: smaller;
+/*	font-size: smaller; */
 	line-height: normal;
 }
 .column1300>ul {
 	padding-left: 20px;
+	margin: 0 0 0.5em 0;
+}
+.column1300>p, .column1300>h1, .column1300>h2, .column1300>h3 {
+	margin: 0.2em 0 0.4em 0;
+}
+
+.muted-color {
+	color: #4f535f;
 }
 
 .catalog_path {
@@ -200,6 +208,10 @@ input.search {
 
 	.dhx_dataview_item {
 		font-size: 14px;
+	}
+
+	.column1300 {
+		font-size: smaller;
 	}
 
 }
