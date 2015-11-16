@@ -55,7 +55,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		// икона поиска
 			icon_search = document.createElement('i');
 
-		div_head.className = "column320";
+		div_head.className = "md_column320";
 		layout.appendChild(div_head);
 
 		if($p.device_type != "desktop")
@@ -84,7 +84,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 	// Область сортировки
 	(function(){
 
-		var column320 = document.createElement('div'),
+		var md_column320 = document.createElement('div'),
 			sort = document.createElement('div'),
 			values = [
 				'по возрастанию цены <i class="fa fa-sort-amount-asc fa-fw"></i>',
@@ -95,9 +95,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 				'по популярности <i class="fa fa-sort-numeric-desc fa-fw"></i>'
 			];
 
-		column320.className = "column320";
-		layout.appendChild(column320);
-		column320.appendChild(sort);
+		md_column320.className = "md_column320";
+		layout.appendChild(md_column320);
+		md_column320.appendChild(sort);
 
 		$p.iface.ODropdownList({
 			container: sort,

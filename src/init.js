@@ -151,8 +151,7 @@ $p.iface.oninit = function() {
 			setTimeout($p.iface.hash_route, 10);
 	}
 
-	// подписываемся на событие геолокатора
-	dhx4.attachEvent("geo_current_position", function(pos){
+	function geo_current_position(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar){
 			var tb = $p.iface.main.getAttachedToolbar();
 			if(tb){
@@ -160,6 +159,16 @@ $p.iface.oninit = function() {
 				tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px"
 			}
 		}
+	}
+
+	// подписываемся на событие геолокатора
+	dhx4.attachEvent("geo_current_position", function(pos){
+		if($p.iface.main && $p.iface.main.getAttachedToolbar)
+			geo_current_position(pos);
+		else
+			setTimeout(function () {
+				geo_current_position(pos);
+			}, 3000);
 	});
 
 
