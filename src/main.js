@@ -445,21 +445,10 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		_main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
-		if(!nom.Файлы){
-			attr.url = "";
-			$p.ajax.default_attr(attr, $p.job_prm.irest_url());
-			attr.url += attr.rest_name + "(guid'" + ref + "')";
-			if(!nom.name)
-				attr.url += "?full=true";
-			if(dhx4.isIE)
-				attr.url = encodeURI(attr.url);
-			$p.ajax.get_ex(attr.url, attr)
-				.then(function (req) {
-					var data = JSON.parse(req.response);
-					data.Файлы = JSON.stringify(data.Файлы);
-					nom._mixin(data);
-					_main.requery_long(nom);
-				})
+		if(nom.is_new()){
+
+			nom.load()
+				.then(_main.requery_long)
 				.catch($p.record_log);
 		}else
 			_main.requery_long(nom);
@@ -714,6 +703,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 			dv_obj.ref = dv_obj.id;
 			dv_obj.id = dv_obj.Код;
 			dv_obj.name = dv_obj.Наименование;
+			dv_obj._not_set_loaded = true;
 			delete dv_obj.Код;
 			delete dv_obj.Наименование;
 			$p.cat.Номенклатура.create(dv_obj)
@@ -1375,6 +1365,7 @@ $p.iface.set_view_content = function (cell) {
 	if($p.iface._content)
 		return;
 
+	// http://html.metaphorcreations.com/apex/
 	$p.iface._content = {};
 	cell.attachHTMLString("<div>Статьи пока не написаны</div>");
 

@@ -13,7 +13,8 @@
             "fraction_figits": 2
           }
         }
-      }
+      },
+      "irest": true
     }
   },
   "doc": {
