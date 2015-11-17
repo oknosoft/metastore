@@ -34,7 +34,7 @@ module.exports = function() {
 	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
-		template:"http->templates/dataview_list.html",
+		template: require("dataview_list"),
 		template_loading:"Загрузка данных...",
 		height: 100,
 		width: 900,
@@ -48,7 +48,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"large",
-		template:"http->templates/dataview_large.html",
+		template: require("dataview_large"),
 		height: 210,
 		width: 380,
 		margin: 2,
@@ -61,7 +61,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"small",
-		template:"http->templates/dataview_small.html",
+		template: require("dataview_small"),
 		height: 180,
 		width: 220,
 		margin: 2,
