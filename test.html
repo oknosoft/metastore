@@ -15,29 +15,154 @@
 
     <!--стили наши + dhtmlx-->
     <link rel="stylesheet" type="text/css" href="templates/nouislider.css">
-    <link rel="stylesheet" type="text/css" href="lib/dhtmlx.css">
+    <link rel="stylesheet" type="text/css" href="lib/dhtmlx_web.css">
     <link rel="stylesheet" type="text/css" href="lib/metadata.css">
-    <link rel="stylesheet" type="text/css" href="lib/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="templates/webshop.css">
+
+    <!-- библиотеки -->
+    <script src="//cdn.jsdelivr.net/alasql/latest/alasql.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.nouislider/latest/nouislider.min.js"></script>
+    <script src="lib_ext/dhtmlx_debug.js"></script>
+    <script src="lib_ext/metadata.js"></script>
+
+    <!-- эксперимент -->
+
+    <link rel="stylesheet" type="text/css" href="lib_ext/baron/baron.css">
+    <link rel="stylesheet" type="text/css" href="templates/baron.css">
+
+    <script src="lib_ext/qbb.min.js"></script>
+    <script src="lib_ext/baron/baron.js"></script>
+
+    <script>
+
+        if(typeof $ == "undefined"){
+            function $(selector, context) {
+                return bonzo(qwery(selector, context));
+            }
+        }
+
+        function body_onload(){
+
+            baron({
+                root: '.wdg_product_accordion',
+                scroller: '.scroller',
+                bar: '.scroller__bar',
+                barOnCls: 'baron',
+                // Local copy of jQuery-like utility
+                // Default: window.jQuery
+                $: $,
+
+                // Event manager
+                // Default: function(elem, event, func, mode) { params.$(elem)[mode || 'on'](event, func); };
+                event: function(elem, event, func, mode) { // Events manager
+                    if (mode == 'trigger') {
+                        mode = 'fire';
+                    }
+                    bean[mode || 'on'](elem, event, func);
+                }
+            }).fix({
+                elements: '.header__title',
+                outside: 'header__title_state_fixed',
+                before: 'header__title_position_top',
+                after: 'header__title_position_bottom',
+                clickable: true
+            }).pull({
+                block: '.load',
+                elements: [{
+                    self: '.load__value',
+                    property: 'width'
+                }],
+                limit: 115,
+                onExpand: function() {
+                    $('.load').css('background', 'grey');
+                }
+            });
+
+
+        }
+
+    </script>
+
+    <!-- конец эксперимента -->
+
+    <!-- собственно, скрипт магазина -->
+    <script src="src/main.js"></script>
+
+
 
 
 </head>
-<body>
+<body onload="body_onload();">
 
-<div class="dhx_cell_layout" style="left: 100px; top: 100px; width: 1000px; position: absolute">
-    <div class="dhx_cell_cont_layout">
-        <div class="md_column320">
-            <div class="catalog_path"><span>Раздел: </span><a href="#">Бытовая техника</a><span> / </span><a href="#">Холодильники, морозильники</a></div>
-            <div class="search">
-                <input class="search" type="search" placeholder="Введите артикул или текст" title="Найти товар по части наименования, кода или артикула">
-                <i class="icon_search fa fa-search"></i>
+
+<div class="clipper wdg_product_accordion">
+    <div class="scroller">
+        <div class="container">
+
+            <div class="header">
+                <div class="header__title" name="header">Товар
+                    <div style="float: right; width: 30px; height: 30px; background-color: #00CC00"></div>
+                </div>
+
             </div>
-        </div>
-        <div class="md_column320">
-            Это вторая колонка
+
+            <div name="path">
+
+            </div>
+            <div name="main">
+                <p class="text">Baron is a title of nobility. In the kingdom of England, the medieval Latin word baro, baronis was used originally to denote a tenant-in-chief of the early Norman kings who held his lands by the feudal tenure of "barony" (in Latin per baroniam), and who was entitled to attend the Great Council which by the 13th century had developed into the Parliament of England.
+                </p>
+                <p class="text">The title was quite common in most European countries often in a slightly modified form. In Italian, the word used was Barone. The corresponding title in the Holy Roman Empire was Freiherr.</p>
+            </div>
+
+            <div class="header">
+                <div class="header__title header__title_state_fixed header__title_position_bottom">Описание и характеристики</div>
+            </div>
+            <div name="description">
+                <p class="text">The word baron comes from the Old French baron, from a Late Latin baro "man; servant, soldier, mercenary" (so used in Salic Law; Alemannic Law has barus in the same sense). Isidore in the 7th century thought the word was from Greek βαρύς "heavy" (because of the "heavy work" done by mercenaries), but the word is presumably of Old Frankish origin, cognate with Old English beorn meaning "warrior, nobleman"). Cornutus in the first century already reports a word barones which he took to be of Gaulish origin. He glosses it as meaning servos militum and explains it as meaning "stupid", by reference to classical Latin bāro "simpleton, dunce"; because of this early reference, the word has also been suggested to derive from an otherwise unknown Celtic *bar, but OED takes this to be "a figment".</p>
+            </div>
+
+
+            <div class="header">
+                <div class="header__title header__title_state_fixed">Комментарии, обзоры, вопрос-ответ</div>
+            </div>
+            <div name="notes">
+                <p class="text">In the Peerage of England, Peerage of Ireland, Peerage of Great Britain and the Peerage of the United Kingdom, barons form the lowest rank, placed immediately below viscounts. A female of baronial rank has the title baroness. Feudal baronies (or "baronies by tenure") are now obsolete in England and without any legal force but any such historical titles are held in gross, that is to say are deemed to be enveloped within a more modern extant peerage title also held by the holder, sometimes along with vestigial manorial rights and tenures by grand serjeanty.
+                </p>
+                <p class="text">William I introduced "baron" as a rank in England to distinguish the men who had pledged their loyalty to him under the feudal system. Previously, in the Anglo-Saxon kingdom of England, the king's companions held the title of earl and in Scotland, the title of thane. All who held their feudal barony "in-chief of the king", that is with the king as his immediate overlord, became alike barones regis ("barons of the king"), bound to perform a stipulated annual military service, and obliged to attend his council. Eventually the greatest of the nobles, especially those in the marches, such as the Earls of Chester or the Bishops of Durham, whose territories were often deemed palatinate, that is to say "worthy of a prince", might refer to their own tenants as "barons", where lesser magnates spoke simply of their "men" (homines).
+                </p>
+                <p class="text">Initially those who held land directly from the king by military service, from earls downwards, all bore alike the title of baron, which was thus the factor uniting all members of the ancient baronage as peers one of another. Under King Henry II, the Dialogus de Scaccario already distinguished between greater barons, who held per baroniam by knight's service, and lesser barons, who held manors. Technically, Lords of Manors are barons, or freemen, however they do not use the term as a title. John Selden in his esteemed work Titles of Honour writes, "The word Baro (Latin for Baron) hath been also so much communicated, that not only all Lords of Mannors have been from antient time, and are at this day called sometimes Barons (as in the stile of their Court Barons, which is Curia Baronis, &amp;c. And I have read hors de son Barony in a barr to an Avowry for hors de son fee) But also the Judges of the Exchequer have it from antient time fixed on them."[4] Within a century of the Norman Conquest of 1066, as in the case of Thomas Becket in 1164, there arose the practice of sending to each greater baron a personal summons demanding his attendance at the King's Council, which evolved into the Parliament and later into the House of Lords, whilst as was stipulated in Magna Carta of 1215, the lesser barons of each county would receive a single summons as a group through the sheriff, and representatives only from their number would be elected to attend on behalf of the group. These representatives developed into the Knights of the Shire, elected by the County Court presided over by the sheriff, who themselves formed the precursor of the House of Commons. Thus appeared a definite distinction, which eventually had the effect of restricting to the greater barons alone the privileges and duties of peerage.
+                </p>
+            </div>
+
+
+            <div class="header">
+                <div class="header__title header__title_state_fixed">Драйверы и файлы</div>
+            </div>
+            <div name="download">
+                <p class="text">A person holding a peerage in the rank of baron is entitled to a coronet bearing six silver balls (called pearls) around the rim, equally spaced and all of equal size and height. The rim itself is neither jeweled, nor "chased" (which is the case for the coronets of peers of higher degree).
+                </p>
+                <p class="text">The actual coronet is mostly worn on certain ceremonial occasions, such as the coronation of a new monarch, but a baron can bear his coronet of rank on his coat of arms above the shield. In heraldry, the baron's coronet is shown with four of the balls visible.
+                </p>
+                <p class="text">Scottish feudal barons were entitled to a red cap of maintenance (chapeau) turned up ermine if petitioning for a grant or matriculation of a coat of arms between the 1930s and 2004. This chapeau is identical to the red cap worn by an English baron, but without the silver balls or gilt. This is sometimes depicted in armorial paintings between the shield and the helmet. Additionally, if the baron is the head of a family he may include a chiefly coronet which is similar to a ducal coronet, but with four strawberry leaves. Because the chapeau was a relatively recent innovation, a number of ancient Arms of Scottish feudal barons do not display the chapeau. Now Scottish feudal barons are principally recognised by the baron's helm, which in Scotland is a steel helmet with grille of three grilles, garnished in gold. Occasionally the great tilting-helm garnished with gold is shown, or a helmet befitting a higher rank, if held.
+                </p>
+            </div>
+
+            <div class="load" style="height: 0px;">
+                <div class="load__value" style="width: 0%;"></div>
+            </div>
+
         </div>
     </div>
+
+    <div class="scroller__track">
+        <div class="scroller__bar" style="height: 26px; top: 0px;"></div>
+    </div>
+
 </div>
+
+
 
 </body>
 </html>

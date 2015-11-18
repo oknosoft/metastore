@@ -13,6 +13,7 @@ $p.iface.set_view_cart = function (cell) {
 		return;
 
 	$p.iface._cart = {};
-	cell.attachHTMLString("<div>Корзина пуста</div>");
+	cell.attachHTMLString(require("cart"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };

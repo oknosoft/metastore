@@ -21,8 +21,7 @@
       "src/view_about.js"
     ],
     "templates": "templates/templates.js",
-    "about": "about_ru.html",
-    "settings": "settings.html"
+    "<%= file %>": "templates/*.html"
   },
   "main": "main",
   "optimize": true,

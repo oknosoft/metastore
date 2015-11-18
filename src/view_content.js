@@ -12,7 +12,9 @@ $p.iface.set_view_content = function (cell) {
 	if($p.iface._content)
 		return;
 
+	// http://html.metaphorcreations.com/apex/
 	$p.iface._content = {};
-	cell.attachHTMLString("<div>Статьи пока не написаны</div>");
+	cell.attachHTMLString(require("content"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };

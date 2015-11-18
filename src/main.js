@@ -378,7 +378,7 @@ function ORangeSlider(attr) {
  *
  * @class OProductCard
  * @param attr {Object} - параметры создаваемого компонента
- * @param attr.ref {String|DataObj} - ссылка или номенклатура
+ * @param [attr.ref] {String|DataObj} - ссылка или номенклатура
  * @constructor
  */
 dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
@@ -386,53 +386,85 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	if(!attr)
 		attr = {};
 
-	var _cell = this,
-		toolbar = _cell.attachToolbar({
-			icons_size: 24,
-			icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
-			items: [
-				{type: "text", id: "title", text: "&nbsp;"},
-				{type: "spacer"},
-				{type: "button", id: "back", img: "back_48.png", title: "Вернуться к списку"}
-			]
-		}),
-		accordion = _cell.attachAccordion({
+	this.attachHTMLString(require('product_card'));
 
-			multi_mode: false,           // boolean, true to enable multimode
+	baron({
+		root: '.wdg_product_accordion',
+		scroller: '.scroller',
+		bar: '.scroller__bar',
+		barOnCls: 'baron',
 
-			items: [    // accordion cells section
-				{
-					id:     "main",     // item id, required
-					text:   "Text",     // string, header's text (html allowed)
-					open:   true,       // boolean, true to open/false to close item on init
-					height: 600         // number, cell's height (multimode only)
-				},
-				{
-					id:     "description",
-					text:   "Описание и характеристики"
-				},
-				{
-					id:     "notes",
-					text:   "Комментарии, обзоры, вопрос-ответ"
-				},
-				{
-					id:     "download",
-					text:   "Драйверы и файлы"
-				}
-			],
+		$: $,   // Local copy of jQuery-like utility
 
-			offsets: {
-				top: 0,
-				right: 4,
-				bottom: 0,
-				left: 0
+		event: function(elem, event, func, mode) { // Events manager
+			if (mode == 'trigger') {
+				mode = 'fire';
 			}
+			bean[mode || 'on'](elem, event, func);
+		}
+	}).fix({
+		elements: '.header__title',
+		outside: 'header__title_state_fixed',
+		before: 'header__title_position_top',
+		after: 'header__title_position_bottom',
+		clickable: true
+	}).pull({
+		block: '.load',
+		elements: [{
+			self: '.load__value',
+			property: 'width'
+		}],
+		limit: 115,
+		onExpand: function() {
+			$('.load').css('background', 'grey');
+		}
+	});
 
+
+	var _cell = this.cell,
+		res = {
+			container: _cell.querySelector(".wdg_product_accordion"),
+			header: _cell.querySelector("[name=header]"),
+			title: _cell.querySelector("[name=title]"),
+			path: _cell.querySelector("[name=path]"),
+			main: new CardMain(_cell.querySelector("[name=main]")),
+			description: _cell.querySelector("[name=description]"),
+			notes: _cell.querySelector("[name=notes]"),
+			download: _cell.querySelector("[name=download]")
+		},
+
+		// кнопка "вернуться к списку"
+		back = new $p.iface.OTooolBar({
+			wrapper: res.header,
+			width: '28px',
+			height: '29px',
+			top: '0px',
+			right: '20px',
+			name: 'back',
+			image_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
+			class_name: "",
+			buttons: [
+				{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться к списку', float: 'right'}
+			],
+			onclick: function (name) {
+				switch (name) {
+					case "back":
+						var hprm = $p.job_prm.parse_url();
+						$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
+						if($p.iface.popup)
+							$p.iface.popup.hide();
+						break;
+				}
+			}
 		}),
-		_main = new CardMain(accordion.cells("main"));
+		path = new $p.iface.CatalogPath(res.path, function (e) {
+			var hprm = $p.job_prm.parse_url();
+			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
+			return $p.cancel_bubble(e)
+		});
 
-	if($p.device_type != "desktop")
-		accordion.cells("download").hide();
+	//if($p.device_type != "desktop")
+	//	res.download.style.visibility = "hidden";
 
 	/**
 	 * Перезаполняет все ячейки аккордеона
@@ -442,33 +474,22 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// информацию про номенклатуру, полученную ранее используем сразу
 		var nom = $p.cat.Номенклатура.get(ref, false);
-		_main.requery_short(nom);
+		res.main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
-		if(!nom.Файлы){
-			attr.url = "";
-			$p.ajax.default_attr(attr, $p.job_prm.irest_url());
-			attr.url += attr.rest_name + "(guid'" + ref + "')";
-			if(!nom.name)
-				attr.url += "?full=true";
-			if(dhx4.isIE)
-				attr.url = encodeURI(attr.url);
-			$p.ajax.get_ex(attr.url, attr)
-				.then(function (req) {
-					var data = JSON.parse(req.response);
-					data.Файлы = JSON.stringify(data.Файлы);
-					nom._mixin(data);
-					_main.requery_long(nom);
-				})
+		if(nom.is_new()){
+
+			nom.load()
+				.then(res.main.requery_long)
 				.catch($p.record_log);
 		}else
-			_main.requery_long(nom);
+			res.main.requery_long(nom);
 
 	}
 
 	/**
 	 * Изображение, цена и кнопки купить - сравнить - добавить
-	 * @param cell
+	 * @param cell {HTMLElement}
 	 * @constructor
 	 */
 	function CardMain(cell){
@@ -476,12 +497,12 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		var _div = document.createElement('div'),
 			_img = document.createElement('div'),
 			_act = document.createElement('div');
-		cell.attachObject(_div);
+		cell.appendChild(_div);
 		_div.appendChild(_img);
 		_div.appendChild(_act);
 
 		this.requery_short = function (nom) {
-			cell.setText(nom.НаименованиеПолное || nom.name);
+			res.title.innerHTML = nom.НаименованиеПолное || nom.name;
 		};
 
 		this.requery_long = function (nom) {
@@ -500,31 +521,6 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 	}
 
-	toolbar.attachEvent("onClick", function(id){
-		switch (id) {
-			case "back":
-				var hprm = $p.job_prm.parse_url();
-				$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
-				break;
-		}
-	});
-
-	// хлебные крошки
-	var div_head = toolbar.cont.querySelector(".dhx_toolbar_text"),
-		btn = toolbar.cont.querySelector(".dhxtoolbar_float_right"),
-		path = new $p.iface.CatalogPath(div_head, function (e) {
-			var hprm = $p.job_prm.parse_url();
-			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
-			return $p.cancel_bubble(e)
-		}),
-		old_css = [];
-	div_head.classList.forEach(function (class_name) {
-		old_css.push(class_name);
-	});
-	old_css.forEach(function (class_name) {
-		div_head.classList.remove(class_name);
-	});
-	btn.style.paddingRight = "8px";
 
 	// обработчик маршрутизации
 	$p.eve.hash_route.push(function (hprm){
@@ -537,7 +533,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		delete attr.ref;
 	}
 
-	return accordion;
+	return res;
 
 };
 /* joined by builder */
@@ -714,6 +710,7 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 			dv_obj.ref = dv_obj.id;
 			dv_obj.id = dv_obj.Код;
 			dv_obj.name = dv_obj.Наименование;
+			dv_obj._not_set_loaded = true;
 			delete dv_obj.Код;
 			delete dv_obj.Наименование;
 			$p.cat.Номенклатура.create(dv_obj)
@@ -946,7 +943,7 @@ $p.iface.oninit = function() {
 
 		hprm = $p.job_prm.parse_url();
 		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1)
-			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, "catalog");
+			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
 		else
 			setTimeout($p.iface.hash_route, 10);
 	}
@@ -1193,7 +1190,8 @@ $p.iface.set_view_cart = function (cell) {
 		return;
 
 	$p.iface._cart = {};
-	cell.attachHTMLString("<div>Корзина пуста</div>");
+	cell.attachHTMLString(require("cart"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };
 
@@ -1356,7 +1354,8 @@ $p.iface.set_view_user = function (cell) {
 		return;
 
 	$p.iface._user = {};
-	cell.attachHTMLString("<div>Пользователь не авторизован</div>");
+	cell.attachHTMLString(require("user"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };
 
@@ -1375,8 +1374,10 @@ $p.iface.set_view_content = function (cell) {
 	if($p.iface._content)
 		return;
 
+	// http://html.metaphorcreations.com/apex/
 	$p.iface._content = {};
-	cell.attachHTMLString("<div>Статьи пока не написаны</div>");
+	cell.attachHTMLString(require("content"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };
 
@@ -1439,7 +1440,7 @@ module.exports = function() {
 	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
-		template:"http->templates/dataview_list.html",
+		template: require("dataview_list"),
 		template_loading:"Загрузка данных...",
 		height: 100,
 		width: 900,
@@ -1453,7 +1454,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"large",
-		template:"http->templates/dataview_large.html",
+		template: require("dataview_large"),
 		height: 210,
 		width: 380,
 		margin: 2,
@@ -1466,7 +1467,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"small",
-		template:"http->templates/dataview_small.html",
+		template: require("dataview_small"),
 		height: 180,
 		width: 220,
 		margin: 2,
@@ -1479,6 +1480,13 @@ module.exports = function() {
 };
 
 }),
-"about": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore v0.0.3</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"md_muted_color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"md_muted_color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"md_muted_color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"md_muted_color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"md_muted_color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"md_muted_color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"md_muted_color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"md_muted_color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"md_muted_color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"md_muted_color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"md_muted_color\">, набор иконок и стилей CSS</span></li>\r\n    </ul>\r\n\r\n    <p>&nbsp;</p>\r\n    <h2><i class=\"fa fa-question-circle\"></i> Вопросы</h2>\r\n    <p>Если обнаружили ошибку, пожалуйста,\r\n        <a href=\"https://github.com/oknosoft/metastore/issues/new\" target=\"_blank\">зарегистрируйте вопрос в GitHub</a> или\r\n        <a href=\"http://www.oknosoft.ru/metadata/#page-118\" target=\"_blank\">свяжитесь с разработчиком</a> напрямую</p>\r\n\r\n</div>",
-"settings": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-cogs\"></i> Настройки</h1>\r\n    <p>В промышленном режиме, данная страница выключена.<br />\r\n        Внешний вид сайта и параметры подключения к базе данных настраиваются в конфигурационном файле.<br />\r\n        В демо-ражиме страница настроек иллюстрирует использование параметров работы программы клиентской частью приложения.</p>\r\n\r\n    <div class=\"md_column320\" name=\"form1\" style=\"max-width: 420px;\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form2\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form3\"><div></div></div>\r\n</div>"
+"about": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"md_muted_color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"md_muted_color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"md_muted_color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"md_muted_color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"md_muted_color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"md_muted_color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"md_muted_color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"md_muted_color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"md_muted_color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"md_muted_color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"md_muted_color\">, набор иконок и стилей CSS</span></li>\r\n        <li><a href=\"http://fontastic.me/\" target=\"_blank\">fontastic</a><span class=\"md_muted_color\">, еще один набор иконок и стилей</span></li>\r\n    </ul>\r\n\r\n    <p>&nbsp;</p>\r\n    <h2><i class=\"fa fa-question-circle\"></i> Вопросы</h2>\r\n    <p>Если обнаружили ошибку, пожалуйста,\r\n        <a href=\"https://github.com/oknosoft/metastore/issues/new\" target=\"_blank\">зарегистрируйте вопрос в GitHub</a> или\r\n        <a href=\"http://www.oknosoft.ru/metadata/#page-118\" target=\"_blank\">свяжитесь с разработчиком</a> напрямую<br />&nbsp;</p>\r\n\r\n</div>",
+"cart": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-shopping-cart\"></i> Корзина</h1>\r\n    <p>\r\n        Корзина пуста\r\n    </p>\r\n</div>",
+"content": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-opencart\"></i> Интернет-магазин MetaStore</h1>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-shopping-basket\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Типовая 1С</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            MetaStore - это веб-интерфейс<br />\r\n            к типовым конфигурациям 1С, реализующий функциональность интернет-магазина\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"fa fa-github-alt\" style=\"line-height: 78px;\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Веб-приложение с открытым кодом</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Разработано на базе <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a><br />\r\n            Исходный код и документация<br />доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>\r\n            <br />&nbsp;\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-connect\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Готовое решение</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Подключается в один клик:<br />\r\n            1С:Управление торговлей,<br />\r\n            1С:Комплексная автоматизация,<br />\r\n            1С:ERP Управление предприятием\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-equilizer\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Простота настроек</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Иерархия, свойства номенклатуры, остатки и цены, настраиваются в привычных для пользователей<br />формах 1С\r\n        </p>\r\n    </div>\r\n\r\n    <div style=\"padding: 24px 0 24px 0; background-color: #f5f5f5; clear: both; display: inline-block\">\r\n\r\n        <div class=\"md_column320\">\r\n            <p>\r\n                <img class=\"aligncenter\" src=\"templates/phone-2.png\" alt=\"phone\" width=\"332\" height=\"409\">\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"md_column320\">\r\n            <h2 class=\"light\">Поддержка мобильных устройств</h2>\r\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\r\n            <p><a href=\"#\" class=\"btn\">Learn More</a></p>\r\n        </div>\r\n\r\n    </div>\r\n\r\n</div>",
+"dataview_large": "<div>\r\n    <div class='dataview_large_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div style='clear: right'>\r\n        <div>{obj.Наименование}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n\r\n",
+"dataview_list": "<div>\r\n    <div class='dataview_list_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div>\r\n        <div>{obj.Наименование}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n",
+"dataview_small": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.Наименование}</div>\r\n",
+"product_card": "<div class=\"clipper wdg_product_accordion\">\r\n    <div class=\"scroller\">\r\n        <div class=\"container\">\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title\" name=\"header\">\r\n                    <span name=\"title\">Товар</span>\r\n                </div>\r\n\r\n            </div>\r\n\r\n            <div name=\"path\" style=\"padding: 8px\">\r\n\r\n            </div>\r\n            <div name=\"main\">\r\n                <p class=\"text\">Baron is a title of nobility. In the kingdom of England, the medieval Latin word baro, baronis was used originally to denote a tenant-in-chief of the early Norman kings who held his lands by the feudal tenure of \"barony\" (in Latin per baroniam), and who was entitled to attend the Great Council which by the 13th century had developed into the Parliament of England.\r\n                </p>\r\n                <p class=\"text\">The title was quite common in most European countries often in a slightly modified form. In Italian, the word used was Barone. The corresponding title in the Holy Roman Empire was Freiherr.</p>\r\n            </div>\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed header__title_position_bottom\">Описание и характеристики</div>\r\n            </div>\r\n            <div name=\"description\">\r\n                <p class=\"text\">The word baron comes from the Old French baron, from a Late Latin baro \"man; servant, soldier, mercenary\" (so used in Salic Law; Alemannic Law has barus in the same sense). Isidore in the 7th century thought the word was from Greek βαρύς \"heavy\" (because of the \"heavy work\" done by mercenaries), but the word is presumably of Old Frankish origin, cognate with Old English beorn meaning \"warrior, nobleman\"). Cornutus in the first century already reports a word barones which he took to be of Gaulish origin. He glosses it as meaning servos militum and explains it as meaning \"stupid\", by reference to classical Latin bāro \"simpleton, dunce\"; because of this early reference, the word has also been suggested to derive from an otherwise unknown Celtic *bar, but OED takes this to be \"a figment\".</p>\r\n            </div>\r\n\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Комментарии, обзоры, вопрос-ответ</div>\r\n            </div>\r\n            <div name=\"notes\">\r\n                <p class=\"text\">Пока нет ни одного комментария, ваш будет первым</p>\r\n            </div>\r\n\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Драйверы и файлы</div>\r\n            </div>\r\n            <div name=\"download\">\r\n                <p class=\"text\">Для данного товара файлы и драйверы не требуются</p>\r\n            </div>\r\n\r\n            <div class=\"load\" style=\"height: 0px;\">\r\n                <div class=\"load__value\" style=\"width: 0%;\"></div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"scroller__track\">\r\n        <div class=\"scroller__bar\" style=\"height: 26px; top: 0px;\"></div>\r\n    </div>\r\n\r\n</div>",
+"settings": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-cogs\"></i> Настройки</h1>\r\n    <p>В промышленном режиме данная страница выключена.<br />\r\n        Внешний вид сайта и параметры подключения, настраиваются в конфигурационном файле.<br />\r\n        В демо-ражиме страница настроек иллюстрирует использование параметров работы программы клиентской частью приложения.</p>\r\n\r\n    <div class=\"md_column320\" name=\"form1\" style=\"max-width: 420px;\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form2\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form3\"><div></div></div>\r\n</div>",
+"user": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-user\"></i> Профиль пользователя</h1>\r\n    <p>\r\n        Пользователь не авторизован\r\n    </p>\r\n</div>"
 },{},{});

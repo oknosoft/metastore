@@ -146,7 +146,7 @@ $p.iface.oninit = function() {
 
 		hprm = $p.job_prm.parse_url();
 		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1)
-			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, "catalog");
+			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
 		else
 			setTimeout($p.iface.hash_route, 10);
 	}

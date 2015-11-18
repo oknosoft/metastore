@@ -13,6 +13,7 @@ $p.iface.set_view_user = function (cell) {
 		return;
 
 	$p.iface._user = {};
-	cell.attachHTMLString("<div>Пользователь не авторизован</div>");
+	cell.attachHTMLString(require("user"));
+	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 
 };
