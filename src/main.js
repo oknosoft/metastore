@@ -378,7 +378,7 @@ function ORangeSlider(attr) {
  *
  * @class OProductCard
  * @param attr {Object} - параметры создаваемого компонента
- * @param attr.ref {String|DataObj} - ссылка или номенклатура
+ * @param [attr.ref] {String|DataObj} - ссылка или номенклатура
  * @constructor
  */
 dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
@@ -386,53 +386,85 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	if(!attr)
 		attr = {};
 
-	var _cell = this,
-		toolbar = _cell.attachToolbar({
-			icons_size: 24,
-			icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
-			items: [
-				{type: "text", id: "title", text: "&nbsp;"},
-				{type: "spacer"},
-				{type: "button", id: "back", img: "back_48.png", title: "Вернуться к списку"}
-			]
-		}),
-		accordion = _cell.attachAccordion({
+	this.attachHTMLString(require('product_card'));
 
-			multi_mode: false,           // boolean, true to enable multimode
+	baron({
+		root: '.wdg_product_accordion',
+		scroller: '.scroller',
+		bar: '.scroller__bar',
+		barOnCls: 'baron',
 
-			items: [    // accordion cells section
-				{
-					id:     "main",     // item id, required
-					text:   "Text",     // string, header's text (html allowed)
-					open:   true,       // boolean, true to open/false to close item on init
-					height: 600         // number, cell's height (multimode only)
-				},
-				{
-					id:     "description",
-					text:   "Описание и характеристики"
-				},
-				{
-					id:     "notes",
-					text:   "Комментарии, обзоры, вопрос-ответ"
-				},
-				{
-					id:     "download",
-					text:   "Драйверы и файлы"
-				}
-			],
+		$: $,   // Local copy of jQuery-like utility
 
-			offsets: {
-				top: 0,
-				right: 4,
-				bottom: 0,
-				left: 0
+		event: function(elem, event, func, mode) { // Events manager
+			if (mode == 'trigger') {
+				mode = 'fire';
 			}
+			bean[mode || 'on'](elem, event, func);
+		}
+	}).fix({
+		elements: '.header__title',
+		outside: 'header__title_state_fixed',
+		before: 'header__title_position_top',
+		after: 'header__title_position_bottom',
+		clickable: true
+	}).pull({
+		block: '.load',
+		elements: [{
+			self: '.load__value',
+			property: 'width'
+		}],
+		limit: 115,
+		onExpand: function() {
+			$('.load').css('background', 'grey');
+		}
+	});
 
+
+	var _cell = this.cell,
+		res = {
+			container: _cell.querySelector(".wdg_product_accordion"),
+			header: _cell.querySelector("[name=header]"),
+			title: _cell.querySelector("[name=title]"),
+			path: _cell.querySelector("[name=path]"),
+			main: new CardMain(_cell.querySelector("[name=main]")),
+			description: _cell.querySelector("[name=description]"),
+			notes: _cell.querySelector("[name=notes]"),
+			download: _cell.querySelector("[name=download]")
+		},
+
+		// кнопка "вернуться к списку"
+		back = new $p.iface.OTooolBar({
+			wrapper: res.header,
+			width: '28px',
+			height: '29px',
+			top: '0px',
+			right: '20px',
+			name: 'back',
+			image_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
+			class_name: "",
+			buttons: [
+				{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться к списку', float: 'right'}
+			],
+			onclick: function (name) {
+				switch (name) {
+					case "back":
+						var hprm = $p.job_prm.parse_url();
+						$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
+						if($p.iface.popup)
+							$p.iface.popup.hide();
+						break;
+				}
+			}
 		}),
-		_main = new CardMain(accordion.cells("main"));
+		path = new $p.iface.CatalogPath(res.path, function (e) {
+			var hprm = $p.job_prm.parse_url();
+			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
+			return $p.cancel_bubble(e)
+		});
 
-	if($p.device_type != "desktop")
-		accordion.cells("download").hide();
+	//if($p.device_type != "desktop")
+	//	res.download.style.visibility = "hidden";
 
 	/**
 	 * Перезаполняет все ячейки аккордеона
@@ -442,22 +474,22 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// информацию про номенклатуру, полученную ранее используем сразу
 		var nom = $p.cat.Номенклатура.get(ref, false);
-		_main.requery_short(nom);
+		res.main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
 		if(nom.is_new()){
 
 			nom.load()
-				.then(_main.requery_long)
+				.then(res.main.requery_long)
 				.catch($p.record_log);
 		}else
-			_main.requery_long(nom);
+			res.main.requery_long(nom);
 
 	}
 
 	/**
 	 * Изображение, цена и кнопки купить - сравнить - добавить
-	 * @param cell
+	 * @param cell {HTMLElement}
 	 * @constructor
 	 */
 	function CardMain(cell){
@@ -465,12 +497,12 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		var _div = document.createElement('div'),
 			_img = document.createElement('div'),
 			_act = document.createElement('div');
-		cell.attachObject(_div);
+		cell.appendChild(_div);
 		_div.appendChild(_img);
 		_div.appendChild(_act);
 
 		this.requery_short = function (nom) {
-			cell.setText(nom.НаименованиеПолное || nom.name);
+			res.title.innerHTML = nom.НаименованиеПолное || nom.name;
 		};
 
 		this.requery_long = function (nom) {
@@ -489,31 +521,6 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 	}
 
-	toolbar.attachEvent("onClick", function(id){
-		switch (id) {
-			case "back":
-				var hprm = $p.job_prm.parse_url();
-				$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
-				break;
-		}
-	});
-
-	// хлебные крошки
-	var div_head = toolbar.cont.querySelector(".dhx_toolbar_text"),
-		btn = toolbar.cont.querySelector(".dhxtoolbar_float_right"),
-		path = new $p.iface.CatalogPath(div_head, function (e) {
-			var hprm = $p.job_prm.parse_url();
-			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
-			return $p.cancel_bubble(e)
-		}),
-		old_css = [];
-	div_head.classList.forEach(function (class_name) {
-		old_css.push(class_name);
-	});
-	old_css.forEach(function (class_name) {
-		div_head.classList.remove(class_name);
-	});
-	btn.style.paddingRight = "8px";
 
 	// обработчик маршрутизации
 	$p.eve.hash_route.push(function (hprm){
@@ -526,7 +533,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		delete attr.ref;
 	}
 
-	return accordion;
+	return res;
 
 };
 /* joined by builder */
@@ -1479,6 +1486,7 @@ module.exports = function() {
 "dataview_large": "<div>\r\n    <div class='dataview_large_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div style='clear: right'>\r\n        <div>{obj.Наименование}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n\r\n",
 "dataview_list": "<div>\r\n    <div class='dataview_list_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div>\r\n        <div>{obj.Наименование}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n",
 "dataview_small": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.Наименование}</div>\r\n",
+"product_card": "<div class=\"clipper wdg_product_accordion\">\r\n    <div class=\"scroller\">\r\n        <div class=\"container\">\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title\" name=\"header\">\r\n                    <span name=\"title\">Товар</span>\r\n                </div>\r\n\r\n            </div>\r\n\r\n            <div name=\"path\" style=\"padding: 8px\">\r\n\r\n            </div>\r\n            <div name=\"main\">\r\n                <p class=\"text\">Baron is a title of nobility. In the kingdom of England, the medieval Latin word baro, baronis was used originally to denote a tenant-in-chief of the early Norman kings who held his lands by the feudal tenure of \"barony\" (in Latin per baroniam), and who was entitled to attend the Great Council which by the 13th century had developed into the Parliament of England.\r\n                </p>\r\n                <p class=\"text\">The title was quite common in most European countries often in a slightly modified form. In Italian, the word used was Barone. The corresponding title in the Holy Roman Empire was Freiherr.</p>\r\n            </div>\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed header__title_position_bottom\">Описание и характеристики</div>\r\n            </div>\r\n            <div name=\"description\">\r\n                <p class=\"text\">The word baron comes from the Old French baron, from a Late Latin baro \"man; servant, soldier, mercenary\" (so used in Salic Law; Alemannic Law has barus in the same sense). Isidore in the 7th century thought the word was from Greek βαρύς \"heavy\" (because of the \"heavy work\" done by mercenaries), but the word is presumably of Old Frankish origin, cognate with Old English beorn meaning \"warrior, nobleman\"). Cornutus in the first century already reports a word barones which he took to be of Gaulish origin. He glosses it as meaning servos militum and explains it as meaning \"stupid\", by reference to classical Latin bāro \"simpleton, dunce\"; because of this early reference, the word has also been suggested to derive from an otherwise unknown Celtic *bar, but OED takes this to be \"a figment\".</p>\r\n            </div>\r\n\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Комментарии, обзоры, вопрос-ответ</div>\r\n            </div>\r\n            <div name=\"notes\">\r\n                <p class=\"text\">Пока нет ни одного комментария, ваш будет первым</p>\r\n            </div>\r\n\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Драйверы и файлы</div>\r\n            </div>\r\n            <div name=\"download\">\r\n                <p class=\"text\">Для данного товара файлы и драйверы не требуются</p>\r\n            </div>\r\n\r\n            <div class=\"load\" style=\"height: 0px;\">\r\n                <div class=\"load__value\" style=\"width: 0%;\"></div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"scroller__track\">\r\n        <div class=\"scroller__bar\" style=\"height: 26px; top: 0px;\"></div>\r\n    </div>\r\n\r\n</div>",
 "settings": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-cogs\"></i> Настройки</h1>\r\n    <p>В промышленном режиме данная страница выключена.<br />\r\n        Внешний вид сайта и параметры подключения, настраиваются в конфигурационном файле.<br />\r\n        В демо-ражиме страница настроек иллюстрирует использование параметров работы программы клиентской частью приложения.</p>\r\n\r\n    <div class=\"md_column320\" name=\"form1\" style=\"max-width: 420px;\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form2\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form3\"><div></div></div>\r\n</div>",
 "user": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-user\"></i> Профиль пользователя</h1>\r\n    <p>\r\n        Пользователь не авторизован\r\n    </p>\r\n</div>"
 },{},{});
