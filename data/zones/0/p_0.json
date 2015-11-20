@@ -6966,7 +6966,7 @@
 					"type": "cat.НаборыДополнительныхРеквизитовИСведений"
 				},
 				"name": "Холодильники",
-				"КоличествоРеквизитов": "2",
+				"КоличествоРеквизитов": "1",
 				"КоличествоСведений": "",
 				"Используется": true,
 				"extra_fields": [
@@ -6977,7 +6977,7 @@
 							"presentation": "Тип (марка) (Холодильники)",
 							"type": "cch.properties"
 						},
-						"deleted": false
+						"deleted": true
 					},
 					{
 						"row": 2,
@@ -8114,29 +8114,6 @@
 			{
 				"predefined_name": "",
 				"ref": {
-					"ref": "621d8c1b-e663-11df-aebd-0015e9b8c48d",
-					"presentation": "BOSCH",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "621d8c1a-e663-11df-aebd-0015e9b8c48d",
-					"presentation": "Тип (марка) (Холодильники)",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "BOSCH",
-				"Вес": 0,
-				"lc_changed": 63540000000041
-			},
-			{
-				"predefined_name": "",
-				"ref": {
 					"ref": "65fbdca4-85d6-11da-9aea-000d884f5d77",
 					"presentation": "KSF 32420",
 					"type": "cat.property_values"
@@ -8179,6 +8156,29 @@
 				"name": "OLED",
 				"Вес": 0,
 				"lc_changed": 63540000000043
+			},
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "1574007a-838f-11e5-8100-206a8a1a5bb0",
+					"presentation": "аквафильтр",
+					"type": "cat.property_values"
+				},
+				"deleted": false,
+				"is_folder": false,
+				"owner": {
+					"ref": "15740079-838f-11e5-8100-206a8a1a5bb0",
+					"presentation": "Тип пылесборника (Пылесосы)",
+					"type": "cch.properties"
+				},
+				"parent": {
+					"ref": "00000000-0000-0000-0000-000000000000",
+					"presentation": "",
+					"type": "cat.property_values"
+				},
+				"name": "аквафильтр",
+				"Вес": 0,
+				"lc_changed": 63540000000045
 			}
 		]
 	},
@@ -9152,7 +9152,7 @@
 			{
 				"predefined_name": "",
 				"name": "Тип (марка) (Холодильники)",
-				"deleted": false,
+				"deleted": true,
 				"ref": {
 					"ref": "621d8c1a-e663-11df-aebd-0015e9b8c48d",
 					"presentation": "Тип (марка) (Холодильники)",
@@ -9615,7 +9615,7 @@
 	},
 	"cacc": {},
 	"current": 380,
-	"cat_date": 63540000000043,
-	"count_all": 1100,
+	"cat_date": 63540000000045,
+	"count_all": 1095,
 	"files": 3
 }

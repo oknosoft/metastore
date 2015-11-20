@@ -28,7 +28,7 @@ module.exports = function() {
 	// цена
 	function get_price(o){
 		return (o.Цена_Мин == o.Цена_Макс ? o.Цена_Мин.toFixed(0) : 'от ' + o.Цена_Мин.toFixed(0) + ' до ' + o.Цена_Макс.toFixed(0)) +
-			' <i class="fa fa-rub" style="font-size: 18px;"></i>';
+			' <i class="fa fa-rub" style="font-size: smaller; color: #505050"></i>';
 	}
 
 	// определяем представления DataView

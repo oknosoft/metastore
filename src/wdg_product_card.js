@@ -133,24 +133,73 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	 */
 	function CardMain(cell){
 
-		var _div = document.createElement('div'),
-			_img = document.createElement('div'),
-			_act = document.createElement('div');
-		cell.appendChild(_div);
-		_div.appendChild(_img);
-		_div.appendChild(_act);
+		var _img = cell.querySelector(".product_img"),
+			_title = cell.querySelector("[name=order_title]"),
+			_price = cell.querySelector("[name=order_price]"),
+			_brand = cell.querySelector("[name=order_brand]"),
+			_carousel = new dhtmlXCarousel({
+				parent:         cell.querySelector(".product_carousel"),
+				offset_left:    0,      // number, offset between cell and left/right edges
+				offset_top:     0,      // number, offset between cell and top/bottom edges
+				offset_item:    0,      // number, offset between two nearest cells
+				touch_scroll:   true    // boolean, true to enable scrolling cells with touch
+		});
 
+		function set_title(nom){
+			_title.innerHTML = res.title.innerHTML = nom.НаименованиеПолное || nom.name;
+		}
+
+		// короткое обновление свойств без обращения к серверу
 		this.requery_short = function (nom) {
-			res.title.innerHTML = nom.НаименованиеПолное || nom.name;
+			set_title(nom);
+			_price.innerHTML = dhtmlXDataView.prototype.types.list.price(nom);
+			_img.src = "templates/product_pics/" + nom.ФайлКартинки.ref + ".png";
+			if(!nom.Файлы){
+				_carousel.base.style.display = "none";
+				_img.style.display = "";
+			}
 		};
 
+		// длинное обновление свойств после ответа сервера
 		this.requery_long = function (nom) {
 			var files = JSON.parse(nom.Файлы);
+
 			if(files.length){
-				// рисуем карусель
+				// удаляем страницы карусели
+				var ids = [];
+				_carousel.forEachCell(function(item){
+					ids.push(item.getId());
+				});
+				ids.forEach(function (id) {
+					_carousel.cells(id).remove();
+				});
+
+				// рисуем новые страницы
+				_img.style.display = "none";
+				_carousel.base.style.display = "";
+				files.forEach(function (file) {
+					ids = _carousel.addCell();
+					_carousel.cells(ids).attachHTMLString('<img class="aligncenter" style="height: 100%" src="templates/product_pics/'+file.ref+'.'+file.ext+'" >');
+				});
+
 			}else{
 				// одиночное изображение
+				_carousel.base.style.display = "none";
+				_img.style.display = "";
 			}
+
+			// обновляем наименование - оно могло измениться
+			set_title(nom);
+
+			//
+			if(nom.Марка != $p.blank.guid)
+				_brand.innerHTML = "Марка (бренд): " + nom.Марка.presentation;
+
+			else if(nom.Производитель != $p.blank.guid){
+				_brand.innerHTML = "Производитель: " + nom.Производитель.presentation;
+
+			}
+
 		};
 
 		// подписываемся на событие изменения размера
