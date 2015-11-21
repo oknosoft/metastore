@@ -1,0 +1,41 @@
+CACHE MANIFEST
+# 000000000002
+
+# Additional resources to cache
+CACHE:
+
+# Заголовок и библиотеки
+index.html
+//cdn.jsdelivr.net/alasql/latest/alasql.min.js
+//cdn.jsdelivr.net/jquery.nouislider/latest/nouislider.min.js
+
+# Эти позиции включаем только в продакшене
+lib/metadata.min.js
+
+data/create_tables.sql
+data/meta.json?v=201511010000
+data/meta_patch.json?v=201511010000
+data/zones/0/p_0.json?v=201511010000
+data/zones/0/p_1.json?v=201511010000
+data/zones/0/p_2.json?v=201511010000
+data/zones/0/ireg.json?v=201511010000
+
+# css и картинки
+//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css
+templates/fontastic/styles.css
+templates/nouislider.css
+
+templates/imgs/fav-md32.png
+templates/imgs/shop_splash.gif
+
+
+# offline.html will be displayed if the user is offline
+# FALLBACK:
+# / offline.html
+
+# All other resources (e.g. sites) require the user to be online.
+NETWORK:
+
+# данные - xml-ки форм, панелей и менюшек
+
+*

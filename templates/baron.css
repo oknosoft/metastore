@@ -74,6 +74,10 @@
     height: 8px;
 }
 
+.header {
+	clear: both
+}
+
 /* fixable headers */
 .header__title {
     position: relative;

@@ -2,7 +2,7 @@
   "name": "1c web shop debug",
   "root": "../",
   "www_root": "../",
-  "output": "src/main.js",
+  "output": "src/metastore.js",
   "modules": {
     "main": [
       "src/wdg_filter_prop.js",

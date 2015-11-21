@@ -23,6 +23,9 @@ $p.settings = function (prm, modifiers) {
 	// расположение rest-сервиса ut
 	prm.rest_path = "/a/ut11/%1/odata/standard.odata/";
 
+	// расположение socket-сервера
+	prm.ws_url = "ws://localhost:8001";
+
 	// по умолчанию, обращаемся к зоне %%%
 	prm.zone = 0;
 
@@ -81,9 +84,11 @@ $p.iface.oninit = function() {
 			{id: "about", text: "О программе", icon: "about_48.png"}
 		] ;
 
-		//$p.eve.redirect = true;
-
+		// гасим заставку
 		document.body.removeChild(document.querySelector("#webshop_splash"));
+
+		// шаблоны ODynDataView инициализируем сразу
+		require('templates')();
 
 		// при первой возможности создаём layout
 		if($p.device_type == "desktop"){

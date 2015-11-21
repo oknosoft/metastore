@@ -1,0 +1,189 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.3.4
+-- Dumped by pg_dump version 9.3.4
+-- Started on 2015-11-21 17:28:45
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 175 (class 3079 OID 11750)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1962 (class 0 OID 0)
+-- Dependencies: 175
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- TOC entry 174 (class 3079 OID 16384)
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1963 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 171 (class 1259 OID 3662079)
+-- Name: chlc; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE chlc (
+    zone integer NOT NULL,
+    ref uuid NOT NULL,
+    lc_changed bigint,
+    class_name character varying(255),
+    obj json
+);
+
+
+--
+-- TOC entry 1964 (class 0 OID 0)
+-- Dependencies: 171
+-- Name: TABLE chlc; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE chlc IS 'Здесь регистрируются изменённые объекты со стороны 1С. Клиентские приложения информируются об изменениях через вебсокет';
+
+
+--
+-- TOC entry 170 (class 1259 OID 3662074)
+-- Name: chrefs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE chrefs (
+    zone integer NOT NULL,
+    ref uuid NOT NULL,
+    lc_changed bigint,
+    class_name character varying(255)
+);
+
+
+--
+-- TOC entry 1965 (class 0 OID 0)
+-- Dependencies: 170
+-- Name: TABLE chrefs; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE chrefs IS 'Здесь регистрируются ссылки изменённых в 1С объектов. Это аналог таблицы регистрации изменений плана обмена';
+
+
+--
+-- TOC entry 172 (class 1259 OID 3662087)
+-- Name: chweb; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE chweb (
+    zone integer NOT NULL,
+    ref uuid NOT NULL,
+    lc_changed bigint,
+    class_name character varying(255),
+    obj json
+);
+
+
+--
+-- TOC entry 1966 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: TABLE chweb; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE chweb IS 'Здесь регистрируются изменённые объекты со стороны web-приложений. 1С информируется об изменениях через http-сервис';
+
+
+--
+-- TOC entry 173 (class 1259 OID 3662095)
+-- Name: market_opinions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE market_opinions (
+    model character varying(20) NOT NULL,
+    page integer NOT NULL,
+    total integer,
+    opinion json
+);
+
+
+--
+-- TOC entry 1967 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: TABLE market_opinions; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE market_opinions IS 'Отзывы о товарах с Яндекс.Маркета';
+
+
+--
+-- TOC entry 1953 (class 0 OID 3662079)
+-- Dependencies: 171
+-- Data for Name: chlc; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY chlc (zone, ref, lc_changed, class_name, obj) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1952 (class 0 OID 3662074)
+-- Dependencies: 170
+-- Data for Name: chrefs; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY chrefs (zone, ref, lc_changed, class_name) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1954 (class 0 OID 3662087)
+-- Dependencies: 172
+-- Data for Name: chweb; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY chweb (zone, ref, lc_changed, class_name, obj) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1955 (class 0 OID 3662095)
+-- Dependencies: 173
+-- Data for Name: market_opinions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY market_opinions (model, page, total, opinion) FROM stdin;
+\.
+
+
+-- Completed on 2015-11-21 17:28:45
+
+--
+-- PostgreSQL database dump complete
+--
+
