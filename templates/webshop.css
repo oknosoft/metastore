@@ -132,6 +132,10 @@ div.gridbox_dhx_terrace.gridbox table.obj tr td {
 	padding: 8px;
 }
 
+.md_column320 h3 {
+	margin: 0 0 8px 0;
+}
+
 .md_column300 {
 	width: 24%;
 	min-width: 300px;
@@ -234,7 +238,7 @@ input.search {
 }
 
 .dhx_dataview_item {
-	font-family: Segoe UI, Tahoma, sans-serif;
+	font-family: Arial, sans-serif;
 	font-size: 16px;
 }
 
@@ -309,13 +313,13 @@ input.search {
 }
 
 .product_img {
-	height: 300px;
+	height: 320px;
 }
 
 .product_carousel {
 	position: relative;
-	width: 400px;
-	height: 430px;
+	width: 330px;
+	height: 350px;
 	border: none;
 }
 
@@ -327,18 +331,17 @@ input.search {
 	height: 14px;
 	background: url(imgs/rating.png)repeat-x;
 }
-fill-rating{
+.fill-rating{
 	background: url(imgs/rating-fill.png)repeat-x;
 }
-
-.rating .fill-rating, .rating[data-rating="0"] .fill-rating {
-	width: 0;
-}
+.rating .fill-rating, .rating[data-rating="0"] .fill-rating { width: 0; }
 .rating[data-rating="1"] .fill-rating {	width: 32px; }
 .rating[data-rating="2"] .fill-rating {	width: 32px; }
 .rating[data-rating="3"] .fill-rating {	width: 48px; }
 .rating[data-rating="4"] .fill-rating {	width: 64px; }
 .rating[data-rating="5"] .fill-rating {	width: 80px; }
+
+/* RATING */
 
 
 /* BUTTON */
@@ -382,6 +385,22 @@ fill-rating{
 	background-color: #b11116;
 }
 
+/* BUTTON */
+
+
+/* DATAGRID */
+div.gridbox_property table.obj td {
+	font-family: inherit;
+	font-size: inherit;
+
+}
+
+div.gridbox table.obj td {
+	border: 1px solid;
+	border-color: #fff #ccc #ccc #fff;
+}
+
+/* DATAGRID */
 
 @media (max-width: 1470px) {
 
@@ -406,9 +425,9 @@ fill-rating{
 		padding: 0;
 	}
 
-	.product_carousel {
-		width: 320px;
-		height: 340px;
+	div.gridbox_property table.obj td {
+		font-size: smaller;
+
 	}
 
 }

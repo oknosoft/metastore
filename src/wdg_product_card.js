@@ -68,8 +68,11 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			path: _cell.querySelector("[name=path]"),
 			main: new CardMain(_cell.querySelector("[name=main]")),
 			description: _cell.querySelector("[name=description]"),
+			properties: _cell.querySelector("[name=properties]"),
 			notes: _cell.querySelector("[name=notes]"),
-			download: _cell.querySelector("[name=download]")
+			download: _cell.querySelector("[name=download]"),
+			head_layout: null,
+			head_fields: null
 		},
 
 		// кнопка "вернуться к списку"
@@ -112,7 +115,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	function requery(ref){
 
 		// информацию про номенклатуру, полученную ранее используем сразу
-		var nom = $p.cat.Номенклатура.get(ref, false);
+		var nom = res.nom = $p.cat.Номенклатура.get(ref, false);
 		res.main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
@@ -158,6 +161,8 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 				_carousel.base.style.display = "none";
 				_img.style.display = "";
 			}
+
+			res.notes.innerHTML = '<p class="text">Пока нет ни одного комментария, ваш будет первым</p>';
 		};
 
 		// длинное обновление свойств после ответа сервера
@@ -200,12 +205,73 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 			}
 
+			// описание и свойства
+			if(nom.ФайлОписанияДляСайта.empty()){
+				// если у номенклатуры нет описания, скрываем блок
+				res.description.style.display = "none";
+			}else {
+				res.description.style.display = "";
+				$p.ajax.get("templates/product_descriptions/" + nom.ФайлОписанияДляСайта.ref + ".html")
+					.then(function (req) {
+						res.description.innerHTML = req.response;
+					})
+					.catch(function (err) {
+						$p.record_log(nom.ФайлОписанияДляСайта.ref)
+					});
+			}
+
+			// таблица реквизитов объекта
+			if(!res.head_layout){
+				res.head_layout = new dhtmlXLayoutObject({
+					parent:     res.properties,
+					pattern:    "1C",
+					offsets: {
+						top:    8,
+						right:  0,
+						bottom: 0,
+						left:   0
+					},
+					cells: [
+						{
+							id:     "a",
+							text:   "Свойства и категории",
+							header: false
+						}
+					]
+				});
+			}
+			if(res.head_fields)
+				res.head_layout.cells("a").detachObject(true);
+			res.head_fields = res.head_layout.cells("a").attachHeadFields({obj: nom});
+			res.head_fields.setEditable(false);
+
+			// запрашиваем у сокет-сервера отзывы с Маркета
+			$p.eve.socket.send({type: "opinion", model: nom.МаркетИд});
+
 		};
 
 		// подписываемся на событие изменения размера
 		dhx4.attachEvent("layout_resize", function (layout) {
 
 		});
+
+		// подписываемся на сообщения socket_msg
+		dhx4.attachEvent("socket_msg", function (data) {
+			if(!data || !data.rows || data.type != "opinion")
+				return;
+			data.rows.forEach(function (opinion) {
+				if(res.nom && opinion.model == res.nom.МаркетИд){
+					res.notes.innerHTML = '';
+					opinion.opinion.forEach(function (op) {
+						res.notes.innerHTML += '<p class="text">' + op.pro + '</p>';
+					});
+				}
+			});
+		});
+
+	}
+
+	function MarketOpinions(){
 
 	}
 
