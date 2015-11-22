@@ -10,7 +10,7 @@ index.html
 //cdn.jsdelivr.net/jquery.nouislider/latest/nouislider.min.js
 
 # Эти позиции включаем только в продакшене
-lib/metadata.min.js
+#lib/metadata.min.js
 
 data/create_tables.sql
 data/meta.json?v=201511010000
