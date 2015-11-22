@@ -66,8 +66,8 @@ div.dhxsidebar_item_text {
 	background-color: transparent;
 	border: 2px solid #cdcdcd;
 	border-radius: 5px;
-	-webkit-transition: color .25s ease, background-color .25s ease, border-color .25s ease;
-	transition: color .25s ease, background-color .25s ease, border-color .25s ease;
+	-webkit-transition: color .3s ease, background-color .3s ease, border-color .3s ease;
+	transition: color .3s ease, background-color .3s ease, border-color .3s ease;
 }
 
 .apex-icon-round i {
@@ -85,11 +85,21 @@ a.apex-icon-round:hover i {
 	border-color: #33cccc;
 }
 
+.apex-icon-1c {
+	background: url(imgs/fi1c.png);
+}
+a.apex-icon-round:hover i.apex-icon-1c, .apex-icon-1c:hover {
+	background: url(imgs/fi1csel.png);
+	transition: background .3s ease;
+}
+
 :before, :after {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
+/* APEX */
 
 .text-center {
 	text-align: center;
