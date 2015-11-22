@@ -69,7 +69,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			main: new CardMain(_cell.querySelector("[name=main]")),
 			description: _cell.querySelector("[name=description]"),
 			properties: _cell.querySelector("[name=properties]"),
-			notes: _cell.querySelector("[name=notes]"),
+			notes: new OMarketReviews(_cell.querySelector("[name=notes]")),
 			download: _cell.querySelector("[name=download]"),
 			head_layout: null,
 			head_fields: null
@@ -162,7 +162,8 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 				_img.style.display = "";
 			}
 
-			res.notes.innerHTML = '<p class="text">Пока нет ни одного комментария, ваш будет первым</p>';
+			// сбрасываем текст отзывов с маркета
+			res.notes.model = nom.МаркетИд;
 		};
 
 		// длинное обновление свойств после ответа сервера
@@ -245,8 +246,8 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			res.head_fields = res.head_layout.cells("a").attachHeadFields({obj: nom});
 			res.head_fields.setEditable(false);
 
-			// запрашиваем у сокет-сервера отзывы с Маркета
-			$p.eve.socket.send({type: "opinion", model: nom.МаркетИд});
+			// текст отзывов с маркета
+			res.notes.model = nom.МаркетИд;
 
 		};
 
@@ -255,25 +256,10 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		});
 
-		// подписываемся на сообщения socket_msg
-		dhx4.attachEvent("socket_msg", function (data) {
-			if(!data || !data.rows || data.type != "opinion")
-				return;
-			data.rows.forEach(function (opinion) {
-				if(res.nom && opinion.model == res.nom.МаркетИд){
-					res.notes.innerHTML = '';
-					opinion.opinion.forEach(function (op) {
-						res.notes.innerHTML += '<p class="text">' + op.pro + '</p>';
-					});
-				}
-			});
-		});
+
 
 	}
 
-	function MarketOpinions(){
-
-	}
 
 
 	// обработчик маршрутизации

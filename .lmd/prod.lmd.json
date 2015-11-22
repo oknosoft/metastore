@@ -10,6 +10,7 @@
       "src/wdg_range_slider.js",
       "src/wdg_product_card.js",
       "src/wdg_products_view.js",
+      "src/wdg_reviews.js",
       "src/init.js",
       "src/view_catalog.js",
       "src/view_cart.js",
