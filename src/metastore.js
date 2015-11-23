@@ -674,8 +674,8 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 	// указатель на хлебные крошки
 		path,
 
-	// указатель на dataview
-		dataview;
+	// указатель на dataview и параметры dataview
+		dataview, dataview_attr;
 
 
 	this.attachObject(layout);
@@ -766,7 +766,6 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 			div_dataview_outer = document.createElement('div');
 
 		// ODynDataView
-		require('templates')();
 		layout.appendChild(div_dataview_outer);
 		div_dataview_outer.appendChild(div_dataview);
 
@@ -775,25 +774,57 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		div_dataview_outer.style.height = div_dataview.style.height = _cell.offsetHeight + "px";
 		div_dataview_outer.style.width = div_dataview.style.width = _cell.offsetWidth + "px";
 
+		dataview_attr = {
+			container: div_dataview,
+			outer_container: div_dataview_outer,
+			type: "list",
+			custom_css: true,
+			autowidth: 1,
+			pager: {
+				container: div_pager,
+				size:30,
+				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
+			},
+			fields: ["ref", "name"],
+			selection: {},
+			hash_route : function (hprm) {
+				if(hprm.obj && dataview_attr.selection.ВидНоменклатуры != hprm.obj){
+
+					// обновляем вид номенклатуры и перевзводим таймер обновления
+					dataview_attr.selection.ВидНоменклатуры = hprm.obj;
+					dataview.lazy_timer();
+
+				}
+			}
+		};
 		dataview = dhtmlXCellObject.prototype.attachDynDataView(
 			{
 				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
 				class_name: "cat.Номенклатура"
-			},
-			{
-				container: div_dataview,
-				outer_container: div_dataview_outer,
-				type: "list",
-				custom_css: true,
-				autowidth: 1,
-				pager: {
-					container: div_pager,
-					size:30,
-					template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
-				},
-				fields: ["ref", "name"],
-				selection: {}
-			});
+			}, dataview_attr);
+
+		// обработчик события изменения текста в строке поиска
+		dhx4.attachEvent("search_text_change", function (text) {
+			// обновляем подстроку поиска и перевзводим таймер обновления
+			if(text)
+				dataview_attr.selection.text = function (){
+					return "text like '%25" + text + "%25'";
+				};
+			else if(dataview_attr.selection.hasOwnProperty("text"))
+				delete dataview_attr.selection.text;
+
+			dataview.lazy_timer();
+
+		});
+
+		dhx4.attachEvent("filter_prop_change", function (filter_prop) {
+
+			// обновляем подстроку поиска и перевзводим таймер обновления
+			dataview_attr.filter_prop = filter_prop;
+			dataview.lazy_timer();
+
+		});
+
 		// подключаем пагинацию
 		div_dataview_outer.appendChild(div_pager);
 
@@ -1115,7 +1146,7 @@ $p.iface.oninit = function() {
 			if(hprm.view != id)
 				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, id);
 
-			$p.iface["set_view_" + id]($p.iface.main.cells(id));
+			$p.iface["view_" + id]($p.iface.main.cells(id));
 
 		});
 
@@ -1184,7 +1215,7 @@ $p.eve.hash_route.push(function (hprm) {
  * @module  view_catalog
  */
 
-$p.iface.set_view_catalog = function (cell) {
+$p.iface.view_catalog = function (cell) {
 
 	// Динамический фильтр
 	function prop_filter(){
@@ -1242,7 +1273,7 @@ $p.iface.set_view_catalog = function (cell) {
 	}
 
 	// Разбивка в зависимости от типов устройств
-	function main_layout(){
+	function view_catalog(){
 
 		$p.iface._catalog = {};
 		if($p.device_type == "desktop"){
@@ -1347,9 +1378,9 @@ $p.iface.set_view_catalog = function (cell) {
 
 	// создаём элементы
 	if(!$p.iface._catalog)
-		main_layout();
+		view_catalog();
 
-
+	return $p.iface._catalog;
 };
 
 /* joined by builder */
@@ -1362,14 +1393,19 @@ $p.iface.set_view_catalog = function (cell) {
  * @module  view_cart
  */
 
-$p.iface.set_view_cart = function (cell) {
+$p.iface.view_cart = function (cell) {
 
-	if($p.iface._cart)
-		return;
+	function view_cart(){
+		$p.iface._cart = {};
+		cell.attachHTMLString(require("cart"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._cart = {};
-	cell.attachHTMLString(require("cart"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._cart)
+		view_cart();
+
+	return $p.iface._cart;
+
 
 };
 
@@ -1383,14 +1419,158 @@ $p.iface.set_view_cart = function (cell) {
  * @module  view_compare
  */
 
-$p.iface.set_view_compare = function (cell) {
+/**
+ * Показывает список просмотренных товаров + табы по видам номенклатуры с трансформом свойств
+ * @param cell {dhtmlXCellObject}
+ */
+$p.iface.view_compare = function (cell) {
 
-	if($p.iface._compare)
-		return;
 
-	$p.iface._compare = {
-		grid: cell.attachGrid()
+	function dyn_data_view(cell){
+
+		// пагинация
+		var div_pager = document.createElement('div'),
+
+		// контейнер dataview
+			div_dataview = document.createElement('div'),
+
+		// внешний контейнер dataview
+			div_dataview_outer = document.createElement('div'),
+
+		// внешний для внешнего контейнер dataview
+			container = document.createElement('div'),
+
+		// указатель на dataview и параметры dataview
+			dataview, dataview_attr;
+
+		cell.attachObject(container);
+		container.style.width = "100%";
+		container.style.height = "100%";
+
+		// ODynDataView
+		container.appendChild(div_dataview_outer);
+		div_dataview_outer.appendChild(div_dataview);
+
+		div_pager.classList.add("wb-tools");
+		div_dataview_outer.style.clear = "both";
+		div_dataview_outer.style.height = div_dataview.style.height = container.offsetHeight + "px";
+		div_dataview_outer.style.width = div_dataview.style.width = container.offsetWidth + "px";
+
+		dataview_attr = {
+			container: div_dataview,
+			outer_container: div_dataview_outer,
+			type: "list",
+			custom_css: true,
+			autowidth: 1,
+			pager: {
+				container: div_pager,
+				size:30,
+				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
+			},
+			fields: ["ref", "name"],
+			selection: {ref: {in: [""]}}
+		};
+
+		dataview = dhtmlXCellObject.prototype.attachDynDataView(
+			{
+				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
+				class_name: "cat.Номенклатура"
+			}, dataview_attr);
+		dataview.lazy_timer();
+
+		// подключаем пагинацию
+		div_dataview_outer.appendChild(div_pager);
+
+		// подключаем контекстное меню
+
+		// подписываемся на события dataview
+		dataview.attachEvent("onAfterSelect", function (id){
+			// your code here
+		});
+
+		dataview.attachEvent("onItemDblClick", function (id, ev, html){
+
+			var hprm = $p.job_prm.parse_url(),
+				dv_obj = ({})._mixin(dataview.get(id));
+			dv_obj.ref = dv_obj.id;
+			dv_obj.id = dv_obj.Код;
+			dv_obj.name = dv_obj.Наименование;
+			dv_obj._not_set_loaded = true;
+			delete dv_obj.Код;
+			delete dv_obj.Наименование;
+			$p.cat.Номенклатура.create(dv_obj)
+				.then(function (o) {
+					$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
+				});
+
+			return false;
+		});
+
+		// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
+		dhx4.attachEvent("layout_resize", function (layout) {
+			$p.record_log("");
+		});
+
+
 	};
+
+	function ViewCompare(){
+
+		var prefix = "view_compare_";
+
+		if(!cell)
+			cell = $p.iface.main.cells("compare");
+
+		/**
+		 * Добавляет номенклатуру в список просмотренных и дополнительно, в список к сравнению
+		 * @param ref {String} - ссылка номенклатуры
+		 * @param to_compare {Boolean} - добавлять не только в просмотренные, но и к сравнению
+		 */
+		this.add = function (ref, to_compare) {
+
+		};
+
+		/**
+		 * Удаляет номенклатуру из списка к сравнению и дополнительно, из списка просмотренных
+		 * @param ref {String} - ссылка номенклатуры
+		 * @param from_viewed {Boolean} - добавлять не только в просмотренные, но и к сравнению
+		 */
+		this.remove = function (ref, from_viewed) {
+
+		};
+
+		/**
+		 * Возвращает список просмотренных либо список к сравнению
+		 * @param type
+		 * @return {*}
+		 */
+		this.list = function (type) {
+			var list = $p.wsql.get_user_param(prefix + type, "object");
+			if(!Array.isArray(list)){
+				list = [];
+				$p.wsql.set_user_param(prefix + type, list);
+			}
+			return list;
+		};
+
+		this.tabs = cell.attachTabbar({
+			arrows_mode:    "auto",
+			tabs: [
+				{id: "viewed", text: '<i class="fa fa-eye"></i> Просмотренные', active: true},
+				{id: "filter", text: '<i class="fa fa-filter"></i> Фильтр'}
+			]
+		});
+
+
+		dyn_data_view(this.tabs.cells("viewed"));
+
+	}
+
+	if(!$p.iface._compare)
+		$p.iface._compare = new ViewCompare();
+
+	return $p.iface._compare;
+
 
 };
 
@@ -1404,13 +1584,17 @@ $p.iface.set_view_compare = function (cell) {
  * @module  view_orders
  */
 
-$p.iface.set_view_orders = function (cell) {
+$p.iface.view_orders = function (cell) {
 
-	if($p.iface._orders)
-		return;
+	function view_orders(){
+		$p.iface._orders = {};
+		cell.attachHTMLString("<div>Нет заказов</div>");
+	}
 
-	$p.iface._orders = {};
-	cell.attachHTMLString("<div>Нет заказов</div>");
+	if(!$p.iface._orders)
+		view_orders();
+
+	return $p.iface._orders;
 
 };
 
@@ -1424,94 +1608,96 @@ $p.iface.set_view_orders = function (cell) {
  * @module  view_settings
  */
 
-$p.iface.set_view_settings = function (cell) {
+$p.iface.view_settings = function (cell) {
 
-	if($p.iface._settings)
-		return;
+	function view_settings(){
+		$p.iface._settings = {};
+		cell.attachHTMLString(require('settings'));
+		$p.iface._settings._cell = cell.cell.querySelector(".dhx_cell_cont_sidebar");
+		$p.iface._settings._cell.style.overflow = "auto";
+		$p.iface._settings._form1 = $p.iface._settings._cell.querySelector("[name=form1]");
+		$p.iface._settings._form2 = $p.iface._settings._cell.querySelector("[name=form2]");
+		$p.iface._settings._form3 = $p.iface._settings._cell.querySelector("[name=form3]");
 
-	$p.iface._settings = {};
-	cell.attachHTMLString(require('settings'));
-	$p.iface._settings._cell = cell.cell.querySelector(".dhx_cell_cont_sidebar");
-	$p.iface._settings._cell.style.overflow = "auto";
-	$p.iface._settings._form1 = $p.iface._settings._cell.querySelector("[name=form1]");
-	$p.iface._settings._form2 = $p.iface._settings._cell.querySelector("[name=form2]");
-	$p.iface._settings._form3 = $p.iface._settings._cell.querySelector("[name=form3]");
+		$p.iface._settings.form1 = new dhtmlXForm($p.iface._settings._form1.firstChild, [
 
-	$p.iface._settings.form1 = new dhtmlXForm($p.iface._settings._form1.firstChild, [
+			{ type:"settings", labelWidth:80, position:"label-left"  },
 
-		{ type:"settings", labelWidth:80, position:"label-left"  },
+			{type: "label", labelWidth:320, label: "Тип устройства", className: "label_options"},
+			{ type:"block" , name:"form_block_2", list:[
+				{ type:"settings", labelAlign:"left", position:"label-right"  },
+				{ type:"radio" , name:"device_type", labelWidth:120, label:'<i class="fa fa-desktop"></i> Компьютер', value:"desktop"},
+				{ type:"newcolumn"   },
+				{ type:"radio" , name:"device_type", labelWidth:150, label:'<i class="fa fa-mobile fa-lg"></i> Телефон, планшет', value:"phone"},
+			]  },
+			{type:"template", label:"",value:"",
+				note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 320}},
 
-		{type: "label", labelWidth:320, label: "Тип устройства", className: "label_options"},
-		{ type:"block" , name:"form_block_2", list:[
-			{ type:"settings", labelAlign:"left", position:"label-right"  },
-			{ type:"radio" , name:"device_type", labelWidth:120, label:'<i class="fa fa-desktop"></i> Компьютер', value:"desktop"},
-			{ type:"newcolumn"   },
-			{ type:"radio" , name:"device_type", labelWidth:150, label:'<i class="fa fa-mobile fa-lg"></i> Телефон, планшет', value:"phone"},
-		]  },
-		{type:"template", label:"",value:"",
-			note: {text: "Класс устройства определяется автоматически, но пользователь может задать его явно", width: 320}},
+			{type: "label", labelWidth:320, label: "Вариант оформления интерфейса", className: "label_options"},
+			{type:"combo" , inputWidth: 220, name:"skin", label:"Скин", options:[
+				{value: "dhx_web", text: "Web"},
+				{value: "dhx_terrace", text: "Terrace"}
+			]},
+			{type:"template", label:"",value:"",
+				note: {text: "Дополнительные свойства оформления можно задать в css", width: 320}},
 
-		{type: "label", labelWidth:320, label: "Вариант оформления интерфейса", className: "label_options"},
-		{type:"combo" , inputWidth: 220, name:"skin", label:"Скин", options:[
-			{value: "dhx_web", text: "Web"},
-			{value: "dhx_terrace", text: "Terrace"}
-		]},
-		{type:"template", label:"",value:"",
-			note: {text: "Дополнительные свойства оформления можно задать в css", width: 320}},
+			{type: "label", labelWidth:320, label: "Адрес http сервиса 1С", className: "label_options"},
+			{type:"input" , inputWidth: 220, name:"rest_path", label:"Путь", validate:"NotEmpty"},
+			{type:"template", label:"",value:"",
+				note: {text: "Можно указать как относительный, так и абсолютный URL публикации 1С OData. " +
+				"О настройке кроссдоменных запросов к 1С <a href='#'>см. здесь</a>", width: 320}},
 
-		{type: "label", labelWidth:320, label: "Адрес http сервиса 1С", className: "label_options"},
-		{type:"input" , inputWidth: 220, name:"rest_path", label:"Путь", validate:"NotEmpty"},
-		{type:"template", label:"",value:"",
-			note: {text: "Можно указать как относительный, так и абсолютный URL публикации 1С OData. " +
-			"О настройке кроссдоменных запросов к 1С <a href='#'>см. здесь</a>", width: 320}},
+			{type: "label", labelWidth:320, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
+			{type:"input" , inputWidth: 220, name:"zone", label:"Зона", numberFormat: ["0", "", ""], validate:"NotEmpty,ValidInteger"},
+			{type:"template", label:"",value:"",
+				note: {text: "Для неразделенной публикации, зона = 0", width: 320}}
 
-		{type: "label", labelWidth:320, label: "Значение разделителя публикации 1С fresh", className: "label_options"},
-		{type:"input" , inputWidth: 220, name:"zone", label:"Зона", numberFormat: ["0", "", ""], validate:"NotEmpty,ValidInteger"},
-		{type:"template", label:"",value:"",
-			note: {text: "Для неразделенной публикации, зона = 0", width: 320}}
+		]);
 
-	]);
+		$p.iface._settings.form2 = new dhtmlXForm($p.iface._settings._form2.firstChild, [
 
-	$p.iface._settings.form2 = new dhtmlXForm($p.iface._settings._form2.firstChild, [
+			{ type:"settings", labelWidth:80, position:"label-left"  },
 
-		{ type:"settings", labelWidth:80, position:"label-left"  },
-
-		{type: "label", labelWidth:320, label: "Доступные закладки", className: "label_options"},
-		{
-			type:"container",
-			name: "views",
-			inputWidth: 320,
-			inputHeight: 320
-		},
-		{type:"template", label:"",value:"",
-			note: {text: "Видимость и порядок закладок навигации", width: 320}},
+			{type: "label", labelWidth:320, label: "Доступные закладки", className: "label_options"},
+			{
+				type:"container",
+				name: "views",
+				inputWidth: 320,
+				inputHeight: 320
+			},
+			{type:"template", label:"",value:"",
+				note: {text: "Видимость и порядок закладок навигации", width: 320}},
 
 
-	]);
+		]);
 
-	$p.iface._settings.form3 = new dhtmlXForm($p.iface._settings._form3.firstChild, [
+		$p.iface._settings.form3 = new dhtmlXForm($p.iface._settings._form3.firstChild, [
 
-		{ type:"settings", labelWidth:80, position:"label-left"  },
-		{type: "button", name: "save", value: "Применить настройки", offsetTop: 20}
+			{ type:"settings", labelWidth:80, position:"label-left"  },
+			{type: "button", name: "save", value: "Применить настройки", offsetTop: 20}
 
-	]);
+		]);
 
-	$p.iface._settings.form1.checkItem("device_type", $p.wsql.get_user_param("device_type"));
-
-
-	["zone", "skin", "rest_path"].forEach(function (prm) {
-		$p.iface._settings.form1.setItemValue(prm, $p.wsql.get_user_param(prm));
-	});
-
-	$p.iface._settings.form1.attachEvent("onChange", function (name, value, state){
-		$p.wsql.set_user_param(name, value);
-	});
-
-	$p.iface._settings.form3.attachEvent("onButtonClick", function(name){
-		location.reload();
-	});
+		$p.iface._settings.form1.checkItem("device_type", $p.wsql.get_user_param("device_type"));
 
 
+		["zone", "skin", "rest_path"].forEach(function (prm) {
+			$p.iface._settings.form1.setItemValue(prm, $p.wsql.get_user_param(prm));
+		});
+
+		$p.iface._settings.form1.attachEvent("onChange", function (name, value, state){
+			$p.wsql.set_user_param(name, value);
+		});
+
+		$p.iface._settings.form3.attachEvent("onButtonClick", function(name){
+			location.reload();
+		});
+	}
+
+	if(!$p.iface._settings)
+		view_settings();
+
+	return $p.iface._settings;
 
 
 };
@@ -1526,14 +1712,18 @@ $p.iface.set_view_settings = function (cell) {
  * @module  view_user
  */
 
-$p.iface.set_view_user = function (cell) {
+$p.iface.view_user = function (cell) {
 
-	if($p.iface._user)
-		return;
+	function view_user(){
+		$p.iface._user = {};
+		cell.attachHTMLString(require("user"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._user = {};
-	cell.attachHTMLString(require("user"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._user)
+		view_user();
+
+	return $p.iface._user;
 
 };
 
@@ -1547,15 +1737,19 @@ $p.iface.set_view_user = function (cell) {
  * @module  view_content
  */
 
-$p.iface.set_view_content = function (cell) {
+$p.iface.view_content = function (cell) {
 
-	if($p.iface._content)
-		return;
+	function view_content(){
+		// http://html.metaphorcreations.com/apex/
+		$p.iface._content = {};
+		cell.attachHTMLString(require("content"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	// http://html.metaphorcreations.com/apex/
-	$p.iface._content = {};
-	cell.attachHTMLString(require("content"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._content)
+		view_content();
+
+	return $p.iface._content;
 
 };
 
@@ -1569,14 +1763,18 @@ $p.iface.set_view_content = function (cell) {
  * @module  view_about
  */
 
-$p.iface.set_view_about = function (cell) {
+$p.iface.view_about = function (cell) {
 
-	if($p.iface._about)
-		return;
+	function view_about(){
+		$p.iface._about = {};
+		cell.attachHTMLString(require('about'));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._about = {};
-	cell.attachHTMLString(require('about'));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._about)
+		view_about();
+
+	return $p.iface._about;
 
 };
 

@@ -145,7 +145,7 @@ $p.iface.oninit = function() {
 			if(hprm.view != id)
 				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, id);
 
-			$p.iface["set_view_" + id]($p.iface.main.cells(id));
+			$p.iface["view_" + id]($p.iface.main.cells(id));
 
 		});
 

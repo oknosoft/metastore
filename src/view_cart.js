@@ -7,13 +7,18 @@
  * @module  view_cart
  */
 
-$p.iface.set_view_cart = function (cell) {
+$p.iface.view_cart = function (cell) {
 
-	if($p.iface._cart)
-		return;
+	function view_cart(){
+		$p.iface._cart = {};
+		cell.attachHTMLString(require("cart"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._cart = {};
-	cell.attachHTMLString(require("cart"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._cart)
+		view_cart();
+
+	return $p.iface._cart;
+
 
 };

@@ -7,12 +7,16 @@
  * @module  view_orders
  */
 
-$p.iface.set_view_orders = function (cell) {
+$p.iface.view_orders = function (cell) {
 
-	if($p.iface._orders)
-		return;
+	function view_orders(){
+		$p.iface._orders = {};
+		cell.attachHTMLString("<div>Нет заказов</div>");
+	}
 
-	$p.iface._orders = {};
-	cell.attachHTMLString("<div>Нет заказов</div>");
+	if(!$p.iface._orders)
+		view_orders();
+
+	return $p.iface._orders;
 
 };
