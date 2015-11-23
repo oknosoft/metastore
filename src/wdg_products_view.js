@@ -230,6 +230,7 @@ $p.iface.CatalogPath = function CatalogPath(parent, onclick){
 	var id = undefined,
 		div = document.createElement('div');
 	div.className = "catalog_path";
+	parent.appendChild(div);
 
 	// Обработчик маршрутизации
 	function hash_route (hprm) {
@@ -275,8 +276,6 @@ $p.iface.CatalogPath = function CatalogPath(parent, onclick){
 
 		}
 	};
-
-	parent.appendChild(div);
 
 	// подписываемся на событие hash_route
 	$p.eve.hash_route.push(hash_route);
