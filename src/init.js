@@ -24,7 +24,7 @@ $p.settings = function (prm, modifiers) {
 	prm.rest_path = "/a/ut11/%1/odata/standard.odata/";
 
 	// расположение socket-сервера
-	prm.ws_url = "ws://localhost:8001";
+	//prm.ws_url = "ws://localhost:8001";
 
 	// по умолчанию, обращаемся к зоне %%%
 	prm.zone = 0;
@@ -87,9 +87,6 @@ $p.iface.oninit = function() {
 		// гасим заставку
 		document.body.removeChild(document.querySelector("#webshop_splash"));
 
-		// шаблоны ODynDataView инициализируем сразу
-		require('templates')();
-
 		// при первой возможности создаём layout
 		if($p.device_type == "desktop"){
 
@@ -135,7 +132,7 @@ $p.iface.oninit = function() {
 			});
 		}
 
-
+		// подписываемся на событие навигации по сайдбару
 		$p.iface.main.attachEvent("onSelect", function(id){
 
 			if($p.device_type == "desktop")
@@ -149,13 +146,29 @@ $p.iface.oninit = function() {
 
 		});
 
+		// шаблоны ODynDataView инициализируем сразу
+		require('templates')();
+
+		// еще, сразу инициализируем класс OViewCompare, т.к. в нём живут обработчики добавления в корзину и история просмотров
+		// и класс OViewCart, чтобы обрабатывать события добавления в корзину
+		setTimeout(function () {
+			$p.iface.view_compare($p.iface.main.cells("compare"));
+			$p.iface.view_cart($p.iface.main.cells("cart"));
+		}, 50);
+
 		hprm = $p.job_prm.parse_url();
-		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1)
-			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
-		else
+		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1){
+			var last_hprm = $p.wsql.get_user_param("last_hash_url", "object");
+			if(last_hprm)
+				$p.iface.set_hash(last_hprm.obj, last_hprm.ref, last_hprm.frm, last_hprm.view || "catalog");
+			else
+				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
+		} else
 			setTimeout($p.iface.hash_route, 10);
 	}
 
+	// подписываемся на событие геолокатора
+	// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
 	function geo_current_position(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar){
 			var tb = $p.iface.main.getAttachedToolbar();
@@ -165,8 +178,6 @@ $p.iface.oninit = function() {
 			}
 		}
 	}
-
-	// подписываемся на событие геолокатора
 	dhx4.attachEvent("geo_current_position", function(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar)
 			geo_current_position(pos);
@@ -174,6 +185,11 @@ $p.iface.oninit = function() {
 			setTimeout(function () {
 				geo_current_position(pos);
 			}, 3000);
+	});
+
+	// подписываемся на событие при закрытии страницы - запоминаем последний hash_url
+	window.addEventListener("beforeunload", function () {
+		$p.wsql.set_user_param("last_hash_url", $p.job_prm.parse_url())
 	});
 
 

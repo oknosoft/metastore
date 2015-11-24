@@ -13,6 +13,11 @@ $p.iface.view_cart = function (cell) {
 		$p.iface._cart = {};
 		cell.attachHTMLString(require("cart"));
 		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+
+		// подписываемся на событие добавления в корзину
+		dhx4.attachEvent("order_cart", function (nom) {
+			$p.record_log("");
+		});
 	}
 
 	if(!$p.iface._cart)

@@ -7410,7 +7410,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"ГрафикиОплаты": {
@@ -8033,7 +8032,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"property_values": {
@@ -8342,7 +8340,7 @@
 					}
 				}
 			},
-			"cachable": false
+			"hide": true
 		},
 		"КлассификаторБанковРФ": {
 			"name": "КлассификаторБанковРФ",
@@ -8835,7 +8833,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"НаборыДополнительныхРеквизитовИСведений": {
@@ -11171,7 +11168,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"ПартнерыПрисоединенныеФайлы": {
@@ -11875,7 +11871,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"Проекты": {
@@ -15976,174 +15971,6 @@
 			"cachable": false,
 			"hide": true
 		},
-		"ВидыЦенПоставщиков": {
-			"name": "ВидыЦенПоставщиков",
-			"synonym": "Виды цен поставщиков",
-			"illustration": "Виды цен партнера (поставщика или конкурента)",
-			"obj_presentation": "Вид цены поставщика",
-			"list_presentation": "Виды цен поставщиков",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": false,
-			"has_owners": true,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {
-				"Валюта": {
-					"synonym": "Валюта",
-					"multiline_mode": false,
-					"tooltip": "Валюта, в которой определяются фиксированные цены, сумма продаж",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Валюты"
-						],
-						"is_ref": true
-					}
-				},
-				"ЦенаВключаетНДС": {
-					"synonym": "Цена включает НДС",
-					"multiline_mode": false,
-					"tooltip": "Признак включения НДС в цену и сумму документа",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ДоступноДляЗакупки": {
-					"synonym": "Доступен для закупки",
-					"multiline_mode": false,
-					"tooltip": "Признак, определяющий возможность выбора данного вида цены в документах закупки",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ДоступноДляПродажиКлиентам": {
-					"synonym": "Доступен для клиентов (поставщик является конкурентом)",
-					"multiline_mode": false,
-					"tooltip": "Признак, по которому можно отфильтровать данные в отчетах",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"РеквизитДопУпорядочивания": {
-					"synonym": "Реквизит доп упорядочивания",
-					"multiline_mode": false,
-					"tooltip": "Используется для упорядочивания видов цен в списках и отчетах",
-					"type": {
-						"types": [
-							"number"
-						],
-						"digits": 5,
-						"fraction_figits": 0
-					}
-				},
-				"owner": {
-					"synonym": "Поставщик",
-					"multiline_mode": false,
-					"tooltip": "Соглашение с поставщиком, для которого задается условие цены",
-					"type": {
-						"types": [
-							"cat.СоглашенияСПоставщиками",
-							"cat.Партнеры"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {
-				"extra_fields": {
-					"name": "ДополнительныеРеквизиты",
-					"synonym": "Дополнительные реквизиты",
-					"tooltip": "",
-					"fields": {
-						"property": {
-							"synonym": "Свойство",
-							"multiline_mode": false,
-							"tooltip": "Дополнительный реквизит",
-							"choice_groups_elm": "elm",
-							"type": {
-								"types": [
-									"cch.properties"
-								],
-								"is_ref": true
-							}
-						},
-						"value": {
-							"synonym": "Значение",
-							"multiline_mode": false,
-							"tooltip": "Значение дополнительного реквизита",
-							"choice_links": [
-								{
-									"name": [
-										"selection",
-										"owner"
-									],
-									"path": [
-										"extra_fields",
-										"property"
-									]
-								}
-							],
-							"choice_groups_elm": "elm",
-							"type": {
-								"types": [
-									"cat.Номенклатура",
-									"cch.СтатьиРасходов",
-									"cat.Валюты",
-									"cat.СегментыПартнеров",
-									"cat.ДоговорыКонтрагентов",
-									"cat.property_values_hierarchy",
-									"cat.Организации",
-									"cat.СтруктураПредприятия",
-									"boolean",
-									"cat.Пользователи",
-									"cat.property_values",
-									"cat.СтатьиДвиженияДенежныхСредств",
-									"cat.Контрагенты",
-									"cat.Файлы",
-									"cat.Партнеры",
-									"string",
-									"date",
-									"cat.ГруппыФинансовогоУчетаНоменклатуры",
-									"cat.СтраныМира",
-									"number",
-									"cat.НаправленияДеятельности",
-									"cch.СтатьиДоходов",
-									"cat.ФизическиеЛица",
-									"cat.СегментыНоменклатуры",
-									"cat.Проекты",
-									"cat.Склады"
-								],
-								"is_ref": true,
-								"str_len": 1024,
-								"date_part": "date_time",
-								"digits": 15,
-								"fraction_figits": 3
-							}
-						},
-						"ТекстоваяСтрока": {
-							"synonym": "Текстовая строка",
-							"multiline_mode": false,
-							"tooltip": "Полный текст строкового дополнительного реквизита",
-							"type": {
-								"types": [
-									"string"
-								],
-								"str_len": 0
-							}
-						}
-					}
-				}
-			}
-		},
 		"УчетныеЗаписиЭлектроннойПочты": {
 			"name": "УчетныеЗаписиЭлектроннойПочты",
 			"synonym": "Учетные записи электронной почты",
@@ -17153,7 +16980,6 @@
 					}
 				}
 			},
-			"cachable": false,
 			"hide": true
 		},
 		"ХарактеристикиНоменклатуры": {
@@ -17446,7 +17272,6 @@
 				}
 			},
 			"tabular_sections": {},
-			"cachable": false,
 			"hide": true
 		},
 		"ДоговорыКредитовИДепозитов": {
@@ -19513,24 +19338,6 @@
 		}
 	},
 	"doc": {
-		"РеализацияПодарочныхСертификатов": {
-			"name": "РеализацияПодарочныхСертификатов",
-			"synonym": "Реализация подарочных сертификатов",
-			"illustration": "",
-			"obj_presentation": "",
-			"list_presentation": "",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {},
-			"tabular_sections": {},
-			"hide": true
-		},
 		"ЗаказКлиента": {
 			"name": "ЗаказКлиента",
 			"synonym": "Заказ клиента",
@@ -21402,12 +21209,12 @@
 				}
 			}
 		},
-		"АктВыполненныхРабот": {
-			"name": "АктВыполненныхРабот",
-			"synonym": "Акт выполненных работ для клиента",
-			"illustration": "Документы, фиксирующие факт выполнения работ (оказания услуг) предприятием",
-			"obj_presentation": "Акт выполненных работ",
-			"list_presentation": "Акты выполненных работ",
+		"ВозвратТоваровОтКлиента": {
+			"name": "ВозвратТоваровОтКлиента",
+			"synonym": "Возврат товаров от клиента",
+			"illustration": "Возвраты товаров от клиентов",
+			"obj_presentation": "Возврат товаров от клиента",
+			"list_presentation": "Возвраты товаров от клиентов",
 			"input_by_string": [
 				"number_doc"
 			],
@@ -21418,24 +21225,6 @@
 			"code_length": 0,
 			"fields": {},
 			"tabular_sections": {}
-		},
-		"ЗаказПоставщику": {
-			"name": "ЗаказПоставщику",
-			"synonym": "Заказ поставщику",
-			"illustration": "Запрос на поставку определенного количества товара к указанной дате или на предоставление требуемого объема услуг по определенной цене.",
-			"obj_presentation": "Заказ поставщику",
-			"list_presentation": "Заказы поставщикам",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {},
-			"tabular_sections": {},
-			"hide": true
 		},
 		"КоммерческоеПредложениеКлиенту": {
 			"name": "КоммерческоеПредложениеКлиенту",
@@ -21455,6 +21244,7 @@
 			"tabular_sections": {}
 		},
 		"ОперацияПоПлатежнойКарте": {
+          "irest": true,
 			"name": "ОперацияПоПлатежнойКарте",
 			"synonym": "Операция по платежной карте",
 			"illustration": "Регистрация оплаты клиентами с использованием платежных карт ",
@@ -21547,42 +21337,6 @@
 			"illustration": "Документы, отражающие выдачу наличных денежных средств из касс предприятия",
 			"obj_presentation": "",
 			"list_presentation": "Расходные кассовые ордера",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {},
-			"tabular_sections": {},
-			"hide": true
-		},
-		"РеализацияУслугПрочихАктивов": {
-			"name": "РеализацияУслугПрочихАктивов",
-			"synonym": "Реализация услуг и прочих активов",
-			"illustration": "Документы, фиксирующие факты продажи внеоборотных активов (ОС и НМА) и оказания услуг по неосновной деятельности (субаренда и т.д.)",
-			"obj_presentation": "Реализация услуг и прочих активов",
-			"list_presentation": "Реализации услуг и прочих активов",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {},
-			"tabular_sections": {},
-			"hide": true
-		},
-		"СверкаВзаиморасчетов": {
-			"name": "СверкаВзаиморасчетов",
-			"synonym": "Сверка взаиморасчетов",
-			"illustration": "",
-			"obj_presentation": "",
-			"list_presentation": "Сверки взаиморасчетов",
 			"input_by_string": [
 				"number_doc"
 			],

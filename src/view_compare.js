@@ -101,15 +101,12 @@ $p.iface.view_compare = function (cell) {
 
 	};
 
-	function ViewCompare(){
+	function OViewCompare(){
 
 		var t = this,
 			prefix = "view_compare_",
 			dataview_viewed,
 			changed;
-
-		if(!cell)
-			cell = $p.iface.main.cells("compare");
 
 		/**
 		 * Добавляет номенклатуру в список просмотренных и дополнительно, в список к сравнению
@@ -125,10 +122,10 @@ $p.iface.view_compare = function (cell) {
 			var list = this.list("viewed"),
 				do_requery = false;
 
-			function push(){
+			function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
-					$p.wsql.set_user_param(prefix + "viewed", list);
+					$p.wsql.set_user_param(prefix + to_compare ? "compare" : "viewed", list);
 					do_requery = true;
 				}
 			}
@@ -137,7 +134,7 @@ $p.iface.view_compare = function (cell) {
 
 			if(to_compare){
 				list = this.list("compare");
-				push();
+				push(to_compare);
 			}
 
 			if(do_requery)
@@ -184,6 +181,12 @@ $p.iface.view_compare = function (cell) {
 
 		dataview_viewed = dyn_data_view(this.tabs.cells("viewed"));
 
+		// подписываемся на событие добавления к сравнению
+		dhx4.attachEvent("order_compare", function (nom) {
+			if(nom && !$p.is_empty_guid(nom.ref))
+				t.add(nom.ref, true);
+		});
+
 
 		// Обработчик маршрутизации
 		function hash_route(hprm){
@@ -214,7 +217,7 @@ $p.iface.view_compare = function (cell) {
 	}
 
 	if(!$p.iface._compare)
-		$p.iface._compare = new ViewCompare();
+		$p.iface._compare = new OViewCompare();
 
 	return $p.iface._compare;
 

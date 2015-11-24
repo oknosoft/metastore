@@ -529,7 +529,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// длинное обновление свойств после ответа сервера
 		this.requery_long = function (nom) {
-			var files = JSON.parse(nom.Файлы);
+			var files = JSON.parse(nom.Файлы || "[]");
 
 			if(files.length){
 				// удаляем страницы карусели
@@ -614,9 +614,16 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// подписываемся на событие изменения размера
 		dhx4.attachEvent("layout_resize", function (layout) {
-
+			$p.record_log("");
 		});
 
+		// навешиваем обработчики на кнопки
+		function btn_msg(){
+			dhx4.callEvent(this.name, [res.nom]);
+		}
+		["order_cart", "order_compare"].forEach(function (name) {
+			cell.querySelector("[name=" + name + "]").onclick = btn_msg;
+		})
 
 
 	}
@@ -1024,7 +1031,7 @@ $p.settings = function (prm, modifiers) {
 	prm.rest_path = "/a/ut11/%1/odata/standard.odata/";
 
 	// расположение socket-сервера
-	prm.ws_url = "ws://localhost:8001";
+	//prm.ws_url = "ws://localhost:8001";
 
 	// по умолчанию, обращаемся к зоне %%%
 	prm.zone = 0;
@@ -1087,9 +1094,6 @@ $p.iface.oninit = function() {
 		// гасим заставку
 		document.body.removeChild(document.querySelector("#webshop_splash"));
 
-		// шаблоны ODynDataView инициализируем сразу
-		require('templates')();
-
 		// при первой возможности создаём layout
 		if($p.device_type == "desktop"){
 
@@ -1135,7 +1139,7 @@ $p.iface.oninit = function() {
 			});
 		}
 
-
+		// подписываемся на событие навигации по сайдбару
 		$p.iface.main.attachEvent("onSelect", function(id){
 
 			if($p.device_type == "desktop")
@@ -1149,13 +1153,29 @@ $p.iface.oninit = function() {
 
 		});
 
+		// шаблоны ODynDataView инициализируем сразу
+		require('templates')();
+
+		// еще, сразу инициализируем класс OViewCompare, т.к. в нём живут обработчики добавления в корзину и история просмотров
+		// и класс OViewCart, чтобы обрабатывать события добавления в корзину
+		setTimeout(function () {
+			$p.iface.view_compare($p.iface.main.cells("compare"));
+			$p.iface.view_cart($p.iface.main.cells("cart"));
+		}, 50);
+
 		hprm = $p.job_prm.parse_url();
-		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1)
-			$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
-		else
+		if(!hprm.view || $p.iface.main.getAllItems().indexOf(hprm.view) == -1){
+			var last_hprm = $p.wsql.get_user_param("last_hash_url", "object");
+			if(last_hprm)
+				$p.iface.set_hash(last_hprm.obj, last_hprm.ref, last_hprm.frm, last_hprm.view || "catalog");
+			else
+				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
+		} else
 			setTimeout($p.iface.hash_route, 10);
 	}
 
+	// подписываемся на событие геолокатора
+	// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
 	function geo_current_position(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar){
 			var tb = $p.iface.main.getAttachedToolbar();
@@ -1165,8 +1185,6 @@ $p.iface.oninit = function() {
 			}
 		}
 	}
-
-	// подписываемся на событие геолокатора
 	dhx4.attachEvent("geo_current_position", function(pos){
 		if($p.iface.main && $p.iface.main.getAttachedToolbar)
 			geo_current_position(pos);
@@ -1174,6 +1192,11 @@ $p.iface.oninit = function() {
 			setTimeout(function () {
 				geo_current_position(pos);
 			}, 3000);
+	});
+
+	// подписываемся на событие при закрытии страницы - запоминаем последний hash_url
+	window.addEventListener("beforeunload", function () {
+		$p.wsql.set_user_param("last_hash_url", $p.job_prm.parse_url())
 	});
 
 
@@ -1398,6 +1421,11 @@ $p.iface.view_cart = function (cell) {
 		$p.iface._cart = {};
 		cell.attachHTMLString(require("cart"));
 		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+
+		// подписываемся на событие добавления в корзину
+		dhx4.attachEvent("order_cart", function (nom) {
+			$p.record_log("");
+		});
 	}
 
 	if(!$p.iface._cart)
@@ -1512,15 +1540,12 @@ $p.iface.view_compare = function (cell) {
 
 	};
 
-	function ViewCompare(){
+	function OViewCompare(){
 
 		var t = this,
 			prefix = "view_compare_",
 			dataview_viewed,
 			changed;
-
-		if(!cell)
-			cell = $p.iface.main.cells("compare");
 
 		/**
 		 * Добавляет номенклатуру в список просмотренных и дополнительно, в список к сравнению
@@ -1536,10 +1561,10 @@ $p.iface.view_compare = function (cell) {
 			var list = this.list("viewed"),
 				do_requery = false;
 
-			function push(){
+			function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
-					$p.wsql.set_user_param(prefix + "viewed", list);
+					$p.wsql.set_user_param(prefix + to_compare ? "compare" : "viewed", list);
 					do_requery = true;
 				}
 			}
@@ -1548,7 +1573,7 @@ $p.iface.view_compare = function (cell) {
 
 			if(to_compare){
 				list = this.list("compare");
-				push();
+				push(to_compare);
 			}
 
 			if(do_requery)
@@ -1595,6 +1620,12 @@ $p.iface.view_compare = function (cell) {
 
 		dataview_viewed = dyn_data_view(this.tabs.cells("viewed"));
 
+		// подписываемся на событие добавления к сравнению
+		dhx4.attachEvent("order_compare", function (nom) {
+			if(nom && !$p.is_empty_guid(nom.ref))
+				t.add(nom.ref, true);
+		});
+
 
 		// Обработчик маршрутизации
 		function hash_route(hprm){
@@ -1625,7 +1656,7 @@ $p.iface.view_compare = function (cell) {
 	}
 
 	if(!$p.iface._compare)
-		$p.iface._compare = new ViewCompare();
+		$p.iface._compare = new OViewCompare();
 
 	return $p.iface._compare;
 
@@ -1643,13 +1674,112 @@ $p.iface.view_compare = function (cell) {
 
 $p.iface.view_orders = function (cell) {
 
-	function view_orders(){
-		$p.iface._orders = {};
-		cell.attachHTMLString("<div>Нет заказов</div>");
+	function OViewOrders(){
+
+		var t = this,
+			attr = {url: ""},
+			def_prm = {
+				hide_header: true,
+				date_from: new Date("2012-01-01")
+			};
+
+		t.tabs = cell.attachTabbar({
+			arrows_mode:    "auto",
+			tabs: [
+				{id: "orders", text: '<i class="fa fa-suitcase"></i> Заказы', active: true},
+				{id: "pays", text: '<i class="fa fa-money"></i> Оплаты'},
+				{id: "shipments", text: '<i class="fa fa-shopping-bag"></i> Продажи'},
+				{id: "balance", text: '<i class="fa fa-balance-scale"></i> Баланс'}
+			]
+		});
+
+		$p.rest.build_select(attr, {
+			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СправочникиПользователя/",
+			class_name: "cat.Пользователи"
+		});
+		$p.ajax.get_ex(attr.url, attr)
+			.then(function (req) {
+				$p.eve.from_json_to_data_obj(req);
+			})
+			.then(function (data) {
+				t.orders = $p.doc.ЗаказКлиента.form_list(t.tabs.cells("orders"), def_prm);
+			})
+			.catch(function (err) {
+				$p.record_log(err);
+			});
+
+		// обработчик при изменении закладки таббара
+		t.tabs.attachEvent("onSelect", function (id) {
+			if(!t[id]){
+				if(id == "pays"){
+					t[id] = t.tabs.cells(id).attachTabbar({
+						arrows_mode:    "auto",
+						tabs: [
+							{id: "bank", text: '<i class="fa fa-university"></i> Банк'},
+							{id: "card", text: '<i class="fa fa-credit-card"></i> Карта'},
+							{id: "cache", text: '<i class="fa fa-money"></i> Наличные'},
+							{id: "refunds", text: '<i class="fa fa-undo"></i></i> Возвраты'}
+						]
+					});
+
+					t[id].attachEvent("onSelect", function (subid) {
+						if(!t[id + "_" + subid]) {
+							if (subid == "bank") {
+								t[id + "_" + subid] = $p.doc.ПоступлениеБезналичныхДенежныхСредств.form_list(t[id].cells(subid), def_prm);
+
+							}else if(subid == "card") {
+								t[id + "_" + subid] = $p.doc.ОперацияПоПлатежнойКарте.form_list(t[id].cells(subid), def_prm);
+
+							}else if(subid == "cache") {
+								t[id + "_" + subid] = $p.doc.ПриходныйКассовыйОрдер.form_list(t[id].cells(subid), def_prm);
+
+							}else if(subid == "refunds") {
+								t[id + "_" + subid] = $p.doc.РасходныйКассовыйОрдер.form_list(t[id].cells(subid), def_prm);
+
+							}
+						}
+						return true;
+					});
+
+					t[id].cells("bank").setActive();
+
+				}else if(id == "shipments"){
+
+					t[id] = t.tabs.cells(id).attachTabbar({
+						arrows_mode:    "auto",
+						tabs: [
+							{id: "shipments", text: '<i class="fa fa-truck"></i> Отгрузки'},
+							{id: "refunds", text: '<i class="fa fa-undo"></i></i> Возвраты'}
+						]
+					});
+
+					t[id].attachEvent("onSelect", function (subid) {
+						if(!t[id + "_" + subid]) {
+							if (subid == "shipments") {
+								t[id + "_" + subid] = $p.doc.РеализацияТоваровУслуг.form_list(t[id].cells(subid), def_prm);
+
+							}else if(subid == "refunds") {
+								t[id + "_" + subid] = $p.doc.ВозвратТоваровОтКлиента.form_list(t[id].cells(subid), def_prm);
+
+							}
+						}
+						return true;
+					});
+
+					t[id].cells("shipments").setActive();
+
+				}else if(id == "balance"){
+
+
+				}
+			};
+			return true;
+		});
+
 	}
 
 	if(!$p.iface._orders)
-		view_orders();
+		$p.iface._orders = new OViewOrders();
 
 	return $p.iface._orders;
 
