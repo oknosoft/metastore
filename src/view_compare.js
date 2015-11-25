@@ -14,92 +14,7 @@
 $p.iface.view_compare = function (cell) {
 
 
-	function dyn_data_view(cell){
 
-		// пагинация
-		var div_pager = document.createElement('div'),
-
-		// контейнер dataview
-			div_dataview = document.createElement('div'),
-
-		// внешний контейнер dataview
-			div_dataview_outer = document.createElement('div'),
-
-		// внешний для внешнего контейнер dataview
-			container = document.createElement('div'),
-
-		// указатель на dataview и параметры dataview
-			dataview, dataview_attr;
-
-		cell.attachObject(container);
-		container.style.width = "100%";
-		container.style.height = "100%";
-
-		// ODynDataView
-		container.appendChild(div_dataview_outer);
-		div_dataview_outer.appendChild(div_dataview);
-
-		div_pager.classList.add("wb-tools");
-		div_dataview_outer.style.clear = "both";
-		div_dataview_outer.style.height = div_dataview.style.height = container.offsetHeight + "px";
-		div_dataview_outer.style.width = div_dataview.style.width = container.offsetWidth + "px";
-
-		dataview_attr = {
-			container: div_dataview,
-			outer_container: div_dataview_outer,
-			type: "list",
-			custom_css: true,
-			autowidth: 1,
-			pager: {
-				container: div_pager,
-				size:30,
-				template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
-			},
-			fields: ["ref", "name"]
-		};
-
-		dataview = dhtmlXCellObject.prototype.attachDynDataView(
-			{
-				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
-				class_name: "cat.Номенклатура"
-			}, dataview_attr);
-
-		// подключаем пагинацию
-		div_dataview_outer.appendChild(div_pager);
-
-		// подключаем контекстное меню
-
-		// подписываемся на события dataview
-		dataview.attachEvent("onAfterSelect", function (id){
-			// your code here
-		});
-
-		dataview.attachEvent("onItemDblClick", function (id, ev, html){
-
-			var hprm = $p.job_prm.parse_url(),
-				dv_obj = ({})._mixin(dataview.get(id));
-			dv_obj.ref = dv_obj.id;
-			dv_obj.id = dv_obj.Код;
-			dv_obj.name = dv_obj.Наименование;
-			dv_obj._not_set_loaded = true;
-			delete dv_obj.Код;
-			delete dv_obj.Наименование;
-			$p.cat.Номенклатура.create(dv_obj)
-				.then(function (o) {
-					$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
-				});
-
-			return false;
-		});
-
-		// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
-		dhx4.attachEvent("layout_resize", function (layout) {
-			$p.record_log("");
-		});
-
-		return dataview;
-
-	};
 
 	function OViewCompare(){
 
@@ -119,13 +34,13 @@ $p.iface.view_compare = function (cell) {
 			if($p.is_empty_guid(ref))
 				return;
 
-			var list = this.list("viewed"),
+			var list = t.list("viewed"),
 				do_requery = false;
 
 			function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
-					$p.wsql.set_user_param(prefix + to_compare ? "compare" : "viewed", list);
+					$p.wsql.set_user_param(prefix + (to_compare ? "compare" : "viewed"), list);
 					do_requery = true;
 				}
 			}
@@ -133,7 +48,7 @@ $p.iface.view_compare = function (cell) {
 			push();
 
 			if(to_compare){
-				list = this.list("compare");
+				list = t.list("compare");
 				push(to_compare);
 			}
 
@@ -150,7 +65,20 @@ $p.iface.view_compare = function (cell) {
 		 * @param from_viewed {Boolean} - добавлять не только в просмотренные, но и к сравнению
 		 */
 		t.remove = function (ref, from_viewed) {
-
+			var list = t.list("compare"),
+				index = list.indexOf(ref);
+			if(index != -1){
+				list.splice(index, 1);
+				$p.wsql.set_user_param(prefix + "compare", list);
+			}
+			if(from_viewed){
+				list = t.list("viewed");
+				index = list.indexOf(ref);
+				if(index != -1){
+					list.splice(index, 1);
+					$p.wsql.set_user_param(prefix + "viewed", list);
+				}
+			}
 		};
 
 		/**
@@ -178,8 +106,6 @@ $p.iface.view_compare = function (cell) {
 		t.requery = function () {
 			dataview_viewed.selection = {ref: {in: t.list("viewed")}};
 		};
-
-		dataview_viewed = dyn_data_view(this.tabs.cells("viewed"));
 
 		// подписываемся на событие добавления к сравнению
 		dhx4.attachEvent("order_compare", function (nom) {
@@ -211,7 +137,16 @@ $p.iface.view_compare = function (cell) {
 		$p.eve.hash_route.push(hash_route);
 
 		setTimeout(function () {
+
+			// dataview со списком просмотренных товаров
+			dataview_viewed = $p.iface.list_data_view({
+				container: t.tabs.cells("viewed"),
+				custom_css: ["small"],
+				type: "small"
+			});
+
 			hash_route($p.job_prm.parse_url());
+
 		}, 50);
 
 	}

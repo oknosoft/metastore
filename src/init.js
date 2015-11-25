@@ -33,7 +33,8 @@ $p.settings = function (prm, modifiers) {
 	prm.data_url = "data/";
 
 	// расположение файла инициализации базы sql
-	prm.create_tables = "data/create_tables.sql";
+	prm.create_tables = true;
+	prm.create_tables_sql = require('create_tables');
 
 	// расположение страницы настроек
 	prm.settings_url = "settings.html";

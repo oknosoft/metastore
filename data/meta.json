@@ -5850,26 +5850,6 @@
 						"is_ref": true
 					}
 				},
-				"ЗапретРедактированияНаименованияДляПечатиНоменклатуры": {
-					"synonym": "Запретить редактирование",
-					"multiline_mode": false,
-					"tooltip": "Запретить редактирование наименования номенклатуры для печати",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗапретРедактированияРабочегоНаименованияХарактеристики": {
-					"synonym": "Запретить редактирование",
-					"multiline_mode": false,
-					"tooltip": "Запретить редактирование рабочего наименования характеристики",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
 				"ИмпортнаяАлкогольнаяПродукция": {
 					"synonym": "Импортная алкогольная (спиртосодержащая) продукция",
 					"multiline_mode": false,
@@ -6051,16 +6031,6 @@
 						"is_ref": true
 					}
 				},
-				"НастройкиСерийБерутсяИзДругогоВидаНоменклатуры": {
-					"synonym": "Настройки серий берутся из другого вида номенклатуры",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
 				"Описание": {
 					"synonym": "Описание",
 					"multiline_mode": false,
@@ -6204,17 +6174,6 @@
 						]
 					}
 				},
-				"ШаблонНаименованияДляПечатиХарактеристики": {
-					"synonym": "Наименование характеристики для печати",
-					"multiline_mode": false,
-					"tooltip": "",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				},
 				"ШаблонЦенника": {
 					"synonym": "Шаблон ценника",
 					"multiline_mode": false,
@@ -6341,127 +6300,6 @@
 				}
 			},
 			"tabular_sections": {
-				"РеквизитыДляКонтроляНоменклатуры": {
-					"name": "РеквизитыДляКонтроляНоменклатуры",
-					"synonym": "Реквизиты для контроля номенклатуры",
-					"tooltip": "",
-					"fields": {
-						"Уникален": {
-							"synonym": "Уникальность",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ИмяРеквизита": {
-							"synonym": "Имя реквизита",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"string"
-								],
-								"str_len": 255
-							}
-						},
-						"ПредставлениеРеквизита": {
-							"synonym": "Имя реквизита",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"string"
-								],
-								"str_len": 255
-							}
-						},
-						"ЭтоДопРеквизит": {
-							"synonym": "Это доп реквизит",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ОбязателенДляЗаполнения": {
-							"synonym": "Заполнение",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ОтборПриВыборе": {
-							"synonym": "Быстрый отбор",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"property": {
-							"synonym": "Свойство",
-							"multiline_mode": false,
-							"tooltip": "",
-							"choice_groups_elm": "elm",
-							"type": {
-								"types": [
-									"cch.properties"
-								],
-								"is_ref": true
-							}
-						},
-						"ОтображатьПриСоздании": {
-							"synonym": "Отображать при создании",
-							"multiline_mode": false,
-							"tooltip": "Отображать реквизит в форме помощника ввода нового элемента номенклатуры",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ДоступностьУникален": {
-							"synonym": "Доступность изменения настройки уникальности",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ДоступностьОбязателенДляЗаполнения": {
-							"synonym": "Доступность изменения настройки обязательности заполнения",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ДоступностьОтображатьПриСоздании": {
-							"synonym": "Доступность изменения настройки отображения при создании",
-							"multiline_mode": false,
-							"tooltip": "Отображать реквизит в форме помощника ввода нового элемента номенклатуры",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						}
-					}
-				},
 				"РеквизитыБыстрогоОтбораНоменклатуры": {
 					"name": "РеквизитыБыстрогоОтбораНоменклатуры",
 					"synonym": "Реквизиты быстрого отбора номенклатуры",
@@ -21223,7 +21061,163 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ возврата",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Партнер": {
+					"synonym": "Клиент",
+					"multiline_mode": false,
+					"tooltip": "Клиент, который осуществляет возврат товаров и услуг",
+					"choice_params": [
+						{
+							"name": "Клиент",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Получатель документа",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Общая сумма документа",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Склад": {
+					"synonym": "Склад",
+					"multiline_mode": false,
+					"tooltip": "Склад, на который выполняется возврат товаров",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Склады"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"Договор": {
+					"synonym": "Договор",
+					"multiline_mode": false,
+					"tooltip": "Договор, в рамках которого оформляется возврат",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ВалютаВзаиморасчетов"
+							],
+							"path": [
+								"Валюта"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Контрагент"
+							],
+							"path": [
+								"Контрагент"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Организация"
+							],
+							"path": [
+								"Организация"
+							]
+						},
+						{
+							"name": [
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						},
+						{
+							"name": [
+								"Соглашение"
+							],
+							"path": [
+								"Соглашение"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "Статус",
+							"path": "Действует"
+						},
+						{
+							"name": "deleted",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ДоговорыКонтрагентов"
+						],
+						"is_ref": true
+					}
+				}
+			},
 			"tabular_sections": {}
 		},
 		"КоммерческоеПредложениеКлиенту": {
@@ -21240,11 +21234,76 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Партнер": {
+					"synonym": "Клиент",
+					"multiline_mode": false,
+					"tooltip": "Получатель коммерческого предложения, являющийся существующим или потенциальным партнером предприятия",
+					"choice_params": [
+						{
+							"name": "Клиент",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Сумма активного варианта коммерческого предложения",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Склад": {
+					"synonym": "Склад",
+					"multiline_mode": false,
+					"tooltip": "Предпочтительный склад отгрузки товаров по заказу",
+					"choice_params": [],
+					"type": {
+						"types": [
+							"cat.Склады"
+						],
+						"is_ref": true
+					}
+				},
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется коммерческое предложение",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
 			"tabular_sections": {}
 		},
 		"ОперацияПоПлатежнойКарте": {
-          "irest": true,
 			"name": "ОперацияПоПлатежнойКарте",
 			"synonym": "Операция по платежной карте",
 			"illustration": "Регистрация оплаты клиентами с использованием платежных карт ",
@@ -21258,7 +21317,55 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Клиент (регл.), от которого поступает оплата, или которому возвращается оплата",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Общая сумма операции по платежной карте",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": false,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
 			"tabular_sections": {}
 		},
 		"ОтчетКомиссионера": {
@@ -21275,7 +21382,155 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Партнер": {
+					"synonym": "Комиссионер",
+					"multiline_mode": false,
+					"tooltip": "Комиссионер, которому переданы товары на комиссию.",
+					"choice_params": [
+						{
+							"name": "Клиент",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Комиссионер (регл.), которому переданы товары на комиссию.",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Общая сумма документа.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"Договор": {
+					"synonym": "Договор",
+					"multiline_mode": false,
+					"tooltip": "Договор, в рамках которого оформляется отчет",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ВалютаВзаиморасчетов"
+							],
+							"path": [
+								"Валюта"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Контрагент"
+							],
+							"path": [
+								"Контрагент"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Организация"
+							],
+							"path": [
+								"Организация"
+							]
+						},
+						{
+							"name": [
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						},
+						{
+							"name": [
+								"Соглашение"
+							],
+							"path": [
+								"Соглашение"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "Статус",
+							"path": "Действует"
+						},
+						{
+							"name": "ХозяйственнаяОперация",
+							"path": "ПередачаНаКомиссию"
+						},
+						{
+							"name": "deleted",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ДоговорыКонтрагентов"
+						],
+						"is_ref": true
+					}
+				}
+			},
 			"tabular_sections": {},
 			"hide": true
 		},
@@ -21293,7 +21548,155 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Партнер": {
+					"synonym": "Комитент",
+					"multiline_mode": false,
+					"tooltip": "Комитент, от которого получены товары на комиссию.",
+					"choice_params": [
+						{
+							"name": "Поставщик",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Комитент (регл.), от которого получены товары на комиссию.",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Общая сумма документа.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"Договор": {
+					"synonym": "Договор",
+					"multiline_mode": false,
+					"tooltip": "Договор, в рамках которого оформляется отчет",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ВалютаВзаиморасчетов"
+							],
+							"path": [
+								"Валюта"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Контрагент"
+							],
+							"path": [
+								"Контрагент"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Организация"
+							],
+							"path": [
+								"Организация"
+							]
+						},
+						{
+							"name": [
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						},
+						{
+							"name": [
+								"Соглашение"
+							],
+							"path": [
+								"Соглашение"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "Статус",
+							"path": "Действует"
+						},
+						{
+							"name": "ХозяйственнаяОперация",
+							"path": "ПриемНаКомиссию"
+						},
+						{
+							"name": "deleted",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ДоговорыКонтрагентов"
+						],
+						"is_ref": true
+					}
+				}
+			},
 			"tabular_sections": {},
 			"hide": true
 		},
@@ -21311,7 +21714,55 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Сумма документа.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Контрагент": {
+					"synonym": "Плательщик",
+					"multiline_mode": false,
+					"tooltip": "Клиент (регл.), от которого поступает оплата, или поставщик (регл.), от которого возвращается оплата",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
 			"tabular_sections": {}
 		},
 		"ПриходныйКассовыйОрдер": {
@@ -21328,7 +21779,55 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Сумма документа.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Контрагент": {
+					"synonym": "Плательщик",
+					"multiline_mode": false,
+					"tooltip": "Клиент (регл.), от которого поступает оплата, или поставщик (регл.), от которого возвращается оплата",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
 			"tabular_sections": {}
 		},
 		"РасходныйКассовыйОрдер": {
@@ -21345,7 +21844,55 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Сумма документа.",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Контрагент": {
+					"synonym": "Получатель",
+					"multiline_mode": false,
+					"tooltip": "Поставщик (регл.), которому производится оплата или клиент (регл.), которому возвращаются денежные средства",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
 			"tabular_sections": {},
 			"hide": true
 		},
@@ -21665,7 +22212,164 @@
 			"group_hierarchy": false,
 			"main_presentation_name": false,
 			"code_length": 0,
-			"fields": {},
+			"fields": {
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Организация предприятия, от имени которой оформляется документ реализации",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Является получателем расходного документа",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_params": [],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Общая сумма документа",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Партнер": {
+					"synonym": "Клиент",
+					"multiline_mode": false,
+					"tooltip": "Клиент, которому осуществляется реализация товаров и услуг",
+					"choice_params": [
+						{
+							"name": "Клиент",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Склад": {
+					"synonym": "Склад",
+					"multiline_mode": false,
+					"tooltip": "Склад отгрузки товаров",
+					"choice_params": [],
+					"type": {
+						"types": [
+							"cat.Склады"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Произвольный текст",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"Договор": {
+					"synonym": "Договор",
+					"multiline_mode": false,
+					"tooltip": "Договор, в рамках которого оформляется реализация",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ВалютаВзаиморасчетов"
+							],
+							"path": [
+								"ВалютаВзаиморасчетов"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Контрагент"
+							],
+							"path": [
+								"Контрагент"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Организация"
+							],
+							"path": [
+								"Организация"
+							]
+						},
+						{
+							"name": [
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						},
+						{
+							"name": [
+								"Соглашение"
+							],
+							"path": [
+								"Соглашение"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "Статус",
+							"path": "Действует"
+						},
+						{
+							"name": "deleted",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ДоговорыКонтрагентов"
+						],
+						"is_ref": true
+					}
+				}
+			},
 			"tabular_sections": {},
 			"hide": true
 		}

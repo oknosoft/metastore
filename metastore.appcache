@@ -12,7 +12,6 @@ index.html
 # Эти позиции включаем только в продакшене
 #lib/metadata.min.js
 
-data/create_tables.sql
 data/meta.json?v=201511010000
 data/meta_patch.json?v=201511010000
 data/zones/0/p_0.json?v=201511010000
