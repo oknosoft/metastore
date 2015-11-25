@@ -7,14 +7,18 @@
  * @module  view_content
  */
 
-$p.iface.set_view_content = function (cell) {
+$p.iface.view_content = function (cell) {
 
-	if($p.iface._content)
-		return;
+	function view_content(){
+		// http://html.metaphorcreations.com/apex/
+		$p.iface._content = {};
+		cell.attachHTMLString(require("content"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	// http://html.metaphorcreations.com/apex/
-	$p.iface._content = {};
-	cell.attachHTMLString(require("content"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._content)
+		view_content();
+
+	return $p.iface._content;
 
 };

@@ -168,7 +168,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// длинное обновление свойств после ответа сервера
 		this.requery_long = function (nom) {
-			var files = JSON.parse(nom.Файлы);
+			var files = JSON.parse(nom.Файлы || "[]");
 
 			if(files.length){
 				// удаляем страницы карусели
@@ -253,9 +253,16 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 		// подписываемся на событие изменения размера
 		dhx4.attachEvent("layout_resize", function (layout) {
-
+			$p.record_log("");
 		});
 
+		// навешиваем обработчики на кнопки
+		function btn_msg(){
+			dhx4.callEvent(this.name, [res.nom]);
+		}
+		["order_cart", "order_compare"].forEach(function (name) {
+			cell.querySelector("[name=" + name + "]").onclick = btn_msg;
+		})
 
 
 	}

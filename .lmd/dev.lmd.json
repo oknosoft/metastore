@@ -5,6 +5,7 @@
   "output": "src/metastore.js",
   "modules": {
     "main": [
+      "src/wdg_dyn_dataview.js",
       "src/wdg_filter_prop.js",
       "src/wdg_multi_checkbox.js",
       "src/wdg_range_slider.js",
@@ -21,6 +22,7 @@
       "src/view_content.js",
       "src/view_about.js"
     ],
+    "create_tables": "data/create_tables.sql",
     "templates": "templates/templates.js",
     "<%= file %>": "templates/*.html"
   },

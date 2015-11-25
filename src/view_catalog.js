@@ -7,7 +7,7 @@
  * @module  view_catalog
  */
 
-$p.iface.set_view_catalog = function (cell) {
+$p.iface.view_catalog = function (cell) {
 
 	// Динамический фильтр
 	function prop_filter(){
@@ -65,7 +65,7 @@ $p.iface.set_view_catalog = function (cell) {
 	}
 
 	// Разбивка в зависимости от типов устройств
-	function main_layout(){
+	function view_catalog(){
 
 		$p.iface._catalog = {};
 		if($p.device_type == "desktop"){
@@ -170,7 +170,7 @@ $p.iface.set_view_catalog = function (cell) {
 
 	// создаём элементы
 	if(!$p.iface._catalog)
-		main_layout();
+		view_catalog();
 
-
+	return $p.iface._catalog;
 };

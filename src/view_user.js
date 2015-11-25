@@ -7,13 +7,17 @@
  * @module  view_user
  */
 
-$p.iface.set_view_user = function (cell) {
+$p.iface.view_user = function (cell) {
 
-	if($p.iface._user)
-		return;
+	function view_user(){
+		$p.iface._user = {};
+		cell.attachHTMLString(require("user"));
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._user = {};
-	cell.attachHTMLString(require("user"));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._user)
+		view_user();
+
+	return $p.iface._user;
 
 };
