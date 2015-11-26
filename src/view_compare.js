@@ -98,13 +98,42 @@ $p.iface.view_compare = function (cell) {
 		t.tabs = cell.attachTabbar({
 			arrows_mode:    "auto",
 			tabs: [
-				{id: "viewed", text: '<i class="fa fa-eye"></i> Просмотренные', active: true},
-				{id: "filter", text: '<i class="fa fa-filter"></i> Фильтр'}
+				{id: "viewed", text: '<i class="fa fa-eye"></i> Просмотренные', active: true}
 			]
 		});
 
 		t.requery = function () {
-			dataview_viewed.selection = {ref: {in: t.list("viewed")}};
+
+
+			var ids = t.tabs.getAllTabs(),
+				mgr = $p.cat.Номенклатура,
+				nom,
+
+				// получаем полный список номенклатур
+				list = t.list("compare").concat(t.list("viewed")).filter(function(item, pos, self) {
+					return self.indexOf(item) == pos;
+				});
+
+			// удаляем допзакладки
+			for (var q=0; q<ids.length; q++) {
+				if(ids[q] != "viewed")
+					t.tabs.tabs(ids[q]).close();
+			}
+
+			// убеждаемся, что все номенклатуры по использованным к сравнению ссылкам, есть в памяти
+			// и получаем массив видов номенклатуры к сравнению
+			ids = [];
+			mgr.load_cached_server_array(list)
+				.then(function () {
+					t.list("compare").forEach(function (ref) {
+						nom = mgr.get(ref, false);
+						if(ids.indexOf(nom.ВидНоменклатуры) == -1)
+							ids.push(nom.ВидНоменклатуры);
+					});
+
+					dataview_viewed.requery_list(t.list("viewed"));
+				});
+
 		};
 
 		// подписываемся на событие добавления к сравнению
@@ -141,8 +170,8 @@ $p.iface.view_compare = function (cell) {
 			// dataview со списком просмотренных товаров
 			dataview_viewed = $p.iface.list_data_view({
 				container: t.tabs.cells("viewed"),
-				custom_css: ["small"],
-				type: "small"
+				custom_css: ["viewed"],
+				type: "viewed"
 			});
 
 			hash_route($p.job_prm.parse_url());

@@ -129,6 +129,35 @@ dhtmlXCellObject.prototype.attachDynDataView = function(mgr, attr) {
 			}
 		},
 
+		requery_list: {
+			value: function (list) {
+
+				var _mgr = $p.md.mgr_by_class_name(mgr.class_name);
+
+				function do_requery(){
+					var query = [], obj, dv_obj;
+
+					list.forEach(function (o) {
+						obj = _mgr.get(o.ref || o, false, true);
+						if(obj){
+							dv_obj = ({})._mixin(obj._obj);
+							dv_obj.id = obj.ref;
+							if(o.count)
+								dv_obj.count = o.count;
+							if(!dv_obj.Код && obj.id)
+								dv_obj.Код = obj.id;
+							query.push(dv_obj);
+						}
+					});
+					dataview.clearAll();
+					dataview.parse(query, "json");
+				}
+
+				_mgr.load_cached_server_array(list, mgr.rest_name).then(do_requery);
+
+			}
+		},
+
 		lazy_timer: {
 			value: function(){
 				if(timer_id)
@@ -215,6 +244,7 @@ $p.iface.list_data_view = function(attr){
 	// подключаем пагинацию
 	div_dataview_outer.appendChild(div_pager);
 
+
 	// подключаем контекстное меню
 
 	// подписываемся на события dataview
@@ -228,10 +258,8 @@ $p.iface.list_data_view = function(attr){
 			dv_obj = ({})._mixin(dataview.get(id));
 		dv_obj.ref = dv_obj.id;
 		dv_obj.id = dv_obj.Код;
-		dv_obj.name = dv_obj.Наименование;
 		dv_obj._not_set_loaded = true;
 		delete dv_obj.Код;
-		delete dv_obj.Наименование;
 		$p.cat.Номенклатура.create(dv_obj)
 			.then(function (o) {
 				$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);

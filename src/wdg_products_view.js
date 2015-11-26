@@ -201,10 +201,8 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 				dv_obj = ({})._mixin(dataview.get(id));
 			dv_obj.ref = dv_obj.id;
 			dv_obj.id = dv_obj.Код;
-			dv_obj.name = dv_obj.Наименование;
 			dv_obj._not_set_loaded = true;
 			delete dv_obj.Код;
-			delete dv_obj.Наименование;
 			$p.cat.Номенклатура.create(dv_obj)
 				.then(function (o) {
 					$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);

@@ -9,6 +9,8 @@
 
 $p.iface.view_cart = function (cell) {
 
+	var _requered;
+
 	function OViewCart(){
 
 		// карусель с dataview корзины и страницей оформления заказа
@@ -25,7 +27,8 @@ $p.iface.view_cart = function (cell) {
 			_container_cart,
 			_content,
 			_dataview,
-			_cart;
+			_cart,
+			_do_order;
 
 		/**
 		 * Возвращает список товаров в корзине
@@ -45,7 +48,10 @@ $p.iface.view_cart = function (cell) {
 			t.list().forEach(function (o) {
 				bubble += o.count;
 			});
-			$p.iface.main.cells("cart").setBubble(bubble);
+			if(bubble)
+				$p.iface.main.cells("cart").setBubble(bubble);
+			else
+				$p.iface.main.cells("cart").clearBubble();
 		};
 
 		/**
@@ -132,60 +138,11 @@ $p.iface.view_cart = function (cell) {
 		 * Обновляет dataview и содержимое инфопанели
 		 */
 		t.requery = function () {
-			var query = [], nom, dv_obj;
 
-			function do_requery(){
-				query = [];
-				t.list().forEach(function (o) {
-					nom = $p.cat.Номенклатура.get(o.ref, false, true);
-					if(nom){
-						dv_obj = ({})._mixin(nom._obj);
-						dv_obj.count = o.count;
-						dv_obj.id = nom.ref;
-						dv_obj.Наименование = nom.name;
-						dv_obj.Код = nom.id;
-						query.push(dv_obj);
-					}
-				});
-				_cart.clearAll();
-				_cart.parse(query, "json");
+			_cart.requery_list(t.list());
 
-				t.bubble();
-			}
+			t.bubble();
 
-			t.list().forEach(function (o) {
-				nom = $p.cat.Номенклатура.get(o.ref, false, true);
-				if(!nom)
-					query.push(o.ref);
-			});
-			if(query.length){
-				var attr = {
-					url: "",
-					selection: {ref: {in: query}}
-				};
-				$p.rest.build_select(attr, {
-					rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
-					class_name: "cat.Номенклатура"
-				});
-				if(dhx4.isIE)
-					attr.url = encodeURI(attr.url);
-
-				$p.ajax.get_ex(attr.url, attr)
-					.then(function (req) {
-						var data = JSON.parse(req.response).data;
-						for(var i in data){
-							data[i].ref = data[i].id;
-							data[i].id = data[i].Код;
-							data[i].name = data[i].Наименование;
-							data[i]._not_set_loaded = true;
-							delete data[i].Код;
-							delete data[i].Наименование;
-						}
-						$p.cat.Номенклатура.load_array(data);
-						do_requery();
-					});
-			}else
-				do_requery();
 		};
 
 		// элементы создаём с задержкой, чтобы побыстрее показать основное содержимое
@@ -198,13 +155,18 @@ $p.iface.view_cart = function (cell) {
 
 			_carousel.cells("cart").attachHTMLString(require("cart"));
 			_container_cart = _carousel.cells("cart").cell;
+			_container_cart.firstChild.style.overflow = "auto";
 			_content = _container_cart.querySelector(".md_column1300");
 			_dataview = _container_cart.querySelector("[name=cart_dataview]");
+			_do_order = _container_cart.querySelector("[name=cart_order]");
+			_dataview.style.width = (_do_order.offsetLeft - 4) + "px";
+			_dataview.style.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
 
 			_cart = $p.iface.list_data_view({
 				container: _dataview,
 				height: "auto",
-				custom_css: ["list"],
+				type: "cart",
+				custom_css: ["cart"],
 				hide_pager: true
 			});
 
@@ -219,7 +181,9 @@ $p.iface.view_cart = function (cell) {
 	if(!$p.iface._cart)
 		$p.iface._cart = new OViewCart();
 
-	return $p.iface._cart;
+	if(!_requered && $p.job_prm.parse_url().view == "cart")
+		setTimeout($p.iface._cart.requery, 200);
 
+	return $p.iface._cart;
 
 };

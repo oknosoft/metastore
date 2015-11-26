@@ -51,8 +51,8 @@ div.dhxsidebar_item_text {
 	border: 2px solid #cdcdcd;
 	border-radius: 50px;
 	margin-bottom: 16px;
-	-webkit-transition: border-color .25s ease;
-	transition: border-color .25s ease;
+	-webkit-transition: border-color .3s ease;
+	transition: border-color .3s ease;
 }
 
 .apex-icon i {
@@ -90,6 +90,7 @@ a.apex-icon-round:hover i {
 }
 a.apex-icon-round:hover i.apex-icon-1c, .apex-icon-1c:hover {
 	background: url(imgs/fi1csel.png);
+	-webkit-transition: background .3s ease;
 	transition: background .3s ease;
 }
 
@@ -99,7 +100,6 @@ a.apex-icon-round:hover i.apex-icon-1c, .apex-icon-1c:hover {
 	box-sizing: border-box;
 }
 
-/* APEX */
 
 .text-center {
 	text-align: center;
@@ -118,8 +118,8 @@ a.apex-icon-round:hover i.apex-icon-1c, .apex-icon-1c:hover {
 a.apex-icon-round, a.apex-icon-title {
 	color: #666;
 	text-decoration: none;
-	-webkit-transition: color .25s ease;
-	transition: color .25s ease;
+	-webkit-transition: color .3s ease;
+	transition: color .3s ease;
 }
 
 /* /APEX */
@@ -247,6 +247,8 @@ input.search {
 	background: rgba(255,254,250, 0.9);
 }
 
+/* DATAVIEW */
+
 .dhx_dataview_item {
 	font-family: Arial, sans-serif;
 	font-size: 16px;
@@ -258,13 +260,14 @@ input.search {
 	font-size: 24px;
 }
 
-.dhx_dataview_small_item .dataview_price, .dhx_dataview_small_item_selected .dataview_price {
+.dhx_dataview_small_item .dataview_price, .dhx_dataview_small_item_selected .dataview_price,
+.dhx_dataview_viewed_item .dataview_price, .dhx_dataview_viewed_item_selected .dataview_price{
 	font-size: 20px;
 }
 
 .dataview_list_image {
 	float: left;
-	margin: 4px;
+	margin: 0 4px 4px 0;
 	height: 90px;
 	width: 90px;
 	background-size: cover;
@@ -286,12 +289,27 @@ input.search {
 	background-size: cover;
 }
 
-.dhx_dataview_list_item {
+.dv_iconset{
+	float: right;
+	margin: 6px;
+	font-size: 18px;
+}
+
+[class*="dv_icon_"] {
+	cursor: pointer;
+	color: #747f7f;
+}
+[class*="dv_icon_"]:hover {
+	color: #333
+}
+
+
+.dhx_dataview_list_item, .dhx_dataview_cart_item {
 	width: 100%;
 	border-bottom: 1px #ddd dashed;
 }
 
-.dhx_dataview_list_item_selected {
+.dhx_dataview_list_item_selected, .dhx_dataview_cart_item_selected {
 	width: 100%;
 	background-color: #f5f5f5;
 	border-bottom: 1px #ddd dashed;
@@ -306,14 +324,18 @@ input.search {
 	border: 1px #ddd dashed;
 }
 
-.dhx_dataview_small_item {
+.dhx_dataview_small_item, .dhx_dataview_viewed_item {
 	border: 1px #ddd dashed;
 }
 
-.dhx_dataview_small_item_selected {
+.dhx_dataview_small_item_selected, .dhx_dataview_viewed_item_selected {
 	background-color: #f5f5f5;
 	border: 1px #ddd dashed;
 }
+
+
+/* / DATAVIEW */
+
 
 .multi_checkbox {
 	width: 100%;
