@@ -333,6 +333,9 @@ input.search {
 	border: 1px #ddd dashed;
 }
 
+.compare_img {
+	height: 120px;
+}
 
 /* / DATAVIEW */
 

@@ -13,9 +13,6 @@
  */
 $p.iface.view_compare = function (cell) {
 
-
-
-
 	function OViewCompare(){
 
 		var t = this,
@@ -154,13 +151,63 @@ $p.iface.view_compare = function (cell) {
 		});
 
 		// строит таблицу сравнения и выводит её в ячейку
-		function compare_group(cell, ВидНоменклатуры){
-			var nom, list = [];
+		function compare_group(tab_cell, ВидНоменклатуры){
+			var nom, list = [],
+				_row_fields=" ,Артикул,НаименованиеПолное,Марка,Производитель,Описание".split(","),
+				_rows = [],
+				_headers = " ",
+				_types = "ro",
+				_sortings = "na",
+				_ids = "fld",
+				_widths = "150",
+				_minwidths = "100",
+				_grid = tab_cell.attachGrid();
+			_grid.setDateFormat("%d.%m.%Y %H:%i");
+
 			t.list("compare").forEach(function (ref) {
 				nom = $p.cat.Номенклатура.get(ref);
-				if(nom.ВидНоменклатуры == ВидНоменклатуры)
+				if(nom.ВидНоменклатуры == ВидНоменклатуры){
 					list.push(nom);
+					_headers += "," + nom.name;
+					_types += ",ro";
+					_sortings += ",na";
+					_ids += "," + nom.ref;
+					_widths += ",*";
+					_minwidths += ",100";
+				}
 			});
+
+			// собственно табличная часть
+			_grid.setIconsPath(dhtmlx.image_path);
+			_grid.setImagePath(dhtmlx.image_path);
+			_grid.setHeader(_headers);
+			_grid.setInitWidths(_widths);
+			_grid.setColumnMinWidth(_minwidths);
+			_grid.setColSorting(_sortings);
+			_grid.setColTypes(_types);
+			_grid.setColumnIds(_ids);
+			_grid.enableAutoWidth(true, 1300, 600);
+			_grid.init();
+
+			// формируем массив значений
+			for(var i in _row_fields){
+				var row = [];
+				if(i == 0)
+					row.push("");
+				else
+					row.push(_row_fields[i]);
+				for(var j in list){
+					nom = list[j];
+					if(i == 0){
+						row.push("<img class='compare_img' src='" + "templates/product_pics/" + nom.ФайлКартинки.ref + ".png' >");
+					}else{
+						row.push($p.is_data_obj(nom[_row_fields[i]]) ? nom[_row_fields[i]].presentation : nom[_row_fields[i]]);
+					}
+				}
+				_rows.push(row)
+			}
+			_grid.parse(_rows,"jsarray");
+
 		}
 
 		// Обработчик маршрутизации
