@@ -35,8 +35,7 @@ $p.iface.view_compare = function (cell) {
 			var list = t.list("viewed"),
 				do_requery = false;
 
-
-				function push(to_compare){
+			function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
 					$p.wsql.set_user_param(prefix + (to_compare ? "compare" : "viewed"), list);
@@ -51,8 +50,10 @@ $p.iface.view_compare = function (cell) {
 				push(to_compare);
 
 				var nom = $p.cat.Номенклатура.get(ref, false, true);
-				if(nom)
+				if(nom){
+					t.bubble();
 					$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен к сравнению");
+				}
 			}
 
 			if(do_requery)
@@ -126,6 +127,7 @@ $p.iface.view_compare = function (cell) {
 				});
 
 			// удаляем допзакладки
+			t.tabs.tabs("viewed").setActive();
 			for (var i=0; i<ids.length; i++) {
 				if(ids[i] != "viewed")
 					t.tabs.tabs(ids[i]).close();
@@ -175,14 +177,27 @@ $p.iface.view_compare = function (cell) {
 				_types = "ro",
 				_sortings = "na",
 				_ids = "fld",
-				_widths = "150",
+				_widths = $p.device_type == "desktop" ? "200" : "150",
 				_minwidths = "100",
 				_grid = tab_cell.attachGrid(),
 				_price = dhtmlXDataView.prototype.types.list.price;
 			_grid.setDateFormat("%d.%m.%Y %H:%fld");
 
 			function presentation(v){
-				return $p.is_data_obj(v) ? v.presentation : v;
+
+				if($p.is_data_obj(v))
+					return  v.presentation;
+
+				else if(typeof v == "boolean")
+					return  v ? "Да" : "Нет";
+
+				else if(v instanceof Date){
+						if(v.getHours() || v.getMinutes())
+							return $p.dateFormat(v, $p.dateFormat.masks.date_time);
+						else
+							return $p.dateFormat(v, $p.dateFormat.masks.date)
+				}else
+					return v || "";
 			}
 
 			t.list("compare").forEach(function (ref) {
@@ -242,8 +257,12 @@ $p.iface.view_compare = function (cell) {
 						finded = true;
 						return false;
 					});
-					if(!finded)
-						_row.push("");
+					if(!finded){
+						if(o.property.type.types.length && o.property.type.types[0] == "boolean")
+							_row.push(presentation(false));
+						else
+							_row.push("");
+					}
 				}
 				_rows.push(_row);
 			});

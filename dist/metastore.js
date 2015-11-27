@@ -33,7 +33,8 @@ dhtmlXCellObject.prototype.attachDynDataView = function(mgr, attr) {
 		attr = {};
 
 	var conf = {
-		type: attr.type || { template:"#name#" }
+		type: attr.type || { template:"#name#" },
+		select: attr.select || true
 	},
 		timer_id,
 		dataview;
@@ -156,7 +157,7 @@ dhtmlXCellObject.prototype.attachDynDataView = function(mgr, attr) {
 					dataview.parse(query, "json");
 				}
 
-				_mgr.load_cached_server_array(list, mgr.rest_name).then(do_requery);
+				return _mgr.load_cached_server_array(list, mgr.rest_name).then(do_requery);
 
 			}
 		},
@@ -183,6 +184,17 @@ dhtmlXCellObject.prototype.attachDynDataView = function(mgr, attr) {
 	return dataview;
 
 };
+
+
+/* joined by builder */
+/**
+ * Общие методв интерфейса вебмагазина
+ * Created 27.11.2015<br />
+ * &copy; http://www.oknosoft.ru 2014-2015
+ * @license content of this file is covered by Oknosoft Commercial license. Usage without proper license is prohibited. To obtain it contact info@oknosoft.ru
+ * @author  Evgeniy Malyarov
+ * @module  wdg_metastore_common
+ */
 
 $p.iface.list_data_view = function(attr){
 
@@ -231,12 +243,15 @@ $p.iface.list_data_view = function(attr){
 			size:30,
 			template: "{common.prev()}<div class='paging_text'> Страница {common.page()} из #limit#</div>{common.next()}"
 		},
-		fields: ["ref", "name"]
+		fields: ["ref", "name"],
+		select: attr.select || true
 	};
 	if(attr.hide_pager)
 		delete dataview_attr.pager;
 	if(dataview_attr.type != "list")
 		delete dataview_attr.autowidth;
+	if(attr.drag)
+		dataview_attr.drag = true;
 
 	dataview = dhtmlXCellObject.prototype.attachDynDataView(
 		{
@@ -257,16 +272,27 @@ $p.iface.list_data_view = function(attr){
 
 	dataview.attachEvent("onItemDblClick", function (id, ev, html){
 
-		var hprm = $p.job_prm.parse_url(),
-			dv_obj = ({})._mixin(dataview.get(id));
-		dv_obj.ref = dv_obj.id;
-		dv_obj.id = dv_obj.Код;
-		dv_obj._not_set_loaded = true;
-		delete dv_obj.Код;
-		$p.cat.Номенклатура.create(dv_obj)
-			.then(function (o) {
-				$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
-			});
+		var hprm,
+			dv_obj = {};
+
+		ev.target.classList.forEach(function (name) {
+			if(name.indexOf("dv_") == 0){
+				hprm = true;
+			}
+		});
+
+		if(!hprm){
+			hprm = $p.job_prm.parse_url(),
+				dv_obj = dv_obj._mixin(dataview.get(id));
+			dv_obj.ref = dv_obj.id;
+			dv_obj.id = dv_obj.Код;
+			dv_obj._not_set_loaded = true;
+			delete dv_obj.Код;
+			$p.cat.Номенклатура.create(dv_obj)
+				.then(function (o) {
+					$p.iface.set_hash(o.ВидНоменклатуры.ref, id, hprm.frm, "catalog");
+				});
+		}
 
 		return false;
 	});
@@ -278,6 +304,13 @@ $p.iface.list_data_view = function(attr){
 
 	return dataview;
 
+};
+
+dhtmlXDataView.prototype.get_elm = function(elm){
+	while (elm = elm.parentNode){
+		if(elm.getAttribute && elm.getAttribute("dhx_f_id"))
+			return this.get(elm.getAttribute("dhx_f_id"));
+	}
 };
 /* joined by builder */
 /**
@@ -1766,12 +1799,14 @@ $p.iface.view_cart = function (cell) {
 			}
 			if(!finded){
 				list.push({ref: nom.ref, count: 1});
+				$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
 			}
 			$p.wsql.set_user_param(prefix, list);
 
-			$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
-
-			t.requery();
+			t.requery()
+				.then(function () {
+					_cart.select(nom.ref);
+				});
 
 		};
 
@@ -1809,16 +1844,30 @@ $p.iface.view_cart = function (cell) {
 		 * Уменьшает количество номенклатуры в корзине. При уменьшении до 0 - удаляет
 		 * @param ref {String} - ссылка номенклатуры
 		 */
-		t.sub = function (ref) {
+		t.sub = function (ref, val) {
 			var list = t.list();
+
+			function save_and_requery(){
+				$p.wsql.set_user_param(prefix, list);
+				t.requery()
+					.then(function () {
+						_cart.select(ref);
+					});
+			}
 
 			for(var i in list){
 				if(list[i].ref == ref || list[i].id == ref){
-					if(list[i].count > 1){
+					if(val){
+						list[i].count = val;
+						save_and_requery();
+
+					}else if(val == undefined && list[i].count > 1){
 						list[i].count--;
-						$p.wsql.set_user_param(prefix, list);
+						save_and_requery();
+
 					}else
 						t.remove(ref);
+
 					return;
 				}
 			}
@@ -1829,30 +1878,47 @@ $p.iface.view_cart = function (cell) {
 		 */
 		t.requery = function () {
 
-			_cart.requery_list(t.list());
-
 			t.bubble();
+
+			return _cart.requery_list(t.list());
 
 		};
 
-		function get_elm(elm){
-			while (elm = elm.parentNode){
-				if(elm.getAttribute("dhx_f_id"))
-					return _cart.get(elm.getAttribute("dhx_f_id"));
-			}
-		}
 
-		function input_change(e){
+		function cart_input_change(e){
 
 			var val = parseInt(e.target.value),
-				elm = get_elm(e.target.parentNode);
+				elm = _cart.get_elm(e.target.parentNode);
 
 			if(isNaN(val))
 				e.target.value = elm.count;
 			else{
 				elm.count = val;
-				if(!val)
-					t.remove(elm.id);
+				t.sub(elm.id, val);
+			}
+
+			return false;
+		}
+
+		function cart_click(e){
+
+			var target = e.target,
+				elm = _cart.get_elm(e.target.parentNode);
+
+			if(elm){
+
+				if(target.classList.contains("dv_icon_plus"))
+					t.add(elm.id);
+
+				else if(target.classList.contains("dv_icon_minus"))
+					t.sub(elm.id);
+
+				else if(target.classList.contains("dv_input"))
+					setTimeout(function () {
+						target.focus();
+						target.select();
+						target = null;
+					}, 300);
 			}
 
 			return false;
@@ -1883,7 +1949,8 @@ $p.iface.view_cart = function (cell) {
 				hide_pager: true
 			});
 
-			_dataview.addEventListener('change', input_change, false);
+			_dataview.addEventListener('change', cart_input_change, false);
+			_dataview.addEventListener('click', cart_click, false);
 
 			t.bubble();
 
@@ -1941,8 +2008,7 @@ $p.iface.view_compare = function (cell) {
 			var list = t.list("viewed"),
 				do_requery = false;
 
-
-				function push(to_compare){
+			function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
 					$p.wsql.set_user_param(prefix + (to_compare ? "compare" : "viewed"), list);
@@ -1957,8 +2023,10 @@ $p.iface.view_compare = function (cell) {
 				push(to_compare);
 
 				var nom = $p.cat.Номенклатура.get(ref, false, true);
-				if(nom)
+				if(nom){
+					t.bubble();
 					$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен к сравнению");
+				}
 			}
 
 			if(do_requery)
@@ -2032,6 +2100,7 @@ $p.iface.view_compare = function (cell) {
 				});
 
 			// удаляем допзакладки
+			t.tabs.tabs("viewed").setActive();
 			for (var i=0; i<ids.length; i++) {
 				if(ids[i] != "viewed")
 					t.tabs.tabs(ids[i]).close();
@@ -2081,14 +2150,27 @@ $p.iface.view_compare = function (cell) {
 				_types = "ro",
 				_sortings = "na",
 				_ids = "fld",
-				_widths = "150",
+				_widths = $p.device_type == "desktop" ? "200" : "150",
 				_minwidths = "100",
 				_grid = tab_cell.attachGrid(),
 				_price = dhtmlXDataView.prototype.types.list.price;
 			_grid.setDateFormat("%d.%m.%Y %H:%fld");
 
 			function presentation(v){
-				return $p.is_data_obj(v) ? v.presentation : v;
+
+				if($p.is_data_obj(v))
+					return  v.presentation;
+
+				else if(typeof v == "boolean")
+					return  v ? "Да" : "Нет";
+
+				else if(v instanceof Date){
+						if(v.getHours() || v.getMinutes())
+							return $p.dateFormat(v, $p.dateFormat.masks.date_time);
+						else
+							return $p.dateFormat(v, $p.dateFormat.masks.date)
+				}else
+					return v || "";
 			}
 
 			t.list("compare").forEach(function (ref) {
@@ -2148,8 +2230,12 @@ $p.iface.view_compare = function (cell) {
 						finded = true;
 						return false;
 					});
-					if(!finded)
-						_row.push("");
+					if(!finded){
+						if(o.property.type.types.length && o.property.type.types[0] == "boolean")
+							_row.push(presentation(false));
+						else
+							_row.push("");
+					}
 				}
 				_rows.push(_row);
 			});
@@ -2624,11 +2710,11 @@ module.exports = function() {
 "about": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"md_muted_color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"md_muted_color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"md_muted_color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"md_muted_color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"md_muted_color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"md_muted_color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"md_muted_color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"md_muted_color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"md_muted_color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"md_muted_color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"md_muted_color\">, набор иконок и стилей CSS</span></li>\r\n        <li><a href=\"http://fontastic.me/\" target=\"_blank\">fontastic</a><span class=\"md_muted_color\">, еще один набор иконок и стилей</span></li>\r\n    </ul>\r\n\r\n    <p>&nbsp;</p>\r\n    <h2><i class=\"fa fa-question-circle\"></i> Вопросы</h2>\r\n    <p>Если обнаружили ошибку, пожалуйста,\r\n        <a href=\"https://github.com/oknosoft/metastore/issues/new\" target=\"_blank\">зарегистрируйте вопрос в GitHub</a> или\r\n        <a href=\"http://www.oknosoft.ru/metadata/#page-118\" target=\"_blank\">свяжитесь с разработчиком</a> напрямую<br />&nbsp;</p>\r\n\r\n</div>",
 "cart": "<div class=\"md_column1300\">\r\n\r\n    <h1><i class=\"fa fa-shopping-cart\"></i> Корзина</h1>\r\n\r\n    <div class=\"md_column320\" style=\"width: 67%; padding: 0 8px 0 0; margin-left: -8px;\">\r\n        <div name=\"cart_dataview\" style=\"height: 360px; width: 100%;\"></div>\r\n    </div>\r\n\r\n    <div class=\"md_column320\" name=\"cart_order\" style=\"padding: 0; width: 26%; min-width: 262px;\">\r\n\r\n        <table class=\"aligncenter\" style=\"line-height: 40px\">\r\n            <tr>\r\n                <td style=\"border-bottom: 1px #ddd dashed;\">Товары (2)</td>\r\n                <td align=\"right\" style=\"border-bottom: 1px #ddd dashed;\">1300</td>\r\n            </tr>\r\n\r\n            <tr vertical-align: baseline;>\r\n                <td>Всего:</td>\r\n                <td align=\"right\" style=\"font-size: 2em;\">1300 <i class=\"fa fa-rub\" style=\"font-size: smaller\"></i></td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <a href=\"#\" class=\"dropdown_list\" style=\"display: inline-block; line-height: normal\" title=\"Наличие в магазинах\">Можно забрать сегодня</a>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td>Бонусных рублей за заказ</td>\r\n                <td align=\"right\">190</td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <button name=\"order_order\" class=\"md_btn btn-red btn-fluid\">Оформить заказ</button>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <p style=\"margin: 0\">Оплатите онлайн – получите скидку 5%</p>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr style=\"cursor: pointer\">\r\n                <td><i class=\"fa fa-square-o fa-lg\"></i>  Оплатить картой</td>\r\n                <td align=\"right\"><i class=\"fa fa-cc-visa\"></i>&nbsp;<i class=\"fa fa-cc-mastercard\"></i></td>\r\n            </tr>\r\n\r\n        </table>\r\n\r\n    </div>\r\n\r\n</div>",
 "content": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-opencart\"></i> Интернет-магазин MetaStore</h1>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-1c\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Типовая 1С</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            MetaStore - это веб-интерфейс<br />\r\n            к типовым конфигурациям 1С, реализующий функциональность интернет-магазина\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-connect\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Готовое решение</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Подключается в один клик:<br />\r\n            1С:Управление торговлей,<br />\r\n            1С:Комплексная автоматизация,<br />\r\n            1С:ERP Управление предприятием\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-equilizer\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Простота настроек</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Иерархия, свойства номенклатуры,<br />остатки и цены, настраиваются<br />в привычных формах 1С\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"fa fa-github-alt\" style=\"line-height: 78px;\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Открытый код</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Разработано на базе <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a><br />\r\n            Исходный код и документация<br />доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>\r\n            <br />&nbsp;\r\n        </p>\r\n    </div>\r\n\r\n    <div style=\"padding: 24px 0 24px 0; background-color: #f5f5f5; clear: both; display: inline-block\">\r\n\r\n        <div class=\"md_column320\">\r\n            <p>\r\n                <img class=\"aligncenter\" src=\"templates/imgs/phone-2.png\" alt=\"phone\" width=\"332\" height=\"409\">\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"md_column320\">\r\n            <h2 class=\"light\">Поддержка мобильных устройств</h2>\r\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\r\n            <p><a href=\"#\" class=\"btn\">Learn More</a></p>\r\n        </div>\r\n\r\n    </div>\r\n\r\n</div>",
-"dataview_cart": "<table width='100%'>\r\n    <tr>\r\n        <td rowspan='2' width='90px'>\r\n            <div class='dataview_list_image' style='{common.image()}'></div>\r\n        </td>\r\n        <td>\r\n            {obj.name}\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            <div style='display: inline-flex'>\r\n                <i class='fa fa-minus-square-o fa-lg dv_icon_plus' style='line-height: inherit; cursor: pointer;'></i>&nbsp;\r\n                <input type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;\r\n                <i class='fa fa-plus-square-o fa-lg dv_icon_minus' style='line-height: inherit; cursor: pointer;'></i>\r\n            </div>\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            {common.price()}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td colspan='3'>{obj.Описание}&nbsp;</td>\r\n    </tr>\r\n</table>\r\n",
-"dataview_large": "<div>\r\n    <div class='dataview_large_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div style='clear: right'>\r\n        <div>{obj.name}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n\r\n",
-"dataview_list": "<div>\r\n    <div class='dataview_list_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div>\r\n        <div>{obj.name}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n",
-"dataview_small": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.name}</div>\r\n",
-"dataview_viewed": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div class='dv_iconset'>\r\n        <i class='fa fa-cart-plus dv_icon_cart' title='Добавить в корзину'></i>&nbsp;\r\n        <i class='fa fa-bar-chart dv_icon_add_compare' title='Добавить к сравнению'></i>&nbsp;\r\n        <i class='fa fa-times dv_icon_remove_viewed' title='Удалить из списка просмотренных'></i>\r\n    </div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.name}</div>\r\n",
+"dataview_cart": "<table width='100%'>\r\n    <tr>\r\n        <td rowspan='2' width='90px'>\r\n            <div class='dv_list_image' style='{common.image()}'></div>\r\n        </td>\r\n        <td>\r\n            {obj.name}\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            <div style='display: inline-flex'>\r\n                <i class='fa fa-minus-square-o fa-lg dv_icon_minus' style='line-height: inherit; cursor: pointer;'></i>&nbsp;\r\n                <input class='dv_input' type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;\r\n                <i class='fa fa-plus-square-o fa-lg dv_icon_plus' style='line-height: inherit; cursor: pointer;'></i>\r\n            </div>\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            {common.price()}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td colspan='3' class='font_smaller'>{obj.Описание}&nbsp;</td>\r\n    </tr>\r\n</table>\r\n",
+"dataview_large": "<div>\r\n    <div class='dataview_large_image' style='{common.image()}'></div>\r\n    <div class='dv_price'>{common.price()}</div>\r\n    <div style='clear: right'>\r\n        <div>{obj.name}</div>\r\n        <div class='font_smaller'>{common.manufacturer()}</div>\r\n        <div class='font_smaller'>{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n\r\n",
+"dataview_list": "<div>\r\n    <div class='dv_list_image' style='{common.image()}'></div>\r\n    <div class='dv_price'>{common.price()}</div>\r\n    <div>\r\n        <div>{obj.name}</div>\r\n        <div class='font_smaller'>{common.manufacturer()}</div>\r\n        <div class='font_smaller'>{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n",
+"dataview_small": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dv_price'>{common.price()}</div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.name}</div>\r\n",
+"dataview_viewed": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dv_price'>{common.price()}</div>\r\n    <div class='dv_iconset'>\r\n        <i class='fa fa-cart-plus dv_icon_cart' title='Добавить в корзину'></i>&nbsp;\r\n        <i class='fa fa-bar-chart dv_icon_add_compare' title='Добавить к сравнению'></i>&nbsp;\r\n        <i class='fa fa-times dv_icon_remove_viewed' title='Удалить из списка просмотренных'></i>\r\n    </div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.name}</div>\r\n",
 "product_card": "<div class=\"clipper wdg_product_accordion\">\r\n    <div class=\"scroller\">\r\n        <div class=\"container\">\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title\" name=\"header\">\r\n                    <span name=\"title\">Товар</span>\r\n                </div>\r\n\r\n            </div>\r\n\r\n            <div name=\"path\" style=\"padding: 8px\">\r\n\r\n            </div>\r\n\r\n            <!-- РАЗДЕЛ 1 - картинка и кнопки покупки -->\r\n            <div name=\"main\">\r\n                <div class=\"md_column320\" style=\"min-height: 350px;\">\r\n                    <img class=\"product_img aligncenter\" src=\"\">\r\n                    <div class=\"product_carousel aligncenter\"></div>\r\n                </div>\r\n                <div class=\"md_column320\" name=\"order\" style=\"padding-top: 0;\">\r\n                    <div>\r\n                        <h3 name=\"order_title\"></h3>\r\n                        <p name=\"order_price\" style=\"margin: 8px 0 0 0; font-size: 2em;\">1300 <i class=\"fa fa-rub\" style=\"font-size: smaller\"></i></p>\r\n                        <div class=\"rating\" data-rating=\"0\"><div class=\"fill-rating\"></div></div>\r\n                        <p style=\"margin: 0\">Этот товар еще никто не оценил.</p>\r\n                        <a href=\"#\" class=\"dropdown_list\" style=\"display: inline-block;\" title=\"Наличие в магазинах\">Можно забрать сегодня</a>\r\n                        <p name=\"order_warranty\" style=\"margin: 8px 0 0 0\">Гарантия: 12 мес.</p>\r\n                        <p name=\"order_brand\" style=\"margin: 8px 0 0 0\"></p>\r\n\r\n                        <button name=\"order_cart\" class=\"md_btn btn-red btn-fluid\"><i class=\"fa fa-cart-plus fa-fw\"></i> Добавить в корзину</button>\r\n                        <button name=\"order_compare\" class=\"md_btn btn-grey btn-fluid\"><i class=\"fa fa-bar-chart fa-fw\"></i> К сравнению</button>\r\n\r\n\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <!-- РАЗДЕЛ 2 - описание и реквизиты -->\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed header__title_position_bottom\">Описание и характеристики</div>\r\n            </div>\r\n            <div>\r\n                <!-- Здесь описание товара -->\r\n                <div class=\"md_column320\" name=\"description\">\r\n\r\n                </div>\r\n                <!-- Здесь OHeadFields товара -->\r\n                <div class=\"md_column320\" name=\"properties\" style=\"min-height: 300px;\">\r\n\r\n                </div>\r\n            </div>\r\n\r\n\r\n            <!-- РАЗДЕЛ 3 - отзывы с Маркета -->\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Отзывы, вопрос-ответ</div>\r\n            </div>\r\n            <div name=\"notes\">\r\n                <p class=\"text\">Пока нет ни одного комментария, ваш будет первым</p>\r\n            </div>\r\n\r\n\r\n            <div class=\"header\">\r\n                <div class=\"header__title header__title_state_fixed\">Драйверы и файлы</div>\r\n            </div>\r\n            <div name=\"download\">\r\n                <p class=\"text\">Для данного товара файлы и драйверы не требуются</p>\r\n            </div>\r\n\r\n            <div class=\"load\" style=\"height: 0px;\">\r\n                <div class=\"load__value\" style=\"width: 0%;\"></div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"scroller__track\">\r\n        <div class=\"scroller__bar\" style=\"height: 26px; top: 0px;\"></div>\r\n    </div>\r\n\r\n</div>",
 "review": "<div class=\"product-review-item product-review-item_collapsed_yes js-review\">\r\n    <div class=\"product-review-user i-bem\" onclick=\"return {'product-review-user':''}\">\r\n        <a class=\"link product-review-user__name\" href=\"/user/m2gtr/reviews\" itemprop=\"author\">Алексеев Алексей</a>\r\n        <a class=\"link product-review-user__reviews\" href=\"/user/m2gtr/reviews\">Автор 3&nbsp;отзывов</a>\r\n    </div>\r\n    <div class=\"product-review-item__stat\">\r\n        <div class=\"rating rating_border_yes hint i-bem hint_js_inited\" date-rate=\"4\"\r\n             onclick=\"return {&quot;hint&quot;:{&quot;content&quot;:&quot;Оценка&nbsp;пользователя&nbsp;4&nbsp;из&nbsp;5&quot;,&quot;offset&quot;:&quot;15&quot;}}\"\r\n             itemprop=\"reviewRating\" itemscope=\"\" itemtype=\"http://schema.org/Rating\">\r\n            <meta itemprop=\"ratingValue\" content=\"4\">\r\n            4\r\n            <div class=\"rating__corner\">\r\n                <div class=\"rating__triangle\"></div>\r\n            </div>\r\n        </div>\r\n        <span class=\"product-review-item__rating-label\">хорошая модель</span><span\r\n            class=\"product-review-item__delivery\">Опыт использования:&nbsp;менее месяца</span></div>\r\n\r\n    <dl class=\"product-review-item__stat\">\r\n        <dt class=\"product-review-item__title\">Достоинства:</dt>\r\n        <dd class=\"product-review-item__text\">Вместительный, 2 компрессора, полка для бутылок экономит место.</dd>\r\n    </dl>\r\n    <dl class=\"product-review-item__stat\">\r\n        <dt class=\"product-review-item__title\">Недостатки:</dt>\r\n        <dd class=\"product-review-item__text\">Работа МК сопровождается очень сильным журчанием... хотя может быть мне\r\n            попался бракованный экземпляр\r\n        </dd>\r\n    </dl>\r\n    <div class=\"product-review-item__stat  product-review-item__stat_type_inline\">\r\n        <div class=\"product-review-item__title\">Комментарий:</div>\r\n        <div class=\"product-review-item__text\">В целом холодильник хороший, как и писал вместительный и компактный,\r\n            очень выигрывает по ценовой политике.<br>объективно: качество пластика перевесных полочек на двери могло бы\r\n            быть и лучше, создается впечателение что они очень хрупкие и вот вот сломаются... но по факту ещё не одну не\r\n            сломал))<br>читал много отзывов и довольно много людей жалаются на противный сигнал при открытии двери\r\n            каждый раз, так вот сигнал этот отключается при отключении режима заморозка, да и этот сигнал довольно\r\n            тихий, как и сигнал при открытии двери ХК более 1 мин<br>По уровню шуму к ХК нареканий никаких нет,\r\n            компрессоры оба тихие, но вот к циркуляции хладогента в МК претензии есть,<br>при работе слышен звук на\r\n            подобие бульканя воды в батареях, он вроде и не громкий но жутко раздражает, обратился в сервис сказали что\r\n            бульканье это нормальное явления и не захотели приезжать...<br>так что совет проверяйте холодильник на\r\n            уровень шума прямов магазине\r\n        </div>\r\n    </div>\r\n    <div class=\"product-review-item__footer layout layout_display_table\">\r\n        <div class=\"layout__col\">12 мая\r\n            <meta itemprop=\"datePublished\" content=\"2015-05-12T17:55:02\">\r\n            ,&nbsp;Санкт-Петербург\r\n        </div>\r\n        <div class=\"layout__col layout__col_align_right\">\r\n            <div class=\"review-voting review-voting_active_yes manotice manotice_type_popup i-bem review-voting_js_inited manotice_js_inited\"\r\n                 onclick=\"return {&quot;review-voting&quot;:{&quot;sk&quot;:&quot;ua2238057ac558861fac690d2527fa046&quot;},&quot;manotice&quot;:{&quot;directions&quot;:&quot;right&quot;,&quot;autoclosable&quot;:&quot;yes&quot;}}\">\r\n                <div class=\"review-voting__plus\"></div>\r\n                <div class=\"review-voting__minus\"></div>\r\n                <div class=\"spin spin_theme_gray-16 i-bem spin_js_inited\" onclick=\"return {'spin':{}}\"></div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>",
 "settings": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-cogs\"></i> Настройки</h1>\r\n    <p>В промышленном режиме данная страница выключена.<br />\r\n        Внешний вид сайта и параметры подключения, настраиваются в конфигурационном файле.<br />\r\n        В демо-ражиме страница настроек иллюстрирует использование параметров работы программы клиентской частью приложения.</p>\r\n\r\n    <div class=\"md_column320\" name=\"form1\" style=\"max-width: 420px;\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form2\"><div></div></div>\r\n    <div class=\"md_column320\" name=\"form3\"><div></div></div>\r\n</div>",

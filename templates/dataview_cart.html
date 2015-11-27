@@ -1,16 +1,16 @@
 <table width='100%'>
     <tr>
         <td rowspan='2' width='90px'>
-            <div class='dataview_list_image' style='{common.image()}'></div>
+            <div class='dv_list_image' style='{common.image()}'></div>
         </td>
         <td>
             {obj.name}
         </td>
         <td width='100px' align='right'>
             <div style='display: inline-flex'>
-                <i class='fa fa-minus-square-o fa-lg dv_icon_plus' style='line-height: inherit; cursor: pointer;'></i>&nbsp;
-                <input type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;
-                <i class='fa fa-plus-square-o fa-lg dv_icon_minus' style='line-height: inherit; cursor: pointer;'></i>
+                <i class='fa fa-minus-square-o fa-lg dv_icon_minus' style='line-height: inherit; cursor: pointer;'></i>&nbsp;
+                <input class='dv_input' type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;
+                <i class='fa fa-plus-square-o fa-lg dv_icon_plus' style='line-height: inherit; cursor: pointer;'></i>
             </div>
         </td>
         <td width='100px' align='right'>
@@ -18,6 +18,6 @@
         </td>
     </tr>
     <tr>
-        <td colspan='3'>{obj.Описание}&nbsp;</td>
+        <td colspan='3' class='font_smaller'>{obj.Описание}&nbsp;</td>
     </tr>
 </table>

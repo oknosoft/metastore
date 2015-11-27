@@ -80,12 +80,14 @@ $p.iface.view_cart = function (cell) {
 			}
 			if(!finded){
 				list.push({ref: nom.ref, count: 1});
+				$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
 			}
 			$p.wsql.set_user_param(prefix, list);
 
-			$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
-
-			t.requery();
+			t.requery()
+				.then(function () {
+					_cart.select(nom.ref);
+				});
 
 		};
 
@@ -123,16 +125,30 @@ $p.iface.view_cart = function (cell) {
 		 * Уменьшает количество номенклатуры в корзине. При уменьшении до 0 - удаляет
 		 * @param ref {String} - ссылка номенклатуры
 		 */
-		t.sub = function (ref) {
+		t.sub = function (ref, val) {
 			var list = t.list();
+
+			function save_and_requery(){
+				$p.wsql.set_user_param(prefix, list);
+				t.requery()
+					.then(function () {
+						_cart.select(ref);
+					});
+			}
 
 			for(var i in list){
 				if(list[i].ref == ref || list[i].id == ref){
-					if(list[i].count > 1){
+					if(val){
+						list[i].count = val;
+						save_and_requery();
+
+					}else if(val == undefined && list[i].count > 1){
 						list[i].count--;
-						$p.wsql.set_user_param(prefix, list);
+						save_and_requery();
+
 					}else
 						t.remove(ref);
+
 					return;
 				}
 			}
@@ -143,30 +159,47 @@ $p.iface.view_cart = function (cell) {
 		 */
 		t.requery = function () {
 
-			_cart.requery_list(t.list());
-
 			t.bubble();
+
+			return _cart.requery_list(t.list());
 
 		};
 
-		function get_elm(elm){
-			while (elm = elm.parentNode){
-				if(elm.getAttribute("dhx_f_id"))
-					return _cart.get(elm.getAttribute("dhx_f_id"));
-			}
-		}
 
-		function input_change(e){
+		function cart_input_change(e){
 
 			var val = parseInt(e.target.value),
-				elm = get_elm(e.target.parentNode);
+				elm = _cart.get_elm(e.target.parentNode);
 
 			if(isNaN(val))
 				e.target.value = elm.count;
 			else{
 				elm.count = val;
-				if(!val)
-					t.remove(elm.id);
+				t.sub(elm.id, val);
+			}
+
+			return false;
+		}
+
+		function cart_click(e){
+
+			var target = e.target,
+				elm = _cart.get_elm(e.target.parentNode);
+
+			if(elm){
+
+				if(target.classList.contains("dv_icon_plus"))
+					t.add(elm.id);
+
+				else if(target.classList.contains("dv_icon_minus"))
+					t.sub(elm.id);
+
+				else if(target.classList.contains("dv_input"))
+					setTimeout(function () {
+						target.focus();
+						target.select();
+						target = null;
+					}, 300);
 			}
 
 			return false;
@@ -197,7 +230,8 @@ $p.iface.view_cart = function (cell) {
 				hide_pager: true
 			});
 
-			_dataview.addEventListener('change', input_change, false);
+			_dataview.addEventListener('change', cart_input_change, false);
+			_dataview.addEventListener('click', cart_click, false);
 
 			t.bubble();
 
