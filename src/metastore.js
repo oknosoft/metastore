@@ -1783,9 +1783,23 @@ $p.iface.view_cart = function (cell) {
 			var list = t.list();
 
 			for(var i in list){
-				if(list[i].ref == nom.ref){
-					list.splice(i, 1);
-					$p.wsql.set_user_param(prefix, list);
+				if(list[i].ref == ref || list[i].id == ref){
+
+					dhtmlx.confirm({
+						type:"confirm",
+						title:"Корзина",
+						text:"Подтвердите удаление товара",
+						ok: "Удалить",
+						cancel: "Отмена",
+						callback: function(result){
+							if(result){
+								list.splice(i, 1);
+								$p.wsql.set_user_param(prefix, list);
+								t.requery();
+							}
+						}
+					});
+
 					return;
 				}
 			}
@@ -1799,23 +1813,13 @@ $p.iface.view_cart = function (cell) {
 			var list = t.list();
 
 			for(var i in list){
-				if(list[i].ref == nom.ref){
+				if(list[i].ref == ref || list[i].id == ref){
 					if(list[i].count > 1){
 						list[i].count--;
 						$p.wsql.set_user_param(prefix, list);
-						return;
-					}
-					dhtmlx.confirm({
-						type:"confirm",
-						title:"Корзина",
-						text:"Подтвердите удаление товара",
-						ok: "Удалить",
-						cancel: "Отмена",
-						callback: function(result){
-							if(result)
-								t.remove(ref);
-						}
-					});
+					}else
+						t.remove(ref);
+					return;
 				}
 			}
 		};
@@ -1830,6 +1834,29 @@ $p.iface.view_cart = function (cell) {
 			t.bubble();
 
 		};
+
+		function get_elm(elm){
+			while (elm = elm.parentNode){
+				if(elm.getAttribute("dhx_f_id"))
+					return _cart.get(elm.getAttribute("dhx_f_id"));
+			}
+		}
+
+		function input_change(e){
+
+			var val = parseInt(e.target.value),
+				elm = get_elm(e.target.parentNode);
+
+			if(isNaN(val))
+				e.target.value = elm.count;
+			else{
+				elm.count = val;
+				if(!val)
+					t.remove(elm.id);
+			}
+
+			return false;
+		}
 
 		// элементы создаём с задержкой, чтобы побыстрее показать основное содержимое
 		setTimeout(function () {
@@ -1855,6 +1882,8 @@ $p.iface.view_cart = function (cell) {
 				custom_css: ["cart"],
 				hide_pager: true
 			});
+
+			_dataview.addEventListener('change', input_change, false);
 
 			t.bubble();
 
@@ -1992,9 +2021,9 @@ $p.iface.view_compare = function (cell) {
 				});
 
 			// удаляем допзакладки
-			for (var q=0; q<ids.length; q++) {
-				if(ids[q] != "viewed")
-					t.tabs.tabs(ids[q]).close();
+			for (var i=0; i<ids.length; i++) {
+				if(ids[i] != "viewed")
+					t.tabs.tabs(ids[i]).close();
 			}
 
 			// убеждаемся, что все номенклатуры по использованным к сравнению ссылкам, есть в памяти
@@ -2009,7 +2038,18 @@ $p.iface.view_compare = function (cell) {
 					});
 
 					dataview_viewed.requery_list(t.list("viewed"));
+				})
+				.then(function () {
+
+					// добавляем закладки по видам н6оменклатуры
+					ids.forEach(function (o) {
+						t.tabs.addTab(o.ref, o.name);
+						compare_group(t.tabs.cells(o.ref), o);
+					});
+
 				});
+
+
 
 		};
 
@@ -2019,6 +2059,15 @@ $p.iface.view_compare = function (cell) {
 				t.add(nom.ref, true);
 		});
 
+		// строит таблицу сравнения и выводит её в ячейку
+		function compare_group(cell, ВидНоменклатуры){
+			var nom, list = [];
+			t.list("compare").forEach(function (ref) {
+				nom = $p.cat.Номенклатура.get(ref);
+				if(nom.ВидНоменклатуры == ВидНоменклатуры)
+					list.push(nom);
+			});
+		}
 
 		// Обработчик маршрутизации
 		function hash_route(hprm){
@@ -2485,7 +2534,7 @@ module.exports = function() {
 "about": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-info-circle\"></i> Интернет-магазин MetaStore</h1>\r\n    <p>Метамагазин - это веб-приложение с открытым исходным кодом, разработанное компанией <a href=\"http://www.oknosoft.ru/\" target=\"_blank\">Окнософт</a> на базе фреймворка <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a> и распространяемое под <a href=\"http://www.oknosoft.ru/programmi-oknosoft/metadata.html\" target=\"_blank\">коммерческой лицензией Окнософт</a>.<br />\r\n        Исходный код и документация доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>.<br />\r\n        Приложение является веб-интерфейсом к типовым конфигурациям 1С (Управление торговлей 11.2, Комплексная автоматизация 2.0, ERP Управление предприятием 2.1) и реализует функциональность интернет-магазина для информационной базы 1С\r\n    </p>\r\n    <p>Использованы следующие библиотеки и инструменты:</p>\r\n\r\n    <h3>Серверная часть</h3>\r\n    <ul>\r\n        <li><a href=\"http://1c-dn.com/1c_enterprise/\" target=\"_blank\">1c_enterprise</a><span class=\"md_muted_color\">, ORM сервер 1С:Предприятие</span></li>\r\n        <li><a href=\"http://www.postgresql.org/\" target=\"_blank\">postgreSQL</a><span class=\"md_muted_color\">, мощная объектно-раляционная база данных</span></li>\r\n        <li><a href=\"https://nodejs.org/\" target=\"_blank\">node.js</a><span class=\"md_muted_color\">, серверная программная платформа, основанная на движке V8 javascript</span></li>\r\n        <li><a href=\"http://nginx.org/ru/\" target=\"_blank\">nginx</a><span class=\"md_muted_color\">, высокопроизводительный HTTP-сервер</span></li>\r\n    </ul>\r\n\r\n    <h3>Управление данными в памяти браузера</h3>\r\n    <ul>\r\n        <li><a href=\"https://github.com/agershun/alasql\" target=\"_blank\">alaSQL</a><span class=\"md_muted_color\">, база данных SQL для браузера и Node.js с поддержкой как традиционных реляционных таблиц, так и вложенных JSON данных (NoSQL)</span></li>\r\n        <li><a href=\"https://github.com/metatribal/xmlToJSON\" target=\"_blank\">xmlToJSON</a><span class=\"md_muted_color\">, компактный javascript модуль для преобразования XML в JSON</span></li>\r\n        <li><a href=\"https://github.com/SheetJS/js-xlsx\" target=\"_blank\">xlsx</a><span class=\"md_muted_color\">, библиотека для чтения и записи XLSX / XLSM / XLSB / XLS / ODS в браузере</span></li>\r\n    </ul>\r\n\r\n    <h3>UI библиотеки и компоненты интерфейса</h3>\r\n    <ul>\r\n        <li><a href=\"http://dhtmlx.com/\" target=\"_blank\">dhtmlx</a><span class=\"md_muted_color\">, кроссбраузерная библиотека javascript для построения современных веб и мобильных приложений</span></li>\r\n        <li><a href=\"https://github.com/leongersen/noUiSlider\" target=\"_blank\">noUiSlider</a><span class=\"md_muted_color\">, легковесный javascript компонент регулирования пары (min-max) значений </span></li>\r\n        <li><a href=\"https://github.com/eligrey/FileSaver.js\" target=\"_blank\">filesaver.js</a><span class=\"md_muted_color\">, HTML5 реализация метода saveAs</span></li>\r\n    </ul>\r\n\r\n    <h3>Графика</h3>\r\n    <ul>\r\n        <li><a href=\"https://fortawesome.github.io/Font-Awesome/\" target=\"_blank\">fontawesome</a><span class=\"md_muted_color\">, набор иконок и стилей CSS</span></li>\r\n        <li><a href=\"http://fontastic.me/\" target=\"_blank\">fontastic</a><span class=\"md_muted_color\">, еще один набор иконок и стилей</span></li>\r\n    </ul>\r\n\r\n    <p>&nbsp;</p>\r\n    <h2><i class=\"fa fa-question-circle\"></i> Вопросы</h2>\r\n    <p>Если обнаружили ошибку, пожалуйста,\r\n        <a href=\"https://github.com/oknosoft/metastore/issues/new\" target=\"_blank\">зарегистрируйте вопрос в GitHub</a> или\r\n        <a href=\"http://www.oknosoft.ru/metadata/#page-118\" target=\"_blank\">свяжитесь с разработчиком</a> напрямую<br />&nbsp;</p>\r\n\r\n</div>",
 "cart": "<div class=\"md_column1300\">\r\n\r\n    <h1><i class=\"fa fa-shopping-cart\"></i> Корзина</h1>\r\n\r\n    <div class=\"md_column320\" style=\"width: 67%; padding: 0 8px 0 0; margin-left: -8px;\">\r\n        <div name=\"cart_dataview\" style=\"height: 360px; width: 100%;\"></div>\r\n    </div>\r\n\r\n    <div class=\"md_column320\" name=\"cart_order\" style=\"padding: 0; width: 26%; min-width: 262px;\">\r\n\r\n        <table class=\"aligncenter\" style=\"line-height: 40px\">\r\n            <tr>\r\n                <td style=\"border-bottom: 1px #ddd dashed;\">Товары (2)</td>\r\n                <td align=\"right\" style=\"border-bottom: 1px #ddd dashed;\">1300</td>\r\n            </tr>\r\n\r\n            <tr vertical-align: baseline;>\r\n                <td>Всего:</td>\r\n                <td align=\"right\" style=\"font-size: 2em;\">1300 <i class=\"fa fa-rub\" style=\"font-size: smaller\"></i></td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <a href=\"#\" class=\"dropdown_list\" style=\"display: inline-block; line-height: normal\" title=\"Наличие в магазинах\">Можно забрать сегодня</a>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td>Бонусных рублей за заказ</td>\r\n                <td align=\"right\">190</td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <button name=\"order_order\" class=\"md_btn btn-red btn-fluid\">Оформить заказ</button>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr>\r\n                <td colspan=\"2\">\r\n                    <p style=\"margin: 0\">Оплатите онлайн – получите скидку 5%</p>\r\n                </td>\r\n            </tr>\r\n\r\n            <tr style=\"cursor: pointer\">\r\n                <td><i class=\"fa fa-square-o fa-lg\"></i>  Оплатить картой</td>\r\n                <td align=\"right\"><i class=\"fa fa-cc-visa\"></i>&nbsp;<i class=\"fa fa-cc-mastercard\"></i></td>\r\n            </tr>\r\n\r\n        </table>\r\n\r\n    </div>\r\n\r\n</div>",
 "content": "<div class=\"md_column1300\">\r\n    <h1><i class=\"fa fa-opencart\"></i> Интернет-магазин MetaStore</h1>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-1c\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Типовая 1С</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            MetaStore - это веб-интерфейс<br />\r\n            к типовым конфигурациям 1С, реализующий функциональность интернет-магазина\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-connect\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Готовое решение</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Подключается в один клик:<br />\r\n            1С:Управление торговлей,<br />\r\n            1С:Комплексная автоматизация,<br />\r\n            1С:ERP Управление предприятием\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"apex-icon-equilizer\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Простота настроек</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Иерархия, свойства номенклатуры,<br />остатки и цены, настраиваются<br />в привычных формах 1С\r\n        </p>\r\n    </div>\r\n\r\n    <div class=\"md_column300\">\r\n        <p class=\"text-center small-margin\">\r\n            <!-- Start round icon -->\r\n            <a href=\"#\" class=\"apex-icon-round\">\r\n            <span class=\"apex-icon\">\r\n                <i class=\"fa fa-github-alt\" style=\"line-height: 78px;\"></i>\r\n            </span>\r\n                <span class=\"apex-icon-title\">Открытый код</span>\r\n            </a>\r\n            <!-- End round icon -->\r\n            Разработано на базе <a href=\"http://www.oknosoft.ru/metadata/\" target=\"_blank\">Metadata.js</a><br />\r\n            Исходный код и документация<br />доступны на <a href=\"https://github.com/oknosoft/metastore\" target=\"_blank\">GitHub <i class=\"fa fa-github-alt\"></i></a>\r\n            <br />&nbsp;\r\n        </p>\r\n    </div>\r\n\r\n    <div style=\"padding: 24px 0 24px 0; background-color: #f5f5f5; clear: both; display: inline-block\">\r\n\r\n        <div class=\"md_column320\">\r\n            <p>\r\n                <img class=\"aligncenter\" src=\"templates/imgs/phone-2.png\" alt=\"phone\" width=\"332\" height=\"409\">\r\n            </p>\r\n        </div>\r\n\r\n        <div class=\"md_column320\">\r\n            <h2 class=\"light\">Поддержка мобильных устройств</h2>\r\n            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\r\n            <p><a href=\"#\" class=\"btn\">Learn More</a></p>\r\n        </div>\r\n\r\n    </div>\r\n\r\n</div>",
-"dataview_cart": "<table width='100%'>\r\n    <tr>\r\n        <td rowspan='2' width='90px'>\r\n            <div class='dataview_list_image' style='{common.image()}'></div>\r\n        </td>\r\n        <td>\r\n            {obj.name}\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            <div style='display: inline-flex'>\r\n                <i class='fa fa-minus-square-o fa-lg' style='line-height: inherit; cursor: pointer;'></i>&nbsp;\r\n                <input type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;\r\n                <i class='fa fa-plus-square-o fa-lg' style='line-height: inherit; cursor: pointer;'></i>\r\n            </div>\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            {common.price()}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td colspan='3'>{obj.Описание}&nbsp;</td>\r\n    </tr>\r\n</table>\r\n",
+"dataview_cart": "<table width='100%'>\r\n    <tr>\r\n        <td rowspan='2' width='90px'>\r\n            <div class='dataview_list_image' style='{common.image()}'></div>\r\n        </td>\r\n        <td>\r\n            {obj.name}\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            <div style='display: inline-flex'>\r\n                <i class='fa fa-minus-square-o fa-lg dv_icon_plus' style='line-height: inherit; cursor: pointer;'></i>&nbsp;\r\n                <input type='text' size='1' value='{obj.count}' style='text-align: center;' >&nbsp;\r\n                <i class='fa fa-plus-square-o fa-lg dv_icon_minus' style='line-height: inherit; cursor: pointer;'></i>\r\n            </div>\r\n        </td>\r\n        <td width='100px' align='right'>\r\n            {common.price()}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td colspan='3'>{obj.Описание}&nbsp;</td>\r\n    </tr>\r\n</table>\r\n",
 "dataview_large": "<div>\r\n    <div class='dataview_large_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div style='clear: right'>\r\n        <div>{obj.name}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n\r\n",
 "dataview_list": "<div>\r\n    <div class='dataview_list_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n    <div>\r\n        <div>{obj.name}</div>\r\n        <div>{common.manufacturer()}</div>\r\n        <div >{obj.Описание}</div>\r\n    </div>\r\n</div>\r\n",
 "dataview_small": "<div>\r\n    <div class='dataview_small_image' style='{common.image()}'></div>\r\n    <div class='dataview_price'>{common.price()}</div>\r\n</div>\r\n<div style='clear: both; text-align: center;'>{obj.name}</div>\r\n",

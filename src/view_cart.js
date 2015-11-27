@@ -97,9 +97,23 @@ $p.iface.view_cart = function (cell) {
 			var list = t.list();
 
 			for(var i in list){
-				if(list[i].ref == nom.ref){
-					list.splice(i, 1);
-					$p.wsql.set_user_param(prefix, list);
+				if(list[i].ref == ref || list[i].id == ref){
+
+					dhtmlx.confirm({
+						type:"confirm",
+						title:"Корзина",
+						text:"Подтвердите удаление товара",
+						ok: "Удалить",
+						cancel: "Отмена",
+						callback: function(result){
+							if(result){
+								list.splice(i, 1);
+								$p.wsql.set_user_param(prefix, list);
+								t.requery();
+							}
+						}
+					});
+
 					return;
 				}
 			}
@@ -113,23 +127,13 @@ $p.iface.view_cart = function (cell) {
 			var list = t.list();
 
 			for(var i in list){
-				if(list[i].ref == nom.ref){
+				if(list[i].ref == ref || list[i].id == ref){
 					if(list[i].count > 1){
 						list[i].count--;
 						$p.wsql.set_user_param(prefix, list);
-						return;
-					}
-					dhtmlx.confirm({
-						type:"confirm",
-						title:"Корзина",
-						text:"Подтвердите удаление товара",
-						ok: "Удалить",
-						cancel: "Отмена",
-						callback: function(result){
-							if(result)
-								t.remove(ref);
-						}
-					});
+					}else
+						t.remove(ref);
+					return;
 				}
 			}
 		};
@@ -144,6 +148,29 @@ $p.iface.view_cart = function (cell) {
 			t.bubble();
 
 		};
+
+		function get_elm(elm){
+			while (elm = elm.parentNode){
+				if(elm.getAttribute("dhx_f_id"))
+					return _cart.get(elm.getAttribute("dhx_f_id"));
+			}
+		}
+
+		function input_change(e){
+
+			var val = parseInt(e.target.value),
+				elm = get_elm(e.target.parentNode);
+
+			if(isNaN(val))
+				e.target.value = elm.count;
+			else{
+				elm.count = val;
+				if(!val)
+					t.remove(elm.id);
+			}
+
+			return false;
+		}
 
 		// элементы создаём с задержкой, чтобы побыстрее показать основное содержимое
 		setTimeout(function () {
@@ -169,6 +196,8 @@ $p.iface.view_cart = function (cell) {
 				custom_css: ["cart"],
 				hide_pager: true
 			});
+
+			_dataview.addEventListener('change', input_change, false);
 
 			t.bubble();
 

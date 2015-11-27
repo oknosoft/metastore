@@ -115,9 +115,9 @@ $p.iface.view_compare = function (cell) {
 				});
 
 			// удаляем допзакладки
-			for (var q=0; q<ids.length; q++) {
-				if(ids[q] != "viewed")
-					t.tabs.tabs(ids[q]).close();
+			for (var i=0; i<ids.length; i++) {
+				if(ids[i] != "viewed")
+					t.tabs.tabs(ids[i]).close();
 			}
 
 			// убеждаемся, что все номенклатуры по использованным к сравнению ссылкам, есть в памяти
@@ -132,7 +132,18 @@ $p.iface.view_compare = function (cell) {
 					});
 
 					dataview_viewed.requery_list(t.list("viewed"));
+				})
+				.then(function () {
+
+					// добавляем закладки по видам н6оменклатуры
+					ids.forEach(function (o) {
+						t.tabs.addTab(o.ref, o.name);
+						compare_group(t.tabs.cells(o.ref), o);
+					});
+
 				});
+
+
 
 		};
 
@@ -142,6 +153,15 @@ $p.iface.view_compare = function (cell) {
 				t.add(nom.ref, true);
 		});
 
+		// строит таблицу сравнения и выводит её в ячейку
+		function compare_group(cell, ВидНоменклатуры){
+			var nom, list = [];
+			t.list("compare").forEach(function (ref) {
+				nom = $p.cat.Номенклатура.get(ref);
+				if(nom.ВидНоменклатуры == ВидНоменклатуры)
+					list.push(nom);
+			});
+		}
 
 		// Обработчик маршрутизации
 		function hash_route(hprm){
