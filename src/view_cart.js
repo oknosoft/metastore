@@ -15,9 +15,9 @@ $p.iface.view_cart = function (cell) {
 
 		// карусель с dataview корзины и страницей оформления заказа
 		var t = this,
+			_cell = cell,
 			prefix = "view_cart",
-			changed,
-			_carousel = cell.attachCarousel({
+			_carousel = _cell.attachCarousel({
 				keys:           false,
 				touch_scroll:   false,
 				offset_left:    0,
@@ -49,9 +49,9 @@ $p.iface.view_cart = function (cell) {
 				bubble += o.count;
 			});
 			if(bubble)
-				$p.iface.main.cells("cart").setBubble(bubble);
+				_cell.setBubble(bubble);
 			else
-				$p.iface.main.cells("cart").clearBubble();
+				_cell.clearBubble();
 		};
 
 		/**

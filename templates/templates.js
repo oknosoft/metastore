@@ -27,7 +27,7 @@ module.exports = function() {
 
 	// цена
 	function get_price(o){
-		if((!o.Цена_Мин || !o.Цена_Макс) && o.hasOwnProperty("Характеристики")){
+		if((!o.Цена_Мин || !o.Цена_Макс) && o.Характеристики){
 			var x = JSON.parse(o.Характеристики);
 			for(var i in x){
 				if(!o.Цена_Мин || (x[i].Цена_Мин && o.Цена_Мин > x[i].Цена_Мин))

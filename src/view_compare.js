@@ -16,6 +16,7 @@ $p.iface.view_compare = function (cell) {
 	function OViewCompare(){
 
 		var t = this,
+			_cell = cell,
 			prefix = "view_compare_",
 			dataview_viewed,
 			changed;
@@ -34,7 +35,8 @@ $p.iface.view_compare = function (cell) {
 			var list = t.list("viewed"),
 				do_requery = false;
 
-			function push(to_compare){
+
+				function push(to_compare){
 				if(list.indexOf(ref) == -1){
 					list.push(ref);
 					$p.wsql.set_user_param(prefix + (to_compare ? "compare" : "viewed"), list);
@@ -47,10 +49,15 @@ $p.iface.view_compare = function (cell) {
 			if(to_compare){
 				list = t.list("compare");
 				push(to_compare);
+
+				var nom = $p.cat.Номенклатура.get(ref, false, true);
+				if(nom)
+					$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен к сравнению");
 			}
 
 			if(do_requery)
 				changed = true;
+
 
 			return do_requery;
 
@@ -92,12 +99,19 @@ $p.iface.view_compare = function (cell) {
 			return list;
 		};
 
-		t.tabs = cell.attachTabbar({
+		t.tabs = _cell.attachTabbar({
 			arrows_mode:    "auto",
 			tabs: [
 				{id: "viewed", text: '<i class="fa fa-eye"></i> Просмотренные', active: true}
 			]
 		});
+
+		t.bubble = function () {
+			if(t.list("compare").length)
+				_cell.setBubble(t.list("compare").length);
+			else
+				_cell.clearBubble();
+		};
 
 		t.requery = function () {
 
@@ -140,7 +154,7 @@ $p.iface.view_compare = function (cell) {
 
 				});
 
-
+			t.bubble();
 
 		};
 
@@ -152,17 +166,24 @@ $p.iface.view_compare = function (cell) {
 
 		// строит таблицу сравнения и выводит её в ячейку
 		function compare_group(tab_cell, ВидНоменклатуры){
-			var nom, list = [],
-				_row_fields=" ,Артикул,НаименованиеПолное,Марка,Производитель,Описание".split(","),
+
+			var nom, list = [], finded,
+				_row_fields=" ,Цена,НаименованиеПолное,Артикул,Производитель".split(","),
 				_rows = [],
+				_row,
 				_headers = " ",
 				_types = "ro",
 				_sortings = "na",
 				_ids = "fld",
 				_widths = "150",
 				_minwidths = "100",
-				_grid = tab_cell.attachGrid();
-			_grid.setDateFormat("%d.%m.%Y %H:%i");
+				_grid = tab_cell.attachGrid(),
+				_price = dhtmlXDataView.prototype.types.list.price;
+			_grid.setDateFormat("%d.%m.%Y %H:%fld");
+
+			function presentation(v){
+				return $p.is_data_obj(v) ? v.presentation : v;
+			}
 
 			t.list("compare").forEach(function (ref) {
 				nom = $p.cat.Номенклатура.get(ref);
@@ -190,22 +211,42 @@ $p.iface.view_compare = function (cell) {
 			_grid.init();
 
 			// формируем массив значений
-			for(var i in _row_fields){
-				var row = [];
-				if(i == 0)
-					row.push("");
+			for(var fld in _row_fields){
+				_row = [];
+				if(fld == 0)
+					_row.push("");
+				else if(_row_fields[fld] == "НаименованиеПолное")
+					_row.push("Наименование");
 				else
-					row.push(_row_fields[i]);
+					_row.push(_row_fields[fld]);
+
 				for(var j in list){
 					nom = list[j];
-					if(i == 0){
-						row.push("<img class='compare_img' src='" + "templates/product_pics/" + nom.ФайлКартинки.ref + ".png' >");
+					if(fld == 0){
+						_row.push("<img class='compare_img' src='templates/product_pics/" + nom.ФайлКартинки.ref + ".png' >");
+					}else if(fld == 1){
+						_row.push("<span style='font-size: large'>" + _price(nom) + "</span>");
 					}else{
-						row.push($p.is_data_obj(nom[_row_fields[i]]) ? nom[_row_fields[i]].presentation : nom[_row_fields[i]]);
+						_row.push(presentation(nom[_row_fields[fld]]));
 					}
 				}
-				_rows.push(row)
+				_rows.push(_row);
 			}
+			ВидНоменклатуры.НаборСвойств.extra_fields.find_rows({deleted: false}, function (o) {
+				_row = [o.property.Заголовок || o.property.presentation];
+				for(var j in list){
+					nom = list[j];
+					finded = false;
+					nom.extra_fields.find_rows({property: o.property}, function (row) {
+						_row.push(presentation(row.value));
+						finded = true;
+						return false;
+					});
+					if(!finded)
+						_row.push("");
+				}
+				_rows.push(_row);
+			});
 			_grid.parse(_rows,"jsarray");
 
 		}
@@ -222,10 +263,12 @@ $p.iface.view_compare = function (cell) {
 				}
 
 				// при открытии карточки в каталоге, добавляем в список просмотренных
-			}else if(hprm.view == "catalog" && !$p.is_empty_guid(hprm.ref)){
+			}else{
 
-				t.add(hprm.ref);
+				if(hprm.view == "catalog" && !$p.is_empty_guid(hprm.ref))
+					t.add(hprm.ref);
 
+				t.bubble();
 			}
 		}
 
