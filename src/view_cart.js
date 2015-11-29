@@ -25,6 +25,7 @@ $p.iface.view_cart = function (cell) {
 				offset_item:    0
 			}),
 			_container_cart,
+			_container_order,
 			_content,
 			_dataview,
 			_cart,
@@ -169,7 +170,7 @@ $p.iface.view_cart = function (cell) {
 		function cart_input_change(e){
 
 			var val = parseInt(e.target.value),
-				elm = _cart.get_elm(e.target.parentNode);
+				elm = _cart.get_elm(e.target);
 
 			if(isNaN(val))
 				e.target.value = elm.count;
@@ -184,7 +185,7 @@ $p.iface.view_cart = function (cell) {
 		function cart_click(e){
 
 			var target = e.target,
-				elm = _cart.get_elm(e.target.parentNode);
+				elm = _cart.get_elm(e.target);
 
 			if(elm){
 
@@ -202,7 +203,6 @@ $p.iface.view_cart = function (cell) {
 					}, 300);
 			}
 
-			return false;
 		}
 
 		// элементы создаём с задержкой, чтобы побыстрее показать основное содержимое
@@ -211,8 +211,9 @@ $p.iface.view_cart = function (cell) {
 			// страницы карусели
 			_carousel.hideControls();
 			_carousel.addCell("cart");
-			_carousel.addCell("order");
+			_carousel.addCell("checkout");
 
+			// корзина
 			_carousel.cells("cart").attachHTMLString(require("cart"));
 			_container_cart = _carousel.cells("cart").cell;
 			_container_cart.firstChild.style.overflow = "auto";
@@ -235,7 +236,95 @@ $p.iface.view_cart = function (cell) {
 
 			t.bubble();
 
+			// обработчик кнопки "оформить"
+			_container_cart.querySelector("[name=order_order]").onclick = function () {
+				_carousel.cells("checkout").setActive();
+			};
+
+			// оформление заказа
+			_carousel.cells("checkout").attachHTMLString(require("checkout"));
+			_container_order = _carousel.cells("checkout").cell;
+
+			baron({
+				root: '.wdg_product_checkout',
+				scroller: '.scroller',
+				bar: '.scroller__bar',
+				barOnCls: 'baron',
+
+				$: $,   // Local copy of jQuery-like utility
+
+				event: function(elem, event, func, mode) { // Events manager
+					if (mode == 'trigger') {
+						mode = 'fire';
+					}
+					bean[mode || 'on'](elem, event, func);
+				}
+			}).fix({
+				elements: '.header__title',
+				outside: 'header__title_state_fixed',
+				before: 'header__title_position_top',
+				after: 'header__title_position_bottom',
+				clickable: true
+			}).pull({
+				block: '.load',
+				elements: [{
+					self: '.load__value',
+					property: 'width'
+				}],
+				limit: 115,
+				onExpand: function() {
+					$('.load').css('background', 'grey');
+				}
+			});
+
+
+			// кнопка "вернуться к списку"
+			new $p.iface.OTooolBar({
+				wrapper: _container_order.querySelector("[name=header]"),
+				width: '28px',
+				height: '29px',
+				top: '0px',
+				right: '20px',
+				name: 'back',
+				class_name: "",
+				buttons: [
+					{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться в корзину', float: 'right'}
+				],
+				onclick: function (name) {
+					switch (name) {
+						case "back":
+							_carousel.cells("cart").setActive();
+							break;
+					}
+				}
+			});
+
+			// клик выбора платежной системы
+			_container_order.querySelector("[name=billing_kind]").onclick = function (e) {
+
+				if(e.target.tagName == "A"){
+					var provider;
+					$("li", this).removeClass("active");
+					e.target.parentNode.classList.add("active");
+					e.target.classList.forEach(function (name) {
+						if(name.indexOf("logo-") != -1)
+							provider = name.replace("logo-", "") + "-container";
+					});
+					$(".billing-system", this.querySelector(".billing-systems-container")).each(function (e, t) {
+						if(e.classList.contains(provider))
+							e.classList.remove("hide");
+						else if(!e.classList.contains("hide"))
+							e.classList.add("hide");
+					});
+
+					e.preventDefault();
+					return $p.cancel_bubble(e);
+				}
+			}
+
+
 		}, 50);
+
 
 		// подписываемся на событие добавления в корзину
 		dhx4.attachEvent("order_cart", t.add);

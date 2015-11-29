@@ -38,7 +38,65 @@
           },
           "tabular_sections": {}
         }
-      }
+      },
+      "printing_plates": {}
+    },
+    "ВнешниеПользователи": {
+      "fields": {
+        "ПользовательИБИмя": {
+          "synonym": "Логин (для входа)",
+          "multiline_mode": true,
+          "tooltip": "Имя пользователя",
+          "type": {
+            "types": [
+              "string"
+            ],
+            "str_len": 50
+          }
+        }
+      },
+      "form": {
+        "obj": {
+          "head": {
+            " ": [
+              "name",
+              "ПользовательИБИмя",
+              {"id": "ПользовательИБПароль", "path": "o.ПользовательИБПароль", "synonym": "Пароль", "type": "pwd"}
+            ]
+          }
+        }
+      },
+      "printing_plates": {}
+    },
+    "Партнеры": {
+      "form": {
+        "obj": {
+          "head": {
+            " ": ["name"]
+          },
+          "tabular_sections": {
+            "КонтактнаяИнформация":  {
+              "fields": ["Вид","presentation"],
+              "headers": "Вид,Содержание",
+              "widths": "140,*",
+              "min_widths": "120,180",
+              "aligns": "",
+              "sortings": "na,na",
+              "types": "ro,ro"
+            }
+          }
+        }
+      },
+      "printing_plates": {}
+    },
+    "КартыЛояльности": {
+      "printing_plates": {"prn_1": "Анкета (mxl)"}
+    },
+    "КонтактныеЛицаПартнеров": {
+      "printing_plates": {}
+    },
+    "Контрагенты": {
+      "printing_plates": {}
     }
   },
   "doc": {
@@ -84,6 +142,11 @@
             }
           }
         }
+      },
+      "printing_plates": {
+        "prn_0": "Заказ клиента",
+        "prn_1": "Счет на оплату",
+        "prn_2": "Счет на оплату с факсимиле"
       }
     },
     "ОперацияПоПлатежнойКарте": {
@@ -108,7 +171,8 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
-      }
+      },
+      "printing_plates": {}
     },
     "ПоступлениеБезналичныхДенежныхСредств": {
       "irest": {
@@ -132,7 +196,8 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
-      }
+      },
+      "printing_plates": {}
     },
     "ПриходныйКассовыйОрдер": {
       "irest": {
@@ -156,7 +221,8 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
-      }
+      },
+      "printing_plates": {}
     },
     "РасходныйКассовыйОрдер": {
       "irest": {
@@ -180,7 +246,8 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
-      }
+      },
+      "printing_plates": {}
     },
     "РеализацияТоваровУслуг": {
       "irest": {
@@ -204,6 +271,10 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
+      },
+      "printing_plates": {
+        "prn_0": "Реализация товаров",
+        "prn_1": "Счет-фактура"
       }
     },
     "ВозвратТоваровОтКлиента": {
@@ -228,6 +299,9 @@
             {"id": "Комментарий", "width": "*", "type": "ro", "align": "left", "sort": "server", "caption": "Комментарий"}
           ]
         }
+      },
+      "printing_plates": {
+        "prn_1": "Заявление на возврат товаров"
       }
     }
   },

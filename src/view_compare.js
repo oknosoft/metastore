@@ -17,8 +17,8 @@ $p.iface.view_compare = function (cell) {
 
 		var t = this,
 			_cell = cell,
+			_dataview,
 			prefix = "view_compare_",
-			dataview_viewed,
 			changed;
 
 		/**
@@ -59,7 +59,6 @@ $p.iface.view_compare = function (cell) {
 			if(do_requery)
 				changed = true;
 
-
 			return do_requery;
 
 		};
@@ -84,6 +83,7 @@ $p.iface.view_compare = function (cell) {
 					$p.wsql.set_user_param(prefix + "viewed", list);
 				}
 			}
+			t.requery();
 		};
 
 		/**
@@ -144,7 +144,7 @@ $p.iface.view_compare = function (cell) {
 							ids.push(nom.ВидНоменклатуры);
 					});
 
-					dataview_viewed.requery_list(t.list("viewed"));
+					_dataview.requery_list(t.list("viewed"));
 				})
 				.then(function () {
 
@@ -162,9 +162,32 @@ $p.iface.view_compare = function (cell) {
 
 		// подписываемся на событие добавления к сравнению
 		dhx4.attachEvent("order_compare", function (nom) {
-			if(nom && !$p.is_empty_guid(nom.ref))
-				t.add(nom.ref, true);
+			if(typeof nom == "object")
+				nom = nom.ref;
+			if(!$p.is_empty_guid(nom)){
+				if(t.add(nom, true))
+					t.requery();
+			}
 		});
+
+		function viewed_click(e){
+
+			var target = e.target,
+				elm = _dataview.get_elm(e.target);
+
+			if(elm){
+
+				if(target.classList.contains("dv_icon_cart"))
+					dhx4.callEvent("order_cart", [elm.id]);
+
+				else if(target.classList.contains("dv_icon_add_compare")){
+					if(t.add(elm.id, true))
+						t.requery();
+
+				}else if(target.classList.contains("dv_icon_remove_viewed"))
+					t.remove(elm.id, true);
+			}
+		}
 
 		// строит таблицу сравнения и выводит её в ячейку
 		function compare_group(tab_cell, ВидНоменклатуры){
@@ -297,11 +320,13 @@ $p.iface.view_compare = function (cell) {
 		setTimeout(function () {
 
 			// dataview со списком просмотренных товаров
-			dataview_viewed = $p.iface.list_data_view({
+			_dataview = $p.iface.list_data_view({
 				container: t.tabs.cells("viewed"),
 				custom_css: ["viewed"],
 				type: "viewed"
 			});
+
+			t.tabs.cells("viewed").cell.addEventListener('click', viewed_click, false);
 
 			hash_route($p.job_prm.parse_url());
 
