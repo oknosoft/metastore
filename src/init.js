@@ -72,18 +72,28 @@ $p.settings = function (prm, modifiers) {
  */
 $p.iface.oninit = function() {
 
+	$p.iface.sidebar_items = [
+		{id: "catalog", text: "Каталог", icon: "search_48.png"},
+		{id: "compare", text: "Сравнение", icon: "compare_48.png"},
+		{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
+		{id: "orders", text: "Заказы", icon: "projects_48.png"},
+		{id: "content", text: "Контент", icon: "content_48.png"},
+		{id: "user", text: "Профиль", icon: "contacts_48.png"},
+		{id: "settings", text: "Настройки", icon: "settings_48.png"},
+		{id: "about", text: "О программе", icon: "about_48.png"}
+	];
+
 	function oninit(){
 
-		var toolbar, hprm, items = [
-			{id: "catalog", text: "Каталог", icon: "search_48.png"},
-			{id: "compare", text: "Сравнение", icon: "compare_48.png"},
-			{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
-			{id: "orders", text: "Заказы", icon: "projects_48.png"},
-			{id: "content", text: "Контент", icon: "content_48.png"},
-			{id: "user", text: "Профиль", icon: "contacts_48.png"},
-			{id: "settings", text: "Настройки", icon: "settings_48.png"},
-			{id: "about", text: "О программе", icon: "about_48.png"}
-		] ;
+		var toolbar, hprm, items,  _items = $p.wsql.get_user_param("sidebar_items", "object");
+		if(_items && Array.isArray(_items) && _items.length){
+			items = [];
+			for(var i in _items){
+				if(_items[i][0])
+					items.push($p.iface.sidebar_items[i])
+			}
+		}else
+			items = $p.iface.sidebar_items;
 
 		// гасим заставку
 		document.body.removeChild(document.querySelector("#webshop_splash"));
@@ -153,8 +163,10 @@ $p.iface.oninit = function() {
 		// еще, сразу инициализируем класс OViewCompare, т.к. в нём живут обработчики добавления в корзину и история просмотров
 		// и класс OViewCart, чтобы обрабатывать события добавления в корзину
 		setTimeout(function () {
-			$p.iface.view_compare($p.iface.main.cells("compare"));
-			$p.iface.view_cart($p.iface.main.cells("cart"));
+			if($p.iface.main.cells("compare"))
+				$p.iface.view_compare($p.iface.main.cells("compare"));
+			if($p.iface.main.cells("cart"))
+				$p.iface.view_cart($p.iface.main.cells("cart"));
 		}, 50);
 
 		hprm = $p.job_prm.parse_url();

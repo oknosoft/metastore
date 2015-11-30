@@ -36,6 +36,10 @@ module.exports = function() {
 					o.Цена_Макс = x[i].Цена_Макс;
 			}
 		}
+		if(!o.Цена_Мин)
+			o.Цена_Мин = 0;
+		if(!o.Цена_Макс)
+			o.Цена_Макс = 0;
 		return (o.Цена_Мин == o.Цена_Макс ? o.Цена_Мин.toFixed(0) : 'от ' + o.Цена_Мин.toFixed(0) + ' до ' + o.Цена_Макс.toFixed(0)) +
 			' <i class="fa fa-rub" style="font-size: smaller; color: #747f7f"></i>';
 	}

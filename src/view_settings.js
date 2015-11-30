@@ -62,7 +62,7 @@ $p.iface.view_settings = function (cell) {
 				type:"container",
 				name: "views",
 				inputWidth: 320,
-				inputHeight: 320
+				inputHeight: 300
 			},
 			{type:"template", label:"",value:"",
 				note: {text: "Видимость и порядок закладок навигации", width: 320}},
@@ -77,6 +77,27 @@ $p.iface.view_settings = function (cell) {
 
 		]);
 
+		// Таблица доступных закладок
+		$p.iface._settings.grid = new dhtmlXGridObject($p.iface._settings.form2.getContainer("views"));
+		$p.iface._settings.grid.setHeader(" ,Закладка");
+		$p.iface._settings.grid.setInitWidths("50,*");
+		$p.iface._settings.grid.setColumnMinWidth("40,200");
+		$p.iface._settings.grid.setColSorting("na,na");
+		$p.iface._settings.grid.setColTypes("ch,ro");
+		$p.iface._settings.grid.enableAutoWidth(true, 800, 300);
+		$p.iface._settings.grid.init();
+		var _rows = $p.wsql.get_user_param("sidebar_items", "object");
+		if(!_rows || !Array.isArray(_rows) || !_rows.length){
+			_rows = [];
+			$p.iface.sidebar_items.forEach(function (item) {
+				_rows.push([1, item.text]);
+			});
+		}
+		$p.iface._settings.grid.parse(_rows,"jsarray");
+		$p.iface._settings.grid.cells(7,0).setDisabled(true);
+
+		// инициализация свойств
+
 		$p.iface._settings.form1.checkItem("device_type", $p.wsql.get_user_param("device_type"));
 
 
@@ -89,6 +110,11 @@ $p.iface.view_settings = function (cell) {
 		});
 
 		$p.iface._settings.form3.attachEvent("onButtonClick", function(name){
+			for(var i in _rows){
+				_rows[i][0] = $p.iface._settings.grid.cells(parseInt(i)+1, 0).isChecked() ? 1 : 0;
+			}
+			$p.wsql.set_user_param("sidebar_items", _rows);
+
 			location.reload();
 		});
 	}

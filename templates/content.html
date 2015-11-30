@@ -1,6 +1,10 @@
 <div class="md_column1300">
     <h1><i class="fa fa-opencart"></i> Интернет-магазин MetaStore</h1>
-
+    <p class="small-margin">
+        Перед вами - стандартная конфигурация 1С:Управление торговлей, редакции 11.2, к которой подключен интерфейс интернет-магазина.
+        Все "внутренности", включая схему данных и бизнес-логику используются родные, 1С-ные, без изменений. Для решения задач интернет-тогргвли,
+        реализованы веб-формы поиска и просмотра номенклатуры, добавлен инструмент сравнения свойств товаров и корзина покупок.
+    </p>
     <div class="md_column300">
         <p class="text-center small-margin">
             <!-- Start round icon -->
@@ -63,20 +67,100 @@
         </p>
     </div>
 
-    <div style="padding: 24px 0 24px 0; background-color: #f5f5f5; clear: both; display: inline-block">
+
+    <div style="padding: 12px 0 0 0; clear: both; display: inline-block; width: 100%">
 
         <div class="md_column320">
-            <p>
-                <img class="aligncenter" src="templates/imgs/phone-2.png" alt="phone" width="332" height="409">
-            </p>
+            <h2>Ключевые особенности и преимущества</h2>
+            <ul>
+                <li class="small-margin">Информация об остатках, оплатах и заказах, доступна в личном кабинете на сайте в реальном времени</li>
+                <li class="small-margin">Библиотека является расширением типовых конфигураций 1С и максимально использует методические и программные наработки, накопленные фирмой 1С и её партнерами</li>
+                <li class="small-margin">В личном кабинете, клиенту доступны для просмотра все первичные документы, связанные с его покупками (счета, оплаты, отгрузки и возвраты)</li>
+            </ul>
+
+            <h3>Для партнеров и программитов 1С</h3>
+            <ul>
+                <li class="small-margin">Настройка бизнес-логики под требования заказчика, выполняется в привычном конфигураторе с использованием знакомых объектов типовых решений 1С</li>
+                <li class="small-margin">Опыт разработки на javascript не повредит, но в серверной части проекта язык javascript не используется и для её поддержки и адаптации, специальных знаний веб-технологий не требуется</li>
+            </ul>
+
+            <h3>Для веб-студий и программитов javascript</h3>
+            <ul>
+                <li class="small-margin">MetaStore базируется на библиотеке <a href="https://github.com/oknosoft/metadata.js">metadata.js</a>, которая предоставляет frontend-разрабочтику высокоуровневые javascript-объекты, упрощающие взаимодействие с 1С</li>
+                <li class="small-margin">Опыт разработки на 1С не повредит, но в клиентской части проекта язык 1С не используется и для её поддержки и адаптации, специальных знаний 1С не требуется</li>
+            </ul>
+
+        </div>
+
+        <div class="md_column320" style="background: url(templates/imgs/print_order.png); background-size: cover; height: 540px">
+        </div>
+
+    </div>
+
+
+    <div style="padding: 12px 0 0 0; clear: both; display: inline-block; width: 100%">
+
+        <div class="md_column320" style="background: url(templates/imgs/product_card.png); background-size: cover; height: 500px">
+        </div>
+
+        <div class="md_column320">
+            <h3>Для пользователей</h3>
+            <ul>
+                <li class="small-margin">Управление настройками магазина, свойствами и категориями номенклатуры, правилами ценообразования, заказами, оплатами и доставками, происходит в привычных формах 1С. Никакого двойного ввода данных, импорта и экспорта не требуется</li>
+                <li class="small-margin">На сайте теперь можно использовать любые данные, доступные в 1С, что повышает функциональность и привлекательность интернет-магазина</li>
+                <li class="small-margin">Интеграция с каталогом Яндекс.Маркет
+                    <ul>
+                        <li>Импорт категорий и свойств товаров</li>
+                        <li>Показ отзывов с Яндекс.Маркета в карточке товара интегрнет-магазина</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Для всех</h3>
+            <ul>
+                <li class="small-margin">Надёжность сервиса. Библиотека <a href="https://github.com/oknosoft/metadata.js">metadata.js</a> берёт на себя вопросы синхронизации данных между сайтом и 1С
+                    <ul>
+                        <li>В штатном режиме, когда сервер 1С доступен, выполняется прямое чтение и запись данных в 1С</li>
+                        <li>При недоступности сервера 1С, данные кешируются в промежуточном прокси на Node.js</li>
+                    </ul>
+                </li>
+                <li class="small-margin">Масштабируемость
+                    <ul>
+                        <li>Для небольших сайтов с посещаемостью до 1000 человек в день, с обработкой запросов справится единственный экземпляр сервера 1С</li>
+                        <li>Для крупных проектов можно задействовать балансировщики нагрузки и отказоустойчивые кластеры</li>
+                    </ul>
+                </li>
+                <li class="small-margin">Скорость работы
+                    <ul>
+                        <li>В MetaStore задействованы возможности современных браузеров и оптимизирован трафик между клиентом и сервером</li>
+                    </ul>
+                </li>
+                <li class="small-margin">Функциональность
+                    <ul>
+                        <li>Использование на сайте модели данных 1С, отточенной многолетним опытом автоматизации крупных торговых предприятий, позволяет реализовать функциональный интерфейс, нацеленный на удобство клиентов</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+
+    <div style="padding: 12px 0 0 0; clear: both; display: inline-block; width: 100%">
+
+        <div class="md_column320">
+            <img class="aligncenter" src="templates/imgs/phone-2.png" alt="phone" width="332" height="409">
         </div>
 
         <div class="md_column320">
             <h2 class="light">Поддержка мобильных устройств</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <p><a href="#" class="btn">Learn More</a></p>
+            <ul>
+                <li class="small-margin">Адаптивная разметка в зависимости от размеров экрана</li>
+                <li class="small-margin">Полноэкранный режим и события смены ориентации устройства</li>
+                <li>Кеширование данных и экономия трафика обеспечивают комфортную работу при плохой связи</li>
+            </ul>
         </div>
-
     </div>
+
 
 </div>
