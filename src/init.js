@@ -151,7 +151,7 @@ $p.iface.oninit = function() {
 
 			hprm = $p.job_prm.parse_url();
 			if(hprm.view != id)
-				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, id);
+				$p.iface.set_hash(hprm.obj, "", hprm.frm, id);
 
 			$p.iface["view_" + id]($p.iface.main.cells(id));
 

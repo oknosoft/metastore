@@ -115,9 +115,23 @@ $p.iface.view_orders = function (cell) {
 
 
 				}
-			};
+			}
 			return true;
 		});
+
+		// Обработчик маршрутизации
+		function hash_route(hprm){
+
+			// открываем форму выбранного объекта
+			if(hprm.view == "orders"){
+
+				var mgr = $p.md.mgr_by_class_name(hprm.obj);
+				if(mgr && !$p.is_empty_guid(hprm.ref))
+					mgr.form_obj(t.tabs.cells(t.tabs.getActiveTab()), hprm.ref);
+			}
+		}
+		// подписываемся на маршрутизацию
+		$p.eve.hash_route.push(hash_route);
 
 	}
 

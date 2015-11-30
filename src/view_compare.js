@@ -307,8 +307,10 @@ $p.iface.view_compare = function (cell) {
 				// при открытии карточки в каталоге, добавляем в список просмотренных
 			}else{
 
-				if(hprm.view == "catalog" && !$p.is_empty_guid(hprm.ref))
-					t.add(hprm.ref);
+				if(hprm.view == "catalog" && !$p.is_empty_guid(hprm.ref)){
+					if($p.cat.ВидыНоменклатуры.get(hprm.obj, false, true) && !$p.cat.ВидыНоменклатуры.get(hprm.obj, false, true).empty())
+						t.add(hprm.ref);
+				}
 
 				t.bubble();
 			}
