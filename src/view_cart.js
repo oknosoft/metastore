@@ -247,9 +247,10 @@ $p.iface.view_cart = function (cell) {
 			t.bubble();
 
 			// обработчик кнопки "оформить"
-			_container_cart.querySelector("[name=order_order]").onclick = function () {
-				_carousel.cells("checkout").setActive();
-			};
+			_container_cart.querySelector("[name=order_order]").onclick =
+				_container_cart.querySelector(".dv_icon_card").onclick = function () {
+					_carousel.cells("checkout").setActive();
+				};
 
 			// оформление заказа
 			_carousel.cells("checkout").attachHTMLString(require("checkout"));
@@ -310,12 +311,12 @@ $p.iface.view_cart = function (cell) {
 			});
 
 			// клик выбора платежной системы
-			_container_order.querySelector("[name=billing_kind]").onclick = function (e) {
+			_container_order.querySelector("[name=billing_kind]").onclick = function (ev) {
 
-				if(e.target.tagName == "A"){
+				if(ev.target.tagName == "A"){
 					var provider;
 					$("li", this).removeClass("active");
-					e.target.parentNode.classList.add("active");
+					ev.target.parentNode.classList.add("active");
 					for(var i=0; i<ev.target.classList.length; i++){
 						if(ev.target.classList.item(i).indexOf("logo-") == 0){
 							provider = ev.target.classList.item(i).replace("logo-", "") + "-container";
@@ -329,8 +330,8 @@ $p.iface.view_cart = function (cell) {
 							e.classList.add("hide");
 					});
 
-					e.preventDefault();
-					return $p.cancel_bubble(e);
+					ev.preventDefault();
+					return $p.cancel_bubble(ev);
 				}
 			}
 

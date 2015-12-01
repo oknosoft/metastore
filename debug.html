@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0 user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <title>Интернет-магазин MetaStore</title>
+    <link rel="icon" href="templates/imgs/fav-md32.png" type="image/png">
+    <link rel="shortcut icon" href="templates/imgs/fav-md32.png" type="image/png">
+    <link rel="apple-touch-icon-precomposed" href="templates/imgs/fav-md32.png">
+
+    <style>
+        #webshop_splash {
+            width: 512px;
+            height: 128px;
+            position: relative;
+            left: 48%;
+            margin-left: -255px;
+            margin-top: 140px;
+            background-image:url(templates/imgs/shop_splash.gif);
+        }
+        @media (max-width: 640px) {
+            #webshop_splash {
+                width: 340px;
+                height: 86px;
+                left: 48%;
+                margin-left: -170px;
+                margin-top: 100px;
+                background-size: cover;
+            }
+        }
+    </style>
+
+    <!--дополнительные стили. основные загрузятся кодом в зависимости от скина-->
+    <link rel="stylesheet" type="text/css" href="templates/font-awesome-4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="templates/fontastic/styles.css">
+    <link rel="stylesheet" type="text/css" href="templates/nouislider.css">
+    <link rel="stylesheet" type="text/css" href="templates/checkout.css">
+
+</head>
+<body>
+
+<div id="webshop_splash"></div>
+
+<!-- библиотеки -->
+<script src="lib/alasql/alasql.js"></script>
+<script src="lib/nouislider/nouislider.min.js"></script>
+<script src="lib/dhtmlx.min.js"></script>
+<script src="lib/metadata.js"></script>
+
+<!-- эксперимент -->
+<link rel="stylesheet" type="text/css" href="lib/baron/baron.css">
+<link rel="stylesheet" type="text/css" href="templates/baron.css">
+<script src="lib/qbb.min.js"></script>
+<script src="lib/baron/baron.js"></script>
+
+<!-- собственно, скрипт магазина -->
+<script src="dist/metastore.js"></script>
+
+</body>
+</html>
