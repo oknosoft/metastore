@@ -59,7 +59,7 @@ $p.iface.list_data_view = function(attr){
 	};
 	if(attr.hide_pager)
 		delete dataview_attr.pager;
-	if(dataview_attr.type != "list")
+	if(dataview_attr.type != "list" && !attr.autowidth)
 		delete dataview_attr.autowidth;
 	if(attr.drag)
 		dataview_attr.drag = true;
@@ -110,9 +110,14 @@ $p.iface.list_data_view = function(attr){
 	});
 
 	// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
-	dhx4.attachEvent("layout_resize", function (layout) {
-		$p.record_log("");
-	});
+	if(attr.autosize)
+		window.addEventListener("resize", function () {
+			setTimeout(function () {
+				div_dataview_outer.style.height = div_dataview.style.height = container.offsetHeight + "px";
+				div_dataview_outer.style.width = div_dataview.style.width = container.offsetWidth + "px";
+				dataview.refresh();
+			}, 600);
+		}, false);
 
 	return dataview;
 

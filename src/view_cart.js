@@ -223,12 +223,22 @@ $p.iface.view_cart = function (cell) {
 			_dataview.style.width = (_do_order.offsetLeft - 4) + "px";
 			_dataview.style.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
 
+			window.addEventListener("resize", function () {
+				setTimeout(function () {
+					var s1 = _dataview.style, s2 = _dataview.firstChild.style, s3 = _dataview.firstChild.firstChild.style;
+					s1.width = s2.width = s3.width = (_do_order.offsetLeft - 4) + "px";
+					s1.height = s2.height = s3.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
+					_cart.refresh();
+				}, 600);
+			}, false);
+
 			_cart = $p.iface.list_data_view({
 				container: _dataview,
 				height: "auto",
 				type: "cart",
 				custom_css: ["cart"],
-				hide_pager: true
+				hide_pager: true,
+				autowidth: true
 			});
 
 			_dataview.addEventListener('change', cart_input_change, false);

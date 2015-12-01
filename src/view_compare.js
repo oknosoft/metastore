@@ -325,7 +325,8 @@ $p.iface.view_compare = function (cell) {
 			_dataview = $p.iface.list_data_view({
 				container: t.tabs.cells("viewed"),
 				custom_css: ["viewed"],
-				type: "viewed"
+				type: "viewed",
+				autosize: true
 			});
 
 			t.tabs.cells("viewed").cell.addEventListener('click', viewed_click, false);

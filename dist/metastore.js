@@ -248,7 +248,7 @@ $p.iface.list_data_view = function(attr){
 	};
 	if(attr.hide_pager)
 		delete dataview_attr.pager;
-	if(dataview_attr.type != "list")
+	if(dataview_attr.type != "list" && !attr.autowidth)
 		delete dataview_attr.autowidth;
 	if(attr.drag)
 		dataview_attr.drag = true;
@@ -299,9 +299,14 @@ $p.iface.list_data_view = function(attr){
 	});
 
 	// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
-	dhx4.attachEvent("layout_resize", function (layout) {
-		$p.record_log("");
-	});
+	if(attr.autosize)
+		window.addEventListener("resize", function () {
+			setTimeout(function () {
+				div_dataview_outer.style.height = div_dataview.style.height = container.offsetHeight + "px";
+				div_dataview_outer.style.width = div_dataview.style.width = container.offsetWidth + "px";
+				dataview.refresh();
+			}, 600);
+		}, false);
 
 	return dataview;
 
@@ -1173,7 +1178,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 
 		// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
 		dhx4.attachEvent("layout_resize", function (layout) {
-			$p.record_log("");
+			div_dataview_outer.style.height = div_dataview.style.height = _cell.offsetHeight + "px";
+			div_dataview_outer.style.width = div_dataview.style.width = _cell.offsetWidth + "px";
+			dataview.refresh();
 		});
 
 
@@ -1704,11 +1711,26 @@ $p.iface.view_catalog = function (cell) {
 		// подписываемся на маршрутизацию
 		$p.eve.hash_route.push(function (hprm){
 
+			var nom = $p.cat.Номенклатура.get(hprm.ref, false, true);
+
 			if(hprm.view == "catalog"){
 
 				// при непустой ссылке, показываем карточку товара
-				if($p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref)){
-					product_card($p.iface._catalog.carousel.cells("goods"), hprm.ref)
+				// если ссылка является номенклатурой - устанавливаем вид номенклатуры
+				if(nom && !nom.empty()){
+
+					if(hprm.obj != nom.ВидНоменклатуры.ref)
+						hprm.obj = nom.ВидНоменклатуры.ref;
+					if(hprm.obj != $p.iface._catalog.tree.getSelectedItemId())
+						$p.iface._catalog.tree.selectItem(hprm.obj, false);
+
+					product_card($p.iface._catalog.carousel.cells("goods"), hprm.ref);
+
+				}
+				// если указан пустой вид номенклатуры - используем текущий элемент дерева
+				else if(!$p.cat.ВидыНоменклатуры.get(hprm.obj, false, true) || $p.cat.ВидыНоменклатуры.get(hprm.obj, false, true).empty()){
+					if(!$p.is_empty_guid($p.iface._catalog.tree.getSelectedItemId()))
+						hprm.obj = $p.iface._catalog.tree.getSelectedItemId();
 
 				}
 				// иначе - переключаемся на закладку списка
@@ -1953,12 +1975,22 @@ $p.iface.view_cart = function (cell) {
 			_dataview.style.width = (_do_order.offsetLeft - 4) + "px";
 			_dataview.style.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
 
+			window.addEventListener("resize", function () {
+				setTimeout(function () {
+					var s1 = _dataview.style, s2 = _dataview.firstChild.style, s3 = _dataview.firstChild.firstChild.style;
+					s1.width = s2.width = s3.width = (_do_order.offsetLeft - 4) + "px";
+					s1.height = s2.height = s3.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
+					_cart.refresh();
+				}, 600);
+			}, false);
+
 			_cart = $p.iface.list_data_view({
 				container: _dataview,
 				height: "auto",
 				type: "cart",
 				custom_css: ["cart"],
-				hide_pager: true
+				hide_pager: true,
+				autowidth: true
 			});
 
 			_dataview.addEventListener('change', cart_input_change, false);
@@ -2400,7 +2432,8 @@ $p.iface.view_compare = function (cell) {
 			_dataview = $p.iface.list_data_view({
 				container: t.tabs.cells("viewed"),
 				custom_css: ["viewed"],
-				type: "viewed"
+				type: "viewed",
+				autosize: true
 			});
 
 			t.tabs.cells("viewed").cell.addEventListener('click', viewed_click, false);

@@ -213,7 +213,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 
 		// подписываемся на событие изменения размера во внешнем layout и изменение ориентации устройства
 		dhx4.attachEvent("layout_resize", function (layout) {
-			$p.record_log("");
+			div_dataview_outer.style.height = div_dataview.style.height = _cell.offsetHeight + "px";
+			div_dataview_outer.style.width = div_dataview.style.width = _cell.offsetWidth + "px";
+			dataview.refresh();
 		});
 
 
