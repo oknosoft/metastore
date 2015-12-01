@@ -43,7 +43,7 @@ $p.settings = function (prm, modifiers) {
 	prm.allow_post_message = "*";
 
 	// используем геокодер
-	prm.use_google_geo = true;
+	prm.use_ip_geo = true;
 
 	// полноэкранный режим на мобильных
 	prm.request_full_screen = true;
@@ -178,27 +178,25 @@ $p.iface.oninit = function() {
 				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
 		} else
 			setTimeout($p.iface.hash_route, 10);
-	}
 
-	// подписываемся на событие геолокатора
-	// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
-	function geo_current_position(pos){
-		if($p.iface.main && $p.iface.main.getAttachedToolbar){
-			var tb = $p.iface.main.getAttachedToolbar();
+		// подписываемся на событие геолокатора
+		// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
+		if($p.iface.main.getAttachedToolbar){
+			var tb = $p.iface.main.getAttachedToolbar(), city;
 			if(tb){
-				tb.setItemText("right", '<i class="fa fa-map-marker"></i> ' + (pos.city || pos.region).replace("г. ", ""));
-				tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px"
+				$p.ipinfo.ipgeo().then(function (pos) {
+					if(pos.city && pos.city.name_ru)
+						city = pos.city.name_ru;
+					else if(pos.region && pos.region.name_ru)
+						city = pos.city.region;
+
+					tb.setItemText("right", '<i class="fa fa-map-marker"></i> ' + city.replace("г. ", ""));
+					tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px";
+				});
 			}
 		}
 	}
-	dhx4.attachEvent("geo_current_position", function(pos){
-		if($p.iface.main && $p.iface.main.getAttachedToolbar)
-			geo_current_position(pos);
-		else
-			setTimeout(function () {
-				geo_current_position(pos);
-			}, 3000);
-	});
+
 
 	// подписываемся на событие при закрытии страницы - запоминаем последний hash_url
 	window.addEventListener("beforeunload", function () {

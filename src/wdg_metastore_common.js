@@ -86,11 +86,12 @@ $p.iface.list_data_view = function(attr){
 		var hprm,
 			dv_obj = {};
 
-		ev.target.classList.forEach(function (name) {
-			if(name.indexOf("dv_") == 0){
+		for(var i=0; i<ev.target.classList.length; i++){
+			if(ev.target.classList.item(i).indexOf("dv_") == 0){
 				hprm = true;
+				break;
 			}
-		});
+		}
 
 		if(!hprm){
 			hprm = $p.job_prm.parse_url(),

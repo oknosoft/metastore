@@ -306,10 +306,12 @@ $p.iface.view_cart = function (cell) {
 					var provider;
 					$("li", this).removeClass("active");
 					e.target.parentNode.classList.add("active");
-					e.target.classList.forEach(function (name) {
-						if(name.indexOf("logo-") != -1)
-							provider = name.replace("logo-", "") + "-container";
-					});
+					for(var i=0; i<ev.target.classList.length; i++){
+						if(ev.target.classList.item(i).indexOf("logo-") == 0){
+							provider = ev.target.classList.item(i).replace("logo-", "") + "-container";
+							break;
+						}
+					}
 					$(".billing-system", this.querySelector(".billing-systems-container")).each(function (e, t) {
 						if(e.classList.contains(provider))
 							e.classList.remove("hide");
