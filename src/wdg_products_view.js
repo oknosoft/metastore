@@ -125,6 +125,16 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 		// внешний контейнер dataview
 			div_dataview_outer = document.createElement('div');
 
+		// получаем заготовку номенклдатуры с минимальными полями
+		function nom_from_id(id){
+			var dv_obj = ({})._mixin(dataview.get(id));
+			dv_obj.ref = dv_obj.id;
+			dv_obj.id = dv_obj.Код;
+			dv_obj._not_set_loaded = true;
+			delete dv_obj.Код;
+			return $p.cat.Номенклатура.create(dv_obj);
+		}
+
 		// ODynDataView
 		layout.appendChild(div_dataview_outer);
 		div_dataview_outer.appendChild(div_dataview);
@@ -197,13 +207,9 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 
 		dataview.attachEvent("onItemDblClick", function (id, ev, html){
 
-			var hprm = $p.job_prm.parse_url(),
-				dv_obj = ({})._mixin(dataview.get(id));
-			dv_obj.ref = dv_obj.id;
-			dv_obj.id = dv_obj.Код;
-			dv_obj._not_set_loaded = true;
-			delete dv_obj.Код;
-			$p.cat.Номенклатура.create(dv_obj)
+			var hprm = $p.job_prm.parse_url();
+
+			nom_from_id(id)
 				.then(function (o) {
 					$p.iface.set_hash(hprm.obj, id, hprm.frm, hprm.view);
 				});
@@ -217,6 +223,29 @@ dhtmlXCellObject.prototype.attachOProductsView = function(attr) {
 			div_dataview_outer.style.width = div_dataview.style.width = _cell.offsetWidth + "px";
 			dataview.refresh();
 		});
+
+		div_dataview.addEventListener('click', function (e) {
+			var target = e.target,
+				elm = dataview.get_elm(e.target);
+
+			if(elm){
+
+				if(target.classList.contains("dv_icon_cart")){
+					nom_from_id(elm.id)
+						.then(function (o) {
+							dhx4.callEvent("order_cart", [o]);
+						});
+
+				}else if(target.classList.contains("dv_icon_add_compare")){
+					nom_from_id(elm.id)
+						.then(function (o) {
+							dhx4.callEvent("order_compare", [o]);
+						});
+
+				}else if(target.classList.contains("dv_icon_detail"))
+					dataview.callEvent("onItemDblClick", [elm.id]);
+			}
+		}, false);
 
 
 	})();

@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 000000000002
+# 000000000003
 
 # Additional resources to cache
 CACHE:
@@ -33,7 +33,6 @@ data/zones/0/ireg.json?v=201511300000
 //oknosoft.github.io/metastore/templates/checkout.css
 //oknosoft.github.io/metadata.js/lib/baron/baron.css
 //oknosoft.github.io/metastore/templates/baron.css
-
 
 # offline.html will be displayed if the user is offline
 # FALLBACK:
