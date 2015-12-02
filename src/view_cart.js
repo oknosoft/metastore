@@ -9,13 +9,15 @@
 
 $p.iface.view_cart = function (cell) {
 
+	var _requered;
+
 	function OViewCart(){
 
 		// карусель с dataview корзины и страницей оформления заказа
 		var t = this,
+			_cell = cell,
 			prefix = "view_cart",
-			changed,
-			_carousel = cell.attachCarousel({
+			_carousel = _cell.attachCarousel({
 				keys:           false,
 				touch_scroll:   false,
 				offset_left:    0,
@@ -23,9 +25,11 @@ $p.iface.view_cart = function (cell) {
 				offset_item:    0
 			}),
 			_container_cart,
+			_container_order,
 			_content,
 			_dataview,
-			_cart;
+			_cart,
+			_do_order;
 
 		/**
 		 * Возвращает список товаров в корзине
@@ -45,7 +49,11 @@ $p.iface.view_cart = function (cell) {
 			t.list().forEach(function (o) {
 				bubble += o.count;
 			});
-			$p.iface.main.cells("cart").setBubble(bubble);
+			if(bubble)
+				_cell.setBubble(bubble);
+			else
+				_cell.clearBubble();
+			return bubble;
 		};
 
 		/**
@@ -74,12 +82,14 @@ $p.iface.view_cart = function (cell) {
 			}
 			if(!finded){
 				list.push({ref: nom.ref, count: 1});
+				$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
 			}
 			$p.wsql.set_user_param(prefix, list);
 
-			$p.msg.show_msg((nom.НаименованиеПолное || nom.name) + " добавлен в корзину");
-
-			t.requery();
+			t.requery()
+				.then(function () {
+					_cart.select(nom.ref);
+				});
 
 		};
 
@@ -91,9 +101,23 @@ $p.iface.view_cart = function (cell) {
 			var list = t.list();
 
 			for(var i in list){
-				if(list[i].ref == nom.ref){
-					list.splice(i, 1);
-					$p.wsql.set_user_param(prefix, list);
+				if(list[i].ref == ref || list[i].id == ref){
+
+					dhtmlx.confirm({
+						type:"confirm",
+						title:"Корзина",
+						text:"Подтвердите удаление товара",
+						ok: "Удалить",
+						cancel: "Отмена",
+						callback: function(result){
+							if(result){
+								list.splice(i, 1);
+								$p.wsql.set_user_param(prefix, list);
+								t.requery();
+							}
+						}
+					});
+
 					return;
 				}
 			}
@@ -103,27 +127,31 @@ $p.iface.view_cart = function (cell) {
 		 * Уменьшает количество номенклатуры в корзине. При уменьшении до 0 - удаляет
 		 * @param ref {String} - ссылка номенклатуры
 		 */
-		t.sub = function (ref) {
+		t.sub = function (ref, val) {
 			var list = t.list();
 
-			for(var i in list){
-				if(list[i].ref == nom.ref){
-					if(list[i].count > 1){
-						list[i].count--;
-						$p.wsql.set_user_param(prefix, list);
-						return;
-					}
-					dhtmlx.confirm({
-						type:"confirm",
-						title:"Корзина",
-						text:"Подтвердите удаление товара",
-						ok: "Удалить",
-						cancel: "Отмена",
-						callback: function(result){
-							if(result)
-								t.remove(ref);
-						}
+			function save_and_requery(){
+				$p.wsql.set_user_param(prefix, list);
+				t.requery()
+					.then(function () {
+						_cart.select(ref);
 					});
+			}
+
+			for(var i in list){
+				if(list[i].ref == ref || list[i].id == ref){
+					if(val){
+						list[i].count = val;
+						save_and_requery();
+
+					}else if(val == undefined && list[i].count > 1){
+						list[i].count--;
+						save_and_requery();
+
+					}else
+						t.remove(ref);
+
+					return;
 				}
 			}
 		};
@@ -132,61 +160,63 @@ $p.iface.view_cart = function (cell) {
 		 * Обновляет dataview и содержимое инфопанели
 		 */
 		t.requery = function () {
-			var query = [], nom, dv_obj;
 
-			function do_requery(){
-				query = [];
-				t.list().forEach(function (o) {
-					nom = $p.cat.Номенклатура.get(o.ref, false, true);
-					if(nom){
-						dv_obj = ({})._mixin(nom._obj);
-						dv_obj.count = o.count;
-						dv_obj.id = nom.ref;
-						dv_obj.Наименование = nom.name;
-						dv_obj.Код = nom.id;
-						query.push(dv_obj);
-					}
+			var val = {count: t.bubble(), amount: 0};   // количество и сумма
+
+			return _cart.requery_list(t.list())
+				.then(function () {
+
+					t.list().forEach(function (o) {
+						var nom = $p.cat.Номенклатура.get(o.ref, false, true)
+						val.amount += o.count * nom.Цена_Макс;
+					});
+
+					_do_order.querySelector("[name=top1]").innerHTML = dhx4.template(require("cart_order_top1"), val);
+					_do_order.querySelector("[name=top2]").innerHTML = dhx4.template(require("cart_order_top2"), val);
+					_do_order.querySelector("[name=top3]").innerHTML = (val.amount * 0.07).toFixed(0);
+
 				});
-				_cart.clearAll();
-				_cart.parse(query, "json");
 
-				t.bubble();
+		};
+
+
+		function cart_input_change(e){
+
+			var val = parseInt(e.target.value),
+				elm = _cart.get_elm(e.target);
+
+			if(isNaN(val))
+				e.target.value = elm.count;
+			else{
+				elm.count = val;
+				t.sub(elm.id, val);
 			}
 
-			t.list().forEach(function (o) {
-				nom = $p.cat.Номенклатура.get(o.ref, false, true);
-				if(!nom)
-					query.push(o.ref);
-			});
-			if(query.length){
-				var attr = {
-					url: "",
-					selection: {ref: {in: query}}
-				};
-				$p.rest.build_select(attr, {
-					rest_name: "Module_ИнтеграцияСИнтернетМагазином/СписокНоменклатуры/",
-					class_name: "cat.Номенклатура"
-				});
-				if(dhx4.isIE)
-					attr.url = encodeURI(attr.url);
+			return false;
+		}
 
-				$p.ajax.get_ex(attr.url, attr)
-					.then(function (req) {
-						var data = JSON.parse(req.response).data;
-						for(var i in data){
-							data[i].ref = data[i].id;
-							data[i].id = data[i].Код;
-							data[i].name = data[i].Наименование;
-							data[i]._not_set_loaded = true;
-							delete data[i].Код;
-							delete data[i].Наименование;
-						}
-						$p.cat.Номенклатура.load_array(data);
-						do_requery();
-					});
-			}else
-				do_requery();
-		};
+		function cart_click(e){
+
+			var target = e.target,
+				elm = _cart.get_elm(e.target);
+
+			if(elm){
+
+				if(target.classList.contains("dv_icon_plus"))
+					t.add(elm.id);
+
+				else if(target.classList.contains("dv_icon_minus"))
+					t.sub(elm.id);
+
+				else if(target.classList.contains("dv_input"))
+					setTimeout(function () {
+						target.focus();
+						target.select();
+						target = null;
+					}, 300);
+			}
+
+		}
 
 		// элементы создаём с задержкой, чтобы побыстрее показать основное содержимое
 		setTimeout(function () {
@@ -194,23 +224,136 @@ $p.iface.view_cart = function (cell) {
 			// страницы карусели
 			_carousel.hideControls();
 			_carousel.addCell("cart");
-			_carousel.addCell("order");
+			_carousel.addCell("checkout");
 
+			// корзина
 			_carousel.cells("cart").attachHTMLString(require("cart"));
 			_container_cart = _carousel.cells("cart").cell;
+			_container_cart.firstChild.style.overflow = "auto";
 			_content = _container_cart.querySelector(".md_column1300");
 			_dataview = _container_cart.querySelector("[name=cart_dataview]");
+			_do_order = _container_cart.querySelector("[name=cart_order]");
+			_dataview.style.width = (_do_order.offsetLeft - 4) + "px";
+			_dataview.style.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
+
+			window.addEventListener("resize", function () {
+				setTimeout(function () {
+					var s1 = _dataview.style, s2 = _dataview.firstChild.style, s3 = _dataview.firstChild.firstChild.style;
+					s1.width = s2.width = s3.width = (_do_order.offsetLeft - 4) + "px";
+					s1.height = s2.height = s3.height = (_container_cart.offsetHeight - _dataview.offsetTop - 20) + "px";
+					_cart.refresh();
+				}, 600);
+			}, false);
 
 			_cart = $p.iface.list_data_view({
 				container: _dataview,
 				height: "auto",
-				custom_css: ["list"],
-				hide_pager: true
+				type: "cart",
+				custom_css: ["cart"],
+				hide_pager: true,
+				autowidth: true
 			});
+
+			_dataview.addEventListener('change', cart_input_change, false);
+			_dataview.addEventListener('click', cart_click, false);
 
 			t.bubble();
 
+			// обработчик кнопки "оформить"
+			_do_order.onclick = function (e) {
+				if(e.target.tagName == "A" || e.target.getAttribute("name") == "order_order"
+						|| e.path.indexOf(_do_order.querySelector(".dv_icon_card")) != -1){
+					_carousel.cells("checkout").setActive();
+					return $p.cancel_bubble(e);
+				}
+			};
+
+			// оформление заказа
+			_carousel.cells("checkout").attachHTMLString(require("checkout"));
+			_container_order = _carousel.cells("checkout").cell;
+
+			baron({
+				root: '.wdg_product_checkout',
+				scroller: '.scroller',
+				bar: '.scroller__bar',
+				barOnCls: 'baron',
+
+				$: $,   // Local copy of jQuery-like utility
+
+				event: function(elem, event, func, mode) { // Events manager
+					if (mode == 'trigger') {
+						mode = 'fire';
+					}
+					bean[mode || 'on'](elem, event, func);
+				}
+			}).fix({
+				elements: '.header__title',
+				outside: 'header__title_state_fixed',
+				before: 'header__title_position_top',
+				after: 'header__title_position_bottom',
+				clickable: true
+			}).pull({
+				block: '.load',
+				elements: [{
+					self: '.load__value',
+					property: 'width'
+				}],
+				limit: 115,
+				onExpand: function() {
+					$('.load').css('background', 'grey');
+				}
+			});
+
+
+			// кнопка "вернуться к списку"
+			new $p.iface.OTooolBar({
+				wrapper: _container_order.querySelector("[name=header]"),
+				width: '28px',
+				height: '29px',
+				top: '0px',
+				right: '20px',
+				name: 'back',
+				class_name: "",
+				buttons: [
+					{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться в корзину', float: 'right'}
+				],
+				onclick: function (name) {
+					switch (name) {
+						case "back":
+							_carousel.cells("cart").setActive();
+							break;
+					}
+				}
+			});
+
+			// клик выбора платежной системы
+			_container_order.querySelector("[name=billing_kind]").onclick = function (ev) {
+
+				if(ev.target.tagName == "A"){
+					var provider;
+					$("li", this).removeClass("active");
+					ev.target.parentNode.classList.add("active");
+					for(var i=0; i<ev.target.classList.length; i++){
+						if(ev.target.classList.item(i).indexOf("logo-") == 0){
+							provider = ev.target.classList.item(i).replace("logo-", "") + "-container";
+							break;
+						}
+					}
+					$(".billing-system", this.querySelector(".billing-systems-container")).each(function (e, t) {
+						if(e.classList.contains(provider))
+							e.classList.remove("hide");
+						else if(!e.classList.contains("hide"))
+							e.classList.add("hide");
+					});
+
+					ev.preventDefault();
+					return $p.cancel_bubble(ev);
+				}
+			}
+
+
 		}, 50);
+
 
 		// подписываемся на событие добавления в корзину
 		dhx4.attachEvent("order_cart", t.add);
@@ -219,7 +362,9 @@ $p.iface.view_cart = function (cell) {
 	if(!$p.iface._cart)
 		$p.iface._cart = new OViewCart();
 
-	return $p.iface._cart;
+	if(!_requered && $p.job_prm.parse_url().view == "cart")
+		setTimeout($p.iface._cart.requery, 200);
 
+	return $p.iface._cart;
 
 };

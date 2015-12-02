@@ -1,0 +1,144 @@
+.margin-0 {
+	margin: 0;
+}
+.padding-0 {
+	padding: 0 !important;
+}
+.margin-right-2px {
+	margin-right: 2px;
+}
+.min-width-800px {
+	min-width: 800px;
+}
+.hide {
+	display: none;
+}
+.z-index-2 {
+	z-index: 2;
+}
+.border-white {
+	border-color: #ffffff;
+}
+.inline-ul {
+	display: block;
+}
+.inline-ul li {
+	display: inline-block;
+}
+
+.billing-systems li {
+	position: relative;
+	text-align: center;
+}
+
+.billing-systems li b {
+	position: absolute;
+	top: 106%;
+	left: 45%;
+	width: 14px;
+	height: 11px;
+	background: url(imgs/payment_pointer.png);
+	display: none;
+}
+
+.billing-systems li.active b {
+	display: block;
+}
+
+.billing-systems {
+	font-size: 11px;
+	line-height: 14px;
+}
+
+.billing-systems ul, .billing-systems ol {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+}
+
+.bs-logo {
+	background: url("imgs/payment_systems.png");
+}
+.border-radius-5px {
+	border-radius: 5px;
+}
+.width-104px {
+	width: 104px;
+}
+.display-block {
+	display: block;
+}
+.height-66px {
+	height: 66px;
+}
+.hr {
+	height: 1px;
+	border: none;
+	margin: 15px 0;
+}
+.bg-666 {
+	background: #666;
+}
+.opacity-03 {
+	opacity: .3;
+	filter: alpha(opacity = 30);
+	zoom: 1;
+}
+
+.logo-visa {
+	background-position: 0 69px;
+}
+
+.logo-visa:hover, .billing-systems li.active .logo-visa {
+	background-position: 0 -2px;
+}
+
+.logo-qiwi {
+	background-position: -103px 69px;
+}
+
+.logo-qiwi:hover, .billing-systems li.active .logo-qiwi {
+	background-position: -103px -2px;
+}
+
+.logo-webmoney {
+	background-position: -205px 69px;
+}
+
+.logo-webmoney:hover, .billing-systems li.active .logo-webmoney {
+	background-position: -205px -2px;
+}
+
+.logo-ymoney {
+	background-position: -307px 69px;
+}
+
+.logo-ymoney:hover, .billing-systems li.active .logo-ymoney {
+	background-position: -307px -2px;
+}
+
+.logo-pcards {
+	background-position: -409px 69px;
+}
+
+.logo-pcards:hover, .billing-systems li.active .logo-pcards {
+	background-position: -409px -2px;
+}
+
+.logo-cash {
+	background-position: -511px 69px;
+}
+
+.logo-cash:hover, .billing-systems li.active .logo-cash {
+	background-position: -511px -2px;
+}
+
+.logo-robox {
+	background-position: -614px 69px;
+}
+
+.logo-robox:hover, .billing-systems li.active .logo-robox {
+	background-position: -614px -2px;
+}
+
+

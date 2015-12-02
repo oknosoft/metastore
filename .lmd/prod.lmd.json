@@ -6,6 +6,7 @@
   "modules": {
     "main": [
       "src/wdg_dyn_dataview.js",
+      "src/wdg_metastore_common.js",
       "src/wdg_filter_prop.js",
       "src/wdg_multi_checkbox.js",
       "src/wdg_range_slider.js",

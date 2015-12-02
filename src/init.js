@@ -43,7 +43,7 @@ $p.settings = function (prm, modifiers) {
 	prm.allow_post_message = "*";
 
 	// используем геокодер
-	prm.use_google_geo = true;
+	prm.use_ip_geo = true;
 
 	// полноэкранный режим на мобильных
 	prm.request_full_screen = true;
@@ -72,18 +72,28 @@ $p.settings = function (prm, modifiers) {
  */
 $p.iface.oninit = function() {
 
+	$p.iface.sidebar_items = [
+		{id: "catalog", text: "Каталог", icon: "search_48.png"},
+		{id: "compare", text: "Сравнение", icon: "compare_48.png"},
+		{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
+		{id: "orders", text: "Заказы", icon: "projects_48.png"},
+		{id: "content", text: "Контент", icon: "content_48.png"},
+		{id: "user", text: "Профиль", icon: "contacts_48.png"},
+		{id: "settings", text: "Настройки", icon: "settings_48.png"},
+		{id: "about", text: "О программе", icon: "about_48.png"}
+	];
+
 	function oninit(){
 
-		var toolbar, hprm, items = [
-			{id: "catalog", text: "Каталог", icon: "search_48.png"},
-			{id: "compare", text: "Сравнение", icon: "compare_48.png"},
-			{id: "cart", text: "Корзина", icon: "shop_cart_48.png"},
-			{id: "orders", text: "Заказы", icon: "projects_48.png"},
-			{id: "content", text: "Контент", icon: "content_48.png"},
-			{id: "user", text: "Профиль", icon: "contacts_48.png"},
-			{id: "settings", text: "Настройки", icon: "settings_48.png"},
-			{id: "about", text: "О программе", icon: "about_48.png"}
-		] ;
+		var toolbar, hprm, items,  _items = $p.wsql.get_user_param("sidebar_items", "object");
+		if(_items && Array.isArray(_items) && _items.length){
+			items = [];
+			for(var i in _items){
+				if(_items[i][0])
+					items.push($p.iface.sidebar_items[i])
+			}
+		}else
+			items = $p.iface.sidebar_items;
 
 		// гасим заставку
 		document.body.removeChild(document.querySelector("#webshop_splash"));
@@ -141,7 +151,7 @@ $p.iface.oninit = function() {
 
 			hprm = $p.job_prm.parse_url();
 			if(hprm.view != id)
-				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, id);
+				$p.iface.set_hash(hprm.obj, "", hprm.frm, id);
 
 			$p.iface["view_" + id]($p.iface.main.cells(id));
 
@@ -153,8 +163,10 @@ $p.iface.oninit = function() {
 		// еще, сразу инициализируем класс OViewCompare, т.к. в нём живут обработчики добавления в корзину и история просмотров
 		// и класс OViewCart, чтобы обрабатывать события добавления в корзину
 		setTimeout(function () {
-			$p.iface.view_compare($p.iface.main.cells("compare"));
-			$p.iface.view_cart($p.iface.main.cells("cart"));
+			if($p.iface.main.cells("compare"))
+				$p.iface.view_compare($p.iface.main.cells("compare"));
+			if($p.iface.main.cells("cart"))
+				$p.iface.view_cart($p.iface.main.cells("cart"));
 		}, 50);
 
 		hprm = $p.job_prm.parse_url();
@@ -166,27 +178,25 @@ $p.iface.oninit = function() {
 				$p.iface.set_hash(hprm.obj, hprm.ref, hprm.frm, $p.device_type == "desktop" ? "content" : "catalog");
 		} else
 			setTimeout($p.iface.hash_route, 10);
-	}
 
-	// подписываемся на событие геолокатора
-	// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
-	function geo_current_position(pos){
-		if($p.iface.main && $p.iface.main.getAttachedToolbar){
-			var tb = $p.iface.main.getAttachedToolbar();
+		// подписываемся на событие геолокатора
+		// если геолокатор ответит раньше, чем сформируется наш интерфейс - вызовем событие повторно через 3 сек
+		if($p.iface.main.getAttachedToolbar){
+			var tb = $p.iface.main.getAttachedToolbar(), city;
 			if(tb){
-				tb.setItemText("right", '<i class="fa fa-map-marker"></i> ' + (pos.city || pos.region).replace("г. ", ""));
-				tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px"
+				$p.ipinfo.ipgeo().then(function (pos) {
+					if(pos.city && pos.city.name_ru)
+						city = pos.city.name_ru;
+					else if(pos.region && pos.region.name_ru)
+						city = pos.city.region;
+
+					tb.setItemText("right", '<i class="fa fa-map-marker"></i> ' + city.replace("г. ", ""));
+					tb.objPull[tb.idPrefix+"right"].obj.style.marginRight = "8px";
+				});
 			}
 		}
 	}
-	dhx4.attachEvent("geo_current_position", function(pos){
-		if($p.iface.main && $p.iface.main.getAttachedToolbar)
-			geo_current_position(pos);
-		else
-			setTimeout(function () {
-				geo_current_position(pos);
-			}, 3000);
-	});
+
 
 	// подписываемся на событие при закрытии страницы - запоминаем последний hash_url
 	window.addEventListener("beforeunload", function () {

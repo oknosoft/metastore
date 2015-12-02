@@ -15,6 +15,7 @@ $p.iface.view_orders = function (cell) {
 			attr = {url: ""},
 			def_prm = {
 				hide_header: true,
+				hide_filter: true,
 				date_from: new Date("2012-01-01")
 			};
 
@@ -28,20 +29,27 @@ $p.iface.view_orders = function (cell) {
 			]
 		});
 
-		$p.rest.build_select(attr, {
-			rest_name: "Module_ИнтеграцияСИнтернетМагазином/СправочникиПользователя/",
-			class_name: "cat.Пользователи"
-		});
-		$p.ajax.get_ex(attr.url, attr)
-			.then(function (req) {
-				$p.eve.from_json_to_data_obj(req);
-			})
-			.then(function (data) {
-				t.orders = $p.doc.ЗаказКлиента.form_list(t.tabs.cells("orders"), def_prm);
-			})
-			.catch(function (err) {
-				$p.record_log(err);
+		// получаем список доступных текущему пользователю партнеров, договоров и контрагентов
+		if($p.cat.Контрагенты.find()){
+			t.orders = $p.doc.ЗаказКлиента.form_list(t.tabs.cells("orders"), def_prm);
+
+		}else{
+			$p.rest.build_select(attr, {
+				rest_name: "Module_ИнтеграцияСИнтернетМагазином/СправочникиПользователя/",
+				class_name: "cat.Пользователи"
 			});
+			$p.ajax.get_ex(attr.url, attr)
+				.then(function (req) {
+					$p.eve.from_json_to_data_obj(req);
+				})
+				.then(function (data) {
+					t.orders = $p.doc.ЗаказКлиента.form_list(t.tabs.cells("orders"), def_prm);
+				})
+				.catch(function (err) {
+					$p.record_log(err);
+				});
+		}
+
 
 		// обработчик при изменении закладки таббара
 		t.tabs.attachEvent("onSelect", function (id) {
@@ -107,9 +115,23 @@ $p.iface.view_orders = function (cell) {
 
 
 				}
-			};
+			}
 			return true;
 		});
+
+		// Обработчик маршрутизации
+		function hash_route(hprm){
+
+			// открываем форму выбранного объекта
+			if(hprm.view == "orders"){
+
+				var mgr = $p.md.mgr_by_class_name(hprm.obj);
+				if(mgr && !$p.is_empty_guid(hprm.ref))
+					mgr.form_obj(t.tabs.cells(t.tabs.getActiveTab()), hprm.ref);
+			}
+		}
+		// подписываемся на маршрутизацию
+		$p.eve.hash_route.push(hash_route);
 
 	}
 

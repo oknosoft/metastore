@@ -8,9 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
     <title>Интернет-магазин MetaStore</title>
-    <link rel="icon" href="templates/imgs/fav-md32.png" type="image/png">
-    <link rel="shortcut icon" href="templates/imgs/fav-md32.png" type="image/png">
-    <link rel="apple-touch-icon-precomposed" href="templates/imgs/fav-md32.png">
+
+    <script>if (location.protocol !== "https:") location.protocol = "https:";</script>
+
+    <link rel="icon" href="//oknosoft.github.io/metastore/templates/imgs/fav-md32.png" type="image/png">
+    <link rel="shortcut icon" href="//oknosoft.github.io/metastore/templates/imgs/fav-md32.png" type="image/png">
+    <link rel="apple-touch-icon-precomposed" href="//oknosoft.github.io/metastore/templates/imgs/fav-md32.png">
 
     <style>
         #webshop_splash {
@@ -20,7 +23,7 @@
             left: 48%;
             margin-left: -255px;
             margin-top: 140px;
-            background-image:url(templates/imgs/shop_splash.gif);
+            background-image:url(//oknosoft.github.io/metastore/templates/imgs/shop_splash.gif);
         }
         @media (max-width: 640px) {
             #webshop_splash {
@@ -36,8 +39,11 @@
 
     <!--дополнительные стили. основные загрузятся кодом в зависимости от скина-->
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="templates/fontastic/styles.css">
-    <link rel="stylesheet" type="text/css" href="templates/nouislider.css">
+    <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/templates/fontastic/styles.css">
+    <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/templates/nouislider.css">
+    <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/templates/checkout.css">
+    <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metadata.js/lib/baron/baron.css">
+    <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/templates/baron.css">
 
 </head>
 <body>
@@ -47,17 +53,15 @@
 <!-- библиотеки -->
 <script src="//cdn.jsdelivr.net/alasql/latest/alasql.min.js"></script>
 <script src="//cdn.jsdelivr.net/jquery.nouislider/latest/nouislider.min.js"></script>
-<script src="lib/dhtmlx.min.js"></script>
-<script src="lib/metadata.js"></script>
+<script src="//oknosoft.github.io/metadata.js/dist/dhtmlx.min.js"></script>
+<script src="//oknosoft.github.io/metadata.js/dist/metadata.min.js"></script>
 
 <!-- эксперимент -->
-<link rel="stylesheet" type="text/css" href="lib/baron/baron.css">
-<link rel="stylesheet" type="text/css" href="templates/baron.css">
-<script src="lib/qbb.min.js"></script>
-<script src="lib/baron/baron.js"></script>
+<script src="//oknosoft.github.io/metadata.js/lib/qbb.min.js"></script>
+<script src="//oknosoft.github.io/metadata.js/lib/baron/baron.min.js"></script>
 
 <!-- собственно, скрипт магазина -->
-<script src="src/metastore.js"></script>
+<script src="//oknosoft.github.io/metastore/dist/metastore.min.js"></script>
 
 </body>
 </html>

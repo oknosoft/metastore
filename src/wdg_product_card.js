@@ -75,30 +75,6 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			head_fields: null
 		},
 
-		// кнопка "вернуться к списку"
-		back = new $p.iface.OTooolBar({
-			wrapper: res.header,
-			width: '28px',
-			height: '29px',
-			top: '0px',
-			right: '20px',
-			name: 'back',
-			image_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
-			class_name: "",
-			buttons: [
-				{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться к списку', float: 'right'}
-			],
-			onclick: function (name) {
-				switch (name) {
-					case "back":
-						var hprm = $p.job_prm.parse_url();
-						$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
-						if($p.iface.popup)
-							$p.iface.popup.hide();
-						break;
-				}
-			}
-		}),
 		path = new $p.iface.CatalogPath(res.path, function (e) {
 			var hprm = $p.job_prm.parse_url();
 			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
@@ -107,6 +83,30 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 
 	//if($p.device_type != "desktop")
 	//	res.download.style.visibility = "hidden";
+
+	// кнопка "вернуться к списку"
+	new $p.iface.OTooolBar({
+		wrapper: res.header,
+		width: '28px',
+		height: '29px',
+		top: '0px',
+		right: '20px',
+		name: 'back',
+		class_name: "",
+		buttons: [
+			{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться к списку', float: 'right'}
+		],
+		onclick: function (name) {
+			switch (name) {
+				case "back":
+					var hprm = $p.job_prm.parse_url();
+					$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
+					if($p.iface.popup)
+						$p.iface.popup.hide();
+					break;
+			}
+		}
+	});
 
 	/**
 	 * Перезаполняет все ячейки аккордеона
@@ -256,7 +256,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 			$p.record_log("");
 		});
 
-		// навешиваем обработчики на кнопки
+		// навешиваем обработчики на кнопки - генерируем широковещательное событие
 		function btn_msg(){
 			dhx4.callEvent(this.name, [res.nom]);
 		}

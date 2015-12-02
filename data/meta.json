@@ -486,383 +486,33 @@
 				"name": "ИндивидуальныйПредприниматель",
 				"synonym": "Индивидуальный предприниматель"
 			}
+		],
+		"ЮридическоеФизическоеЛицо": [
+			{
+				"order": 0,
+				"name": "ЮридическоеЛицо",
+				"synonym": "Юридическое лицо"
+			},
+			{
+				"order": 1,
+				"name": "ФизическоеЛицо",
+				"synonym": "Физическое лицо"
+			}
+		],
+		"СтатусыКартЛояльности": [
+			{
+				"order": 0,
+				"name": "Действует",
+				"synonym": "Действует"
+			},
+			{
+				"order": 1,
+				"name": "Аннулирована",
+				"synonym": "Аннулирована"
+			}
 		]
 	},
 	"cat": {
-		"ВидыПланов": {
-			"name": "ВидыПланов",
-			"synonym": "Виды планов",
-			"illustration": "",
-			"obj_presentation": "Вид плана",
-			"list_presentation": "Виды планов",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": false,
-			"has_owners": true,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {
-				"ТипПлана": {
-					"synonym": "Тип плана",
-					"multiline_mode": false,
-					"tooltip": "Тип плана \"План закупок\", \"План продаж\" и т.д.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"enm.ТипыПланов"
-						],
-						"is_ref": true
-					}
-				},
-				"ЗаполнятьПартнера": {
-					"synonym": "Заполнять партнера",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Клиента/Поставщика.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьСоглашение": {
-					"synonym": "Заполнять соглашение",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Соглашение.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьСклад": {
-					"synonym": "Заполнять склад",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Склад.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьПодразделение": {
-					"synonym": "Заполнять подразделение",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Подразделение.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьПартнераВТЧ": {
-					"synonym": "Заполнять партнера в ТЧ",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Клиента/Поставщика для каждой строки в списке товаров.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьСоглашениеВТЧ": {
-					"synonym": "Заполнять соглашение в ТЧ",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Соглашение для каждой строки в списке товаров.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьСкладВТЧ": {
-					"synonym": "Заполнять склад в ТЧ",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Склад для каждой строки в списке товаров.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьМенеджера": {
-					"synonym": "Заполнять менеджера",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Менеджера.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"СтруктураНастроек": {
-					"synonym": "Структура настроек",
-					"multiline_mode": false,
-					"tooltip": "Структура настроек: параметры плана, пользовательские настройки, используемые при заполнении плана.",
-					"type": {
-						"types": [
-							"Хранилище значения"
-						]
-					}
-				},
-				"ЗапретитьРедактированиеПравила": {
-					"synonym": "Запретить редактирование правила",
-					"multiline_mode": false,
-					"tooltip": "Запрещает редактирование источников данных заполнения в документе плана.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьПланОплат": {
-					"synonym": "Заполнять план оплат",
-					"multiline_mode": false,
-					"tooltip": "Позволяет в документе плана указывать план оплат по графику.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ЗаполнятьПоФормуле": {
-					"synonym": "Заполнять по формуле",
-					"multiline_mode": false,
-					"tooltip": "Признак заполнения документа по формуле.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ОтражаетсяВБюджетировании": {
-					"synonym": "Отражается в бюджетировании",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что планы данного вида формируют обороты бюджетирования.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"СтатьяБюджетов": {
-					"synonym": "Статья бюджетов",
-					"multiline_mode": false,
-					"tooltip": "Статья бюджетов, оборот по которой формируют планы данного вида.",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"Описание": {
-					"synonym": "Описание",
-					"multiline_mode": true,
-					"tooltip": "Дополнительное пояснение целей создания данного вида плана, комментарий к формуле заполнения и т.д.",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				},
-				"ЗаполнятьФорматМагазина": {
-					"synonym": "Заполнять формат магазина",
-					"multiline_mode": false,
-					"tooltip": "При включении флага в документе необходимо будет указать Формат магазина.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ОтражаетсяВБюджетированииОплаты": {
-					"synonym": "Отражается в бюджетировании оплаты",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что оплаты данного вида плана формируют обороты бюджетирования.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"СтатьяБюджетовОплат": {
-					"synonym": "Статья бюджетов оплат (до отгрузки)",
-					"multiline_mode": false,
-					"tooltip": "Статья бюджетов, оборот по которой формируют оплаты (до отгрузки), данного вида плана.",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"ОтражаетсяВБюджетированииОплатыКредит": {
-					"synonym": "Отражается в бюджетировании оплаты кредит",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что оплаты данного вида плана формируют обороты бюджетирования.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"СтатьяБюджетовОплатКредит": {
-					"synonym": "Статья бюджетов оплат кредит",
-					"multiline_mode": false,
-					"tooltip": "Статья бюджетов, оборот по которой формируют оплаты (после отгрузки), данного вида плана.",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 10
-					}
-				},
-				"owner": {
-					"synonym": "Сценарий",
-					"multiline_mode": false,
-					"tooltip": "Сценарий планирования к которому привязан вид плана",
-					"type": {
-						"types": [
-							"cat.СценарииТоварногоПланирования"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {
-				"ПравилоЗаполнения": {
-					"name": "ПравилоЗаполнения",
-					"synonym": "Правило заполнения",
-					"tooltip": "",
-					"fields": {
-						"Использование": {
-							"synonym": "Использование",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"Исключать": {
-							"synonym": "Исключать",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ВариантПреобразования": {
-							"synonym": "Вариант преобразования",
-							"multiline_mode": false,
-							"tooltip": "",
-							"choice_groups_elm": "elm",
-							"type": {
-								"types": [
-									"enm.ВариантыПреобразования"
-								],
-								"is_ref": true
-							}
-						},
-						"Источник": {
-							"synonym": "Источник",
-							"multiline_mode": false,
-							"tooltip": "",
-							"choice_groups_elm": "elm",
-							"type": {
-								"types": [
-									"cat.ИсточникиДанныхПланирования"
-								],
-								"is_ref": true
-							}
-						},
-						"Период": {
-							"synonym": "Период",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"Хранилище значения"
-								]
-							}
-						},
-						"date": {
-							"synonym": "Дата",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"Хранилище значения"
-								]
-							}
-						},
-						"ТипЭлемента": {
-							"synonym": "Тип элемента",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"number"
-								],
-								"digits": 1,
-								"fraction_figits": 0
-							}
-						},
-						"НомерСтрокиРодитель": {
-							"synonym": "Номер строки родитель",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"number"
-								],
-								"digits": 5,
-								"fraction_figits": 0
-							}
-						},
-						"ПользовательскиеНастройки": {
-							"synonym": "Пользовательские настройки",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"Хранилище значения"
-								]
-							}
-						},
-						"ИзменитьРезультатНа": {
-							"synonym": "Изменить результат на",
-							"multiline_mode": false,
-							"tooltip": "Величина в процентах, на которую будут изменены значения показателей.",
-							"type": {
-								"types": [
-									"number"
-								],
-								"digits": 5,
-								"fraction_figits": 2
-							}
-						},
-						"Присоединять": {
-							"synonym": "Присоединять",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						}
-					}
-				}
-			},
-			"hide": true
-		},
 		"БонусныеПрограммыЛояльности": {
 			"name": "БонусныеПрограммыЛояльности",
 			"synonym": "Бонусные программы лояльности",
@@ -1686,179 +1336,6 @@
 					}
 				}
 			}
-		},
-		"ВидыОповещенийКлиентам": {
-			"name": "ВидыОповещенийКлиентам",
-			"synonym": "Виды оповещений клиентам",
-			"illustration": "",
-			"obj_presentation": "Вид оповещений клиентам",
-			"list_presentation": "",
-			"input_by_string": [
-				"name"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 0,
-			"fields": {
-				"ГруппаРассылокИОповещений": {
-					"synonym": "Группа рассылок и оповещений",
-					"multiline_mode": false,
-					"tooltip": "Группа, к которой относится данная рассылка.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ГруппыРассылокИОповещений"
-						],
-						"is_ref": true
-					}
-				},
-				"ПредназначенаДляЭлектронныхПисем": {
-					"synonym": "Предназначена для электронных писем",
-					"multiline_mode": false,
-					"tooltip": "Рассылка будет осуществляться посредством создания электронных писем.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ПредназначенаДляSMS": {
-					"synonym": "Предназначена для SMS",
-					"multiline_mode": false,
-					"tooltip": "Рассылка будет осуществляться посредством создания сообщений SMS.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"ШаблонСообщенияSMS": {
-					"synonym": "Шаблон сообщения SMS",
-					"multiline_mode": false,
-					"tooltip": "Шаблон, который будет использован при отправке сообщения SMS",
-					"choice_params": [
-						{
-							"name": "ПредназначенДляSMS",
-							"path": true
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ШаблоныСообщений"
-						],
-						"is_ref": true
-					}
-				},
-				"ШаблонЭлектронногоПисьма": {
-					"synonym": "Шаблон электронного письма",
-					"multiline_mode": false,
-					"tooltip": "Шаблон, который будет использован при отправке сообщения электронного письма.",
-					"choice_params": [
-						{
-							"name": "ПредназначенДляЭлектронныхПисем",
-							"path": true
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ШаблоныСообщений"
-						],
-						"is_ref": true
-					}
-				},
-				"ИспользуетсяУсловиеОтправки": {
-					"synonym": "Используется условие отправки",
-					"multiline_mode": false,
-					"tooltip": "Признак того, что при перед отправкой оповещения будет проверено условие.\n",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
-				"УсловиеОтправки": {
-					"synonym": "Условие отправки",
-					"multiline_mode": true,
-					"tooltip": "Условие, которое будет проверено перед отправкой сообщения",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				},
-				"РегламентноеЗадание": {
-					"synonym": "Регламентное задание",
-					"multiline_mode": false,
-					"tooltip": "",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 36,
-						"str_fix": true
-					}
-				},
-				"ТипСобытия": {
-					"synonym": "Тип события",
-					"multiline_mode": false,
-					"tooltip": "",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"enm.ТипыСобытийОповещений"
-						],
-						"is_ref": true
-					}
-				},
-				"Комментарий": {
-					"synonym": "Комментарий",
-					"multiline_mode": false,
-					"tooltip": "Произвольный комментарий. ",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				}
-			},
-			"tabular_sections": {
-				"ПараметрыУсловия": {
-					"name": "ПараметрыУсловия",
-					"synonym": "Параметры условия",
-					"tooltip": "Параметры условия отправки сообщения определенные в тексте условия",
-					"fields": {
-						"ЭтоПараметрПредущегоСообщения": {
-							"synonym": "Это параметр предущего сообщения",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"boolean"
-								]
-							}
-						},
-						"ИмяПараметра": {
-							"synonym": "Имя параметра",
-							"multiline_mode": false,
-							"tooltip": "",
-							"type": {
-								"types": [
-									"string"
-								],
-								"str_len": 150
-							}
-						}
-					}
-				}
-			},
-			"hide": true
 		},
 		"КоллекцииНоменклатуры": {
 			"name": "КоллекцииНоменклатуры",
@@ -3180,38 +2657,6 @@
 					}
 				}
 			}
-		},
-		"РабочиеМеста": {
-			"name": "РабочиеМеста",
-			"synonym": "Рабочие места",
-			"illustration": "",
-			"obj_presentation": "Рабочее место",
-			"list_presentation": "",
-			"input_by_string": [
-				"name",
-				"id"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": true,
-			"main_presentation_name": true,
-			"code_length": 50,
-			"fields": {
-				"ИмяКомпьютера": {
-					"synonym": "Имя компьютера",
-					"multiline_mode": false,
-					"tooltip": "Имя компьютера, для которого настраивается рабочее место.",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 50
-					}
-				}
-			},
-			"tabular_sections": {},
-			"cachable": false,
-			"hide": true
 		},
 		"КлассификаторВидовЭкономическойДеятельности": {
 			"name": "КлассификаторВидовЭкономическойДеятельности",
@@ -7061,16 +6506,6 @@
 			"main_presentation_name": true,
 			"code_length": 0,
 			"fields": {
-				"Недействителен": {
-					"synonym": "Недействителен",
-					"multiline_mode": false,
-					"tooltip": "Внешний пользователь больше не работает в программе, но сведения о нем сохранены.\nНедействительные внешние пользователи скрываются из всех списков\nпри выборе или подборе в документах и других местах программы.",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
 				"ОбъектАвторизации": {
 					"synonym": "Объект",
 					"multiline_mode": false,
@@ -7084,16 +6519,6 @@
 						"is_ref": true
 					}
 				},
-				"УстановитьРолиНепосредственно": {
-					"synonym": "Установить роли непосредственно",
-					"multiline_mode": false,
-					"tooltip": "Установить роли непосредственно без использования ролей, заданных в группах внешних пользователей",
-					"type": {
-						"types": [
-							"boolean"
-						]
-					}
-				},
 				"Комментарий": {
 					"synonym": "Комментарий",
 					"multiline_mode": true,
@@ -7103,16 +6528,6 @@
 							"string"
 						],
 						"str_len": 0
-					}
-				},
-				"Подготовлен": {
-					"synonym": "Подготовлен",
-					"multiline_mode": false,
-					"tooltip": "Пользователь подготовлен ответственным за список внешних пользователей.",
-					"type": {
-						"types": [
-							"boolean"
-						]
 					}
 				},
 				"ИдентификаторПользователяИБ": {
@@ -7141,25 +6556,26 @@
 						"str_fix": true
 					}
 				},
-				"СвойстваПользователяИБ": {
-					"synonym": "Свойства пользователя ИБ",
-					"multiline_mode": false,
-					"tooltip": "Служебное хранилище некоторых свойств пользователя ИБ",
-					"type": {
-						"types": [
-							"Хранилище значения"
-						]
-					}
-				},
-				"УдалитьПароль": {
-					"synonym": "(не используется) Пароль",
-					"multiline_mode": false,
-					"tooltip": "Это реквизит, который использовался в старой версии подсистемы для хранения паролей (используется для установки паролей пользователям информационной базы при конвертации данных)",
+				"ПользовательИБИмя": {
+					"synonym": "Логин (для входа)",
+					"multiline_mode": true,
+					"tooltip": "Произвольная строка",
 					"type": {
 						"types": [
 							"string"
 						],
-						"str_len": 30
+						"str_len": 0
+					}
+				},
+				"ПользовательИБПароль": {
+					"synonym": "Пароль",
+					"multiline_mode": true,
+					"tooltip": "Произвольная строка",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
 					}
 				}
 			},
@@ -7936,6 +7352,232 @@
 			"tabular_sections": {},
 			"hide": true
 		},
+		"КартыЛояльности": {
+			"name": "КартыЛояльности",
+			"synonym": "Карты лояльности",
+			"illustration": "",
+			"obj_presentation": "",
+			"list_presentation": "",
+			"input_by_string": [
+				"Штрихкод",
+				"МагнитныйКод",
+				"name"
+			],
+			"hierarchical": false,
+			"has_owners": true,
+			"group_hierarchy": true,
+			"main_presentation_name": true,
+			"code_length": 0,
+			"fields": {
+				"Штрихкод": {
+					"synonym": "Штрихкод",
+					"multiline_mode": false,
+					"tooltip": "Код карты лояльности. По данному коду осуществляется поиск карты в информационной базе.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 200
+					}
+				},
+				"МагнитныйКод": {
+					"synonym": "Магнитный код",
+					"multiline_mode": false,
+					"tooltip": "Код карты лояльности. По данному коду осуществляется поиск карты в информационной базе.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 200
+					}
+				},
+				"Статус": {
+					"synonym": "Статус",
+					"multiline_mode": false,
+					"tooltip": "Статус карты лояльности",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.СтатусыКартЛояльности"
+						],
+						"is_ref": true
+					}
+				},
+				"Партнер": {
+					"synonym": "Клиент",
+					"multiline_mode": false,
+					"tooltip": "Деловой партнер предприятия, которому осуществляются продажи по данной карте.\nАвтоматически подставляется в документы при считывании в документе карты лояльности.",
+					"choice_params": [
+						{
+							"name": "Клиент",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Контрагент, от имени которого осуществляются покупки по данной карте.\nАвтоматически подставляется в документы при считывании в документе карты лояльности.",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"Соглашение": {
+					"synonym": "Соглашение",
+					"multiline_mode": false,
+					"tooltip": "Соглашение, которое автоматически подставляется в документы при считывании в документе карты лояльности.",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "ХозяйственнаяОперация",
+							"path": "РеализацияКлиенту"
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СоглашенияСКлиентами"
+						],
+						"is_ref": true
+					}
+				},
+				"owner": {
+					"synonym": "Вид карты",
+					"multiline_mode": false,
+					"tooltip": "",
+					"choice_params": [
+						{
+							"name": "Статус",
+							"path": "Действует"
+						}
+					],
+					"type": {
+						"types": [
+							"cat.ВидыКартЛояльности"
+						],
+						"is_ref": true
+					}
+				}
+			},
+			"tabular_sections": {
+				"extra_fields": {
+					"name": "ДополнительныеРеквизиты",
+					"synonym": "Дополнительные реквизиты",
+					"tooltip": "",
+					"fields": {
+						"property": {
+							"synonym": "Свойство",
+							"multiline_mode": false,
+							"tooltip": "Дополнительный реквизит",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cch.properties"
+								],
+								"is_ref": true
+							}
+						},
+						"value": {
+							"synonym": "Значение",
+							"multiline_mode": false,
+							"tooltip": "Значение дополнительного реквизита",
+							"choice_links": [
+								{
+									"name": [
+										"selection",
+										"owner"
+									],
+									"path": [
+										"extra_fields",
+										"property"
+									]
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.Номенклатура",
+									"cch.СтатьиРасходов",
+									"cat.Валюты",
+									"cat.СегментыПартнеров",
+									"cat.ДоговорыКонтрагентов",
+									"cat.property_values_hierarchy",
+									"cat.Организации",
+									"cat.СтруктураПредприятия",
+									"boolean",
+									"cat.Пользователи",
+									"cat.property_values",
+									"cat.СтатьиДвиженияДенежныхСредств",
+									"cat.Контрагенты",
+									"cat.Файлы",
+									"cat.Партнеры",
+									"string",
+									"date",
+									"cat.ГруппыФинансовогоУчетаНоменклатуры",
+									"cat.СтраныМира",
+									"number",
+									"cat.НаправленияДеятельности",
+									"cch.СтатьиДоходов",
+									"cat.ФизическиеЛица",
+									"cat.СегментыНоменклатуры",
+									"cat.Проекты",
+									"cat.Склады"
+								],
+								"is_ref": true,
+								"str_len": 1024,
+								"date_part": "date_time",
+								"digits": 15,
+								"fraction_figits": 3
+							}
+						},
+						"ТекстоваяСтрока": {
+							"synonym": "Текстовая строка",
+							"multiline_mode": false,
+							"tooltip": "Полный текст строкового дополнительного реквизита",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 0
+							}
+						}
+					}
+				}
+			},
+			"hide": true
+		},
 		"Кассы": {
 			"name": "Кассы",
 			"synonym": "Кассы",
@@ -8264,6 +7906,372 @@
 			},
 			"tabular_sections": {},
 			"cachable": false,
+			"hide": true
+		},
+		"КонтактныеЛицаПартнеров": {
+			"name": "КонтактныеЛицаПартнеров",
+			"synonym": "Контактные лица",
+			"illustration": "Список физических лиц, с помощью которых осуществляется связь между клиентами, поставщиками и предприятием. ",
+			"obj_presentation": "Контактное лицо",
+			"list_presentation": "Контактные лица ",
+			"input_by_string": [
+				"name"
+			],
+			"hierarchical": false,
+			"has_owners": true,
+			"group_hierarchy": true,
+			"main_presentation_name": true,
+			"code_length": 0,
+			"fields": {
+				"ДатаРегистрацииСвязи": {
+					"synonym": "Дата регистрации связи",
+					"multiline_mode": false,
+					"tooltip": "Дата регистрации связи либо ее появления.",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"ДатаПрекращенияСвязи": {
+					"synonym": "Дата прекращения связи",
+					"multiline_mode": false,
+					"tooltip": "Дата регистрации прекращения связи или регистрации ее прекращения.",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"Автор": {
+					"synonym": "Автор",
+					"multiline_mode": false,
+					"tooltip": "Сотрудник, зарегистрировавший связь.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ВнешниеПользователи",
+							"cat.Пользователи"
+						],
+						"is_ref": true
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Комментарии сотрудника, зарегистрировавшего связь.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"ДополнительнаяИнформация": {
+					"synonym": "Дополнительная информация",
+					"multiline_mode": false,
+					"tooltip": "Дополнительная информация о контактном лице. Доступна для изменения партнером при самообслуживании.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"ДолжностьПоВизитке": {
+					"synonym": "Должность по визитке",
+					"multiline_mode": false,
+					"tooltip": "",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 100
+					}
+				},
+				"Пол": {
+					"synonym": "Пол",
+					"multiline_mode": false,
+					"tooltip": "Пол физического лица",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ПолФизическогоЛица"
+						],
+						"is_ref": true
+					}
+				},
+				"ДатаРождения": {
+					"synonym": "Дата рождения",
+					"multiline_mode": false,
+					"tooltip": "Дата рождения физического лица",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"owner": {
+					"synonym": "Партнер",
+					"multiline_mode": false,
+					"tooltip": "Партнер, участвующий в связи.",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				}
+			},
+			"tabular_sections": {
+				"КонтактнаяИнформация": {
+					"name": "КонтактнаяИнформация",
+					"synonym": "Контактная информация",
+					"tooltip": "Контактная информация, соответствующая связи между партнером и физическим лицом.",
+					"fields": {
+						"type": {
+							"synonym": "Тип",
+							"multiline_mode": false,
+							"tooltip": "Тип контактной информации (телефон, адрес и т.п.)",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"enm.ТипыКонтактнойИнформации"
+								],
+								"is_ref": true
+							}
+						},
+						"Вид": {
+							"synonym": "Вид",
+							"multiline_mode": false,
+							"tooltip": "Вид контактной информации",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ВидыКонтактнойИнформации"
+								],
+								"is_ref": true
+							}
+						},
+						"presentation": {
+							"synonym": "Представление",
+							"multiline_mode": false,
+							"tooltip": "Представление контактной информации для отображения в формах",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 500
+							}
+						},
+						"values_fields": {
+							"synonym": "Значения полей",
+							"multiline_mode": false,
+							"tooltip": "Служебное поле, для хранения контактной информации",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 0
+							}
+						},
+						"Страна": {
+							"synonym": "Страна",
+							"multiline_mode": false,
+							"tooltip": "Страна (заполняется для адреса)",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 100
+							}
+						},
+						"Регион": {
+							"synonym": "Регион",
+							"multiline_mode": false,
+							"tooltip": "Регион (заполняется для адреса)",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 50
+							}
+						},
+						"Город": {
+							"synonym": "Город",
+							"multiline_mode": false,
+							"tooltip": "Город (заполняется для адреса)",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 50
+							}
+						},
+						"АдресЭП": {
+							"synonym": "Адрес ЭП",
+							"multiline_mode": false,
+							"tooltip": "Адрес электронной почты",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 100
+							}
+						},
+						"ДоменноеИмяСервера": {
+							"synonym": "Доменное имя сервера",
+							"multiline_mode": false,
+							"tooltip": "Доменное имя сервера электронной почты или веб-страницы",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 100
+							}
+						},
+						"НомерТелефона": {
+							"synonym": "Номер телефона",
+							"multiline_mode": false,
+							"tooltip": "Полный номер телефона",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 20
+							}
+						},
+						"НомерТелефонаБезКодов": {
+							"synonym": "Номер телефона без кодов",
+							"multiline_mode": false,
+							"tooltip": "Номер телефона без кодов и добавочного номера",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 20
+							}
+						},
+						"ВидДляСписка": {
+							"synonym": "Вид для списка",
+							"multiline_mode": false,
+							"tooltip": "Вид контактной информации для списка",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ВидыКонтактнойИнформации"
+								],
+								"is_ref": true
+							}
+						}
+					}
+				},
+				"РолиКонтактногоЛица": {
+					"name": "РолиКонтактногоЛица",
+					"synonym": "Роли контактного лица",
+					"tooltip": "Набор ролей контактного лица в организации - партнере",
+					"fields": {
+						"РольКонтактногоЛица": {
+							"synonym": "Роль контактного лица",
+							"multiline_mode": false,
+							"tooltip": "Роль контактного лица по классификации компании.",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.РолиКонтактныхЛицПартнеров"
+								],
+								"is_ref": true
+							}
+						}
+					}
+				},
+				"extra_fields": {
+					"name": "ДополнительныеРеквизиты",
+					"synonym": "Дополнительные реквизиты",
+					"tooltip": "",
+					"fields": {
+						"property": {
+							"synonym": "Свойство",
+							"multiline_mode": false,
+							"tooltip": "Дополнительный реквизит",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cch.properties"
+								],
+								"is_ref": true
+							}
+						},
+						"value": {
+							"synonym": "Значение",
+							"multiline_mode": false,
+							"tooltip": "Значение дополнительного реквизита",
+							"choice_links": [
+								{
+									"name": [
+										"selection",
+										"owner"
+									],
+									"path": [
+										"extra_fields",
+										"property"
+									]
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.Номенклатура",
+									"cch.СтатьиРасходов",
+									"cat.Валюты",
+									"cat.СегментыПартнеров",
+									"cat.ДоговорыКонтрагентов",
+									"cat.property_values_hierarchy",
+									"cat.Организации",
+									"cat.СтруктураПредприятия",
+									"boolean",
+									"cat.Пользователи",
+									"cat.property_values",
+									"cat.СтатьиДвиженияДенежныхСредств",
+									"cat.Контрагенты",
+									"cat.Файлы",
+									"cat.Партнеры",
+									"string",
+									"date",
+									"cat.ГруппыФинансовогоУчетаНоменклатуры",
+									"cat.СтраныМира",
+									"number",
+									"cat.НаправленияДеятельности",
+									"cch.СтатьиДоходов",
+									"cat.ФизическиеЛица",
+									"cat.СегментыНоменклатуры",
+									"cat.Проекты",
+									"cat.Склады"
+								],
+								"is_ref": true,
+								"str_len": 1024,
+								"date_part": "date_time",
+								"digits": 15,
+								"fraction_figits": 3
+							}
+						},
+						"ТекстоваяСтрока": {
+							"synonym": "Текстовая строка",
+							"multiline_mode": false,
+							"tooltip": "Полный текст строкового дополнительного реквизита",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 0
+							}
+						}
+					}
+				}
+			},
 			"hide": true
 		},
 		"Контрагенты": {
@@ -11445,19 +11453,6 @@
 						]
 					}
 				},
-				"ИдентификаторПользователяИБ": {
-					"synonym": "Идентификатор пользователя ИБ",
-					"multiline_mode": false,
-					"tooltip": "Уникальный идентификатор пользователя информационной базы, с которым сопоставлен этот элемент справочника.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 36,
-						"str_fix": true
-					}
-				},
 				"ИдентификаторПользователяСервиса": {
 					"synonym": "Идентификатор пользователя сервиса",
 					"multiline_mode": false,
@@ -11976,25 +11971,34 @@
 			},
 			"tabular_sections": {}
 		},
-		"ПроизводственныеКалендари": {
-			"name": "ПроизводственныеКалендари",
-			"synonym": "Производственные календари",
-			"illustration": "",
-			"obj_presentation": "Производственный календарь",
-			"list_presentation": "",
+		"РолиКонтактныхЛицПартнеров": {
+			"name": "РолиКонтактныхЛицПартнеров",
+			"synonym": "Роли контактных лиц ",
+			"illustration": "Роли контактных лиц  в связях между клиентами, поставщиками и контактными лицами",
+			"obj_presentation": "Роль контактного лица партнера",
+			"list_presentation": "Роли контактных лиц партнеров",
 			"input_by_string": [
-				"name",
-				"id"
+				"name"
 			],
 			"hierarchical": false,
 			"has_owners": false,
 			"group_hierarchy": true,
 			"main_presentation_name": true,
-			"code_length": 3,
-			"fields": {},
-			"tabular_sections": {},
-			"cachable": false,
-			"hide": true
+			"code_length": 0,
+			"fields": {
+				"Описание": {
+					"synonym": "Описание",
+					"multiline_mode": true,
+					"tooltip": "Рекомендации по использованию взаимосвязи.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				}
+			},
+			"tabular_sections": {}
 		},
 		"СделкиСКлиентами": {
 			"name": "СделкиСКлиентами",
@@ -14631,6 +14635,1146 @@
 					}
 				}
 			},
+			"hide": true
+		},
+		"СоглашенияСКлиентами": {
+			"name": "СоглашенияСКлиентами",
+			"synonym": "Соглашения об условиях продаж",
+			"illustration": "Сведения об условиях продаж клиентам",
+			"obj_presentation": "Соглашение об условиях продаж",
+			"list_presentation": "Соглашения об условиях продаж",
+			"input_by_string": [
+				"name",
+				"number_doc"
+			],
+			"hierarchical": false,
+			"has_owners": false,
+			"group_hierarchy": true,
+			"main_presentation_name": true,
+			"code_length": 0,
+			"fields": {
+				"number_doc": {
+					"synonym": "Номер",
+					"multiline_mode": false,
+					"tooltip": "Номер соглашения",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 30
+					}
+				},
+				"date": {
+					"synonym": "Дата",
+					"multiline_mode": false,
+					"tooltip": "Дата заключения соглашения",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"СегментПартнеров": {
+					"synonym": "Сегмент клиентов",
+					"multiline_mode": false,
+					"tooltip": "Деловые партнеры предприятия, относящиеся к данному сегменту, могут участвовать в хозяйственных операциях в рамках соглашения. Если сегмент не указан - соглашение действуют для всех клиентов",
+					"choice_params": [
+						{
+							"name": "СпособФормирования",
+							"path": [
+								"ПериодическиОбновлять",
+								"ФормироватьВручную"
+							]
+						},
+						{
+							"name": "ЗапретОтгрузки",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СегментыПартнеров"
+						],
+						"is_ref": true
+					}
+				},
+				"Контрагент": {
+					"synonym": "Контрагент",
+					"multiline_mode": false,
+					"tooltip": "Контрагент, от имени которого осуществляются покупки в рамках соглашения",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Контрагенты"
+						],
+						"is_ref": true
+					}
+				},
+				"Партнер": {
+					"synonym": "Клиент",
+					"multiline_mode": false,
+					"tooltip": "Деловой партнер предприятия, которому осуществляются продажи в рамках соглашения",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Партнеры"
+						],
+						"is_ref": true
+					}
+				},
+				"Организация": {
+					"synonym": "Организация",
+					"multiline_mode": false,
+					"tooltip": "Если организация не указана - соглашение действительно для всех организаций предприятия",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Организации"
+						],
+						"is_ref": true
+					}
+				},
+				"Валюта": {
+					"synonym": "Валюта",
+					"multiline_mode": false,
+					"tooltip": "Валюта, в которой определяются фиксированные цены, сумма продаж",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Валюты"
+						],
+						"is_ref": true
+					}
+				},
+				"ГрафикОплаты": {
+					"synonym": "График оплаты",
+					"multiline_mode": false,
+					"tooltip": "Правила оплаты клиентом заказа, оформленного в рамках соглашения",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ГрафикиОплаты"
+						],
+						"is_ref": true
+					}
+				},
+				"СуммаДокумента": {
+					"synonym": "Сумма документа",
+					"multiline_mode": false,
+					"tooltip": "Предполагаемый объем продажи за период",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 15,
+						"fraction_figits": 2
+					}
+				},
+				"Типовое": {
+					"synonym": "Типовое",
+					"multiline_mode": false,
+					"tooltip": "Признак, определяющий является ли соглашение типовым или индивидуальным",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"СрокПоставки": {
+					"synonym": "Срок поставки (дни)",
+					"multiline_mode": false,
+					"tooltip": "Срок поставки товаров, оказания услуг по заказу, оформленному в рамках соглашения",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 10,
+						"fraction_figits": 0
+					}
+				},
+				"ВидЦен": {
+					"synonym": "Вид цен",
+					"multiline_mode": false,
+					"tooltip": "Вид цен для всех номенклатурных позиций, для которых не задана фиксированная цена или вид цены",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ЦенаВключаетНДС"
+							],
+							"path": [
+								"ЦенаВключаетНДС"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "ИспользоватьПриПродаже",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ВидыЦен"
+						],
+						"is_ref": true
+					}
+				},
+				"ЦенаВключаетНДС": {
+					"synonym": "Цена включает НДС",
+					"multiline_mode": false,
+					"tooltip": "Признак включения НДС в цену и сумму документа",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ИспользуетсяВРаботеТорговыхПредставителей": {
+					"synonym": "Используется в работе торговых представителей",
+					"multiline_mode": false,
+					"tooltip": "Определяет возможность представителям соглашение в заданиях торговым представителям",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"Соглашение": {
+					"synonym": "Соглашение",
+					"multiline_mode": false,
+					"tooltip": "Типовое соглашение, которое является основанием для данного соглашения",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"date"
+							],
+							"path": [
+								"date"
+							]
+						},
+						{
+							"name": [
+								"selection",
+								"Партнер"
+							],
+							"path": [
+								"Партнер"
+							]
+						}
+					],
+					"choice_params": [],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СоглашенияСКлиентами"
+						],
+						"is_ref": true
+					}
+				},
+				"Склад": {
+					"synonym": "Склад",
+					"multiline_mode": false,
+					"tooltip": "Склад отгрузки товаров, если не указан, то любой",
+					"choice_params": [],
+					"type": {
+						"types": [
+							"cat.Склады"
+						],
+						"is_ref": true
+					}
+				},
+				"СегментНоменклатуры": {
+					"synonym": "Сегмент номенклатуры",
+					"multiline_mode": false,
+					"tooltip": "Возможны продажи только номенклатуры из указанного сегмента",
+					"choice_params": [
+						{
+							"name": "СпособФормирования",
+							"path": [
+								"ПериодическиОбновлять",
+								"ФормироватьВручную"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СегментыНоменклатуры"
+						],
+						"is_ref": true
+					}
+				},
+				"ДатаНачалаДействия": {
+					"synonym": "Дата начала действия",
+					"multiline_mode": false,
+					"tooltip": "Дата, начиная с которой могут осуществляться продажи по данному соглашению",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"ДатаОкончанияДействия": {
+					"synonym": "Дата окончания действия",
+					"multiline_mode": false,
+					"tooltip": "Дата окончания продаж по соглашению",
+					"type": {
+						"types": [
+							"date"
+						],
+						"date_part": "date"
+					}
+				},
+				"Комментарий": {
+					"synonym": "Комментарий",
+					"multiline_mode": true,
+					"tooltip": "Любые комментарии по соглашению",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 0
+					}
+				},
+				"Регулярное": {
+					"synonym": "Регулярное",
+					"multiline_mode": false,
+					"tooltip": "Определяет, является ли соглашение регулярным",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"Период": {
+					"synonym": "Период",
+					"multiline_mode": false,
+					"tooltip": "Период повторения условий соглашения",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.Периодичность"
+						],
+						"is_ref": true
+					}
+				},
+				"КоличествоПериодов": {
+					"synonym": "Количество периодов",
+					"multiline_mode": false,
+					"tooltip": "Количество повторов условий соглашения за период",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 3,
+						"fraction_figits": 0
+					}
+				},
+				"Статус": {
+					"synonym": "Статус",
+					"multiline_mode": false,
+					"tooltip": "Текущий статус соглашения: не согласовано, действует, закрыто",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.СтатусыСоглашенийСКлиентами"
+						],
+						"is_ref": true
+					}
+				},
+				"Согласован": {
+					"synonym": "Согласован",
+					"multiline_mode": false,
+					"tooltip": "Признак, определяющий, что соглашение согласовано",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"Менеджер": {
+					"synonym": "Менеджер",
+					"multiline_mode": false,
+					"tooltip": "Пользователь, оформивший соглашение",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.Пользователи"
+						],
+						"is_ref": true
+					}
+				},
+				"НалогообложениеНДС": {
+					"synonym": "Налогообложение",
+					"multiline_mode": false,
+					"tooltip": "Тип налогообложения продажи товаров и услуг налогом на добавленную стоимость",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ТипыНалогообложенияНДС"
+						],
+						"is_ref": true
+					}
+				},
+				"ХозяйственнаяОперация": {
+					"synonym": "Операция",
+					"multiline_mode": false,
+					"tooltip": "Вид операции реализации товаров и услуг",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ХозяйственныеОперации"
+						],
+						"is_ref": true
+					}
+				},
+				"СпособРасчетаВознаграждения": {
+					"synonym": "Способ расчета",
+					"multiline_mode": false,
+					"tooltip": "Способ расчета комиссионного вознаграждения",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.СпособыРасчетаКомиссионногоВознаграждения"
+						],
+						"is_ref": true
+					}
+				},
+				"ПроцентВознаграждения": {
+					"synonym": "Процент",
+					"multiline_mode": false,
+					"tooltip": "Процент от прибыли или с продаж, по которому рассчитывается сумма комиссионного вознаграждения",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 5,
+						"fraction_figits": 2
+					}
+				},
+				"УдержатьВознаграждение": {
+					"synonym": "Удержать вознаграждение",
+					"multiline_mode": false,
+					"tooltip": "Признак удержания суммы комиссионного вознаграждения из суммы оплаты комиссионером.",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ПроцентРучнойСкидки": {
+					"synonym": "Макс. % ручной скидки",
+					"multiline_mode": false,
+					"tooltip": "Максимально допустимый процент ручной скидки",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 5,
+						"fraction_figits": 2
+					}
+				},
+				"ПроцентРучнойНаценки": {
+					"synonym": "Макс. % ручной наценки",
+					"multiline_mode": false,
+					"tooltip": "Максимально допустимый процент ручной наценки",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 5,
+						"fraction_figits": 2
+					}
+				},
+				"ДоступноВнешнимПользователям": {
+					"synonym": "Доступно внешним пользователям",
+					"multiline_mode": false,
+					"tooltip": "Определяет возможность использования соглашения внешними пользователями",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ПорядокОплаты": {
+					"synonym": "Порядок оплаты",
+					"multiline_mode": false,
+					"tooltip": "Порядок оплаты по соглашению",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ПорядокОплатыПоСоглашениям"
+						],
+						"is_ref": true
+					}
+				},
+				"ГруппаФинансовогоУчета": {
+					"synonym": "Группа фин. учета расчетов",
+					"multiline_mode": false,
+					"tooltip": "Группа финансового учета расчетов с партнерами",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"ПорядокОплаты"
+							],
+							"path": [
+								"ПорядокОплаты"
+							]
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ГруппыФинансовогоУчетаРасчетов"
+						],
+						"is_ref": true
+					}
+				},
+				"ИспользуютсяДоговорыКонтрагентов": {
+					"synonym": "Используются договоры с контрагентами",
+					"multiline_mode": false,
+					"tooltip": "",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ОграничиватьРучныеСкидки": {
+					"synonym": "Ограничивать ручные скидки",
+					"multiline_mode": false,
+					"tooltip": "",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ФормаОплаты": {
+					"synonym": "Форма оплаты",
+					"multiline_mode": false,
+					"tooltip": "Форма оплаты по графику, если не указана - уточняется в документе продажи.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ФормыОплаты"
+						],
+						"is_ref": true
+					}
+				},
+				"КонтактноеЛицо": {
+					"synonym": "Контактное лицо",
+					"multiline_mode": false,
+					"tooltip": "Контактное лицо, для взаимодействия по соглашению",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.КонтактныеЛицаПартнеров"
+						],
+						"is_ref": true
+					}
+				},
+				"ПорядокРасчетов": {
+					"synonym": "Порядок расчетов",
+					"multiline_mode": false,
+					"tooltip": "",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ПорядокРасчетов"
+						],
+						"is_ref": true
+					}
+				},
+				"ВозвращатьМногооборотнуюТару": {
+					"synonym": "Возвращать многооборотную тару",
+					"multiline_mode": false,
+					"tooltip": "Признак, указывающий на необходимость возврата многооборотной тары, переданной клиенту по данному соглашению.",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"СрокВозвратаМногооборотнойТары": {
+					"synonym": "Срок возврата многооборотной тары",
+					"multiline_mode": false,
+					"tooltip": "Срок в днях, через который клиент должен вернуть многооборотную тару",
+					"type": {
+						"types": [
+							"number"
+						],
+						"digits": 3,
+						"fraction_figits": 0
+					}
+				},
+				"РассчитыватьДатуВозвратаТарыПоКалендарю": {
+					"synonym": "Рассчитывать дату возврата тары по календарю",
+					"multiline_mode": false,
+					"tooltip": "Определяет способ расчета даты возвраты многооборотной тары клиентом: по всем дням или по календарю предприятия",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"calendar": {
+					"synonym": "Календарь",
+					"multiline_mode": false,
+					"tooltip": "Календарь, по которому считаются даты оплаты по этапам.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ПроизводственныеКалендари"
+						],
+						"is_ref": true
+					}
+				},
+				"ВариантРасчетаЦен": {
+					"synonym": "Вариант расчета цен",
+					"multiline_mode": false,
+					"tooltip": "",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ВариантыРасчетаЦенПоСоглашениямСКлиентами"
+						],
+						"is_ref": true
+					}
+				},
+				"СценарийПланирования": {
+					"synonym": "Сценарий планирования",
+					"multiline_mode": false,
+					"tooltip": "Сценарий планирования плана продаж( плана закупок с точки зрения внешнего пользователя). Используется при составлении планов закупок партнером при самообслуживании.",
+					"choice_params": [
+						{
+							"name": "ИспользоватьВПланированииПродаж",
+							"path": true
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СценарииТоварногоПланирования"
+						],
+						"is_ref": true
+					}
+				},
+				"ВидПлана": {
+					"synonym": "Вид плана",
+					"multiline_mode": false,
+					"tooltip": "Вид плана продаж(плана закупок с точки зрения внешнего пользователя). Используется при составлении планов закупок партнером при самообслуживании.",
+					"choice_links": [
+						{
+							"name": [
+								"selection",
+								"owner"
+							],
+							"path": [
+								"СценарийПланирования"
+							]
+						}
+					],
+					"choice_params": [
+						{
+							"name": "ТипПлана",
+							"path": "ПланПродаж"
+						},
+						{
+							"name": "ЗаполнятьПартнера",
+							"path": true
+						},
+						{
+							"name": "ЗаполнятьСоглашение",
+							"path": true
+						},
+						{
+							"name": "ЗаполнятьПартнераВТЧ",
+							"path": false
+						},
+						{
+							"name": "ЗаполнятьСоглашениеВТЧ",
+							"path": false
+						},
+						{
+							"name": "ЗаполнятьПодразделение",
+							"path": false
+						},
+						{
+							"name": "ЗаполнятьСкладВТЧ",
+							"path": false
+						}
+					],
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ВидыПланов"
+						],
+						"is_ref": true
+					}
+				},
+				"ТребуетсяЗалогЗаТару": {
+					"synonym": "Требуется залог за тару",
+					"multiline_mode": false,
+					"tooltip": "Признак, указывающий на необходимость оплаты залога за тару, переданную клиенту по данному соглашению.",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"КалендарьВозвратаТары": {
+					"synonym": "Календарь возврата тары",
+					"multiline_mode": false,
+					"tooltip": "Календарь, по которому считаются даты возврата тары.",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.ПроизводственныеКалендари"
+						],
+						"is_ref": true
+					}
+				},
+				"ВидСоглашенияДляОграниченияЧтения": {
+					"synonym": "Вид соглашения (для ограничения доступа на чтение)",
+					"multiline_mode": false,
+					"tooltip": "Служебный реквизит, необходимый для настройки ограничений доступа на чтение этого справочника с помощью механизма БСП \"Управление доступом\"",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ВидыСоглашенийСКлиентамиДляОграниченияЧтения"
+						],
+						"is_ref": true
+					}
+				},
+				"ВидСоглашенияДляОграниченияИзменения": {
+					"synonym": "Вид соглашения (для ограничения доступа на изменение)",
+					"multiline_mode": false,
+					"tooltip": "Служебный реквизит, необходимый для настройки ограничений доступа на изменение этого справочника с помощью механизма БСП \"Управление доступом\"",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"enm.ВидыСоглашенийСКлиентамиДляОграниченияИзменения"
+						],
+						"is_ref": true
+					}
+				},
+				"СтатьяДвиженияДенежныхСредств": {
+					"synonym": "Статья движения денежных средств",
+					"multiline_mode": false,
+					"tooltip": "",
+					"choice_groups_elm": "elm",
+					"type": {
+						"types": [
+							"cat.СтатьиДвиженияДенежныхСредств"
+						],
+						"is_ref": true
+					}
+				},
+				"ВозможнаОтгрузкаБезПереходаПраваСобственности": {
+					"synonym": "Возможна отгрузка без перехода права собственности",
+					"multiline_mode": false,
+					"tooltip": "Признак, указывающий на то, что по данному соглашению возможно оформление отгрузки без перехода права собственности.",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"ОбеспечиватьЗаказыОбособленно": {
+					"synonym": "Обеспечивать заказы обособленно",
+					"multiline_mode": false,
+					"tooltip": "",
+					"type": {
+						"types": [
+							"boolean"
+						]
+					}
+				},
+				"КодНаименованияСделки": {
+					"synonym": "Код наименования сделки",
+					"multiline_mode": false,
+					"tooltip": "Общий код наименования для всех контролируемых сделок, заключенных в рамках данного соглашения.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 3
+					}
+				},
+				"СпособОпределенияЦеныСделки": {
+					"synonym": "Способ определения цены сделки",
+					"multiline_mode": false,
+					"tooltip": "Общий способ определения цены для всех контролируемых сделок, заключенных в рамках данного соглашения.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 10
+					}
+				},
+				"КодУсловийПоставки": {
+					"synonym": "Код условий поставки",
+					"multiline_mode": false,
+					"tooltip": "Общий код условий поставки для всех контролируемых сделок, заключенных в рамках данного соглашения.",
+					"type": {
+						"types": [
+							"string"
+						],
+						"str_len": 3
+					}
+				}
+			},
+			"tabular_sections": {
+				"Товары": {
+					"name": "Товары",
+					"synonym": "Товары",
+					"tooltip": "Для каждой номенклатурной позиции может быть определен вид цен или фиксированная цена.",
+					"fields": {
+						"Номенклатура": {
+							"synonym": "Номенклатура",
+							"multiline_mode": false,
+							"tooltip": "Номенклатура, для которой требуется указать уточнения, определяющие правила расчета цены",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.Номенклатура"
+								],
+								"is_ref": true
+							}
+						},
+						"Характеристика": {
+							"synonym": "Характеристика",
+							"multiline_mode": false,
+							"tooltip": "Вид цен или фиксированная цена для номенклатурной позиции задается в разрезе характеристики",
+							"choice_links": [
+								{
+									"name": [
+										"Номенклатура"
+									],
+									"path": [
+										"Товары",
+										"Номенклатура"
+									]
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ХарактеристикиНоменклатуры"
+								],
+								"is_ref": true
+							}
+						},
+						"Упаковка": {
+							"synonym": "Упаковка",
+							"multiline_mode": false,
+							"tooltip": "Упаковка номенклатуры, за которую назначается фиксированная цена - если используется",
+							"choice_links": [
+								{
+									"name": [
+										"Номенклатура"
+									],
+									"path": [
+										"Товары",
+										"Номенклатура"
+									]
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.УпаковкиЕдиницыИзмерения"
+								],
+								"is_ref": true
+							}
+						},
+						"ВидЦены": {
+							"synonym": "Вид цены",
+							"multiline_mode": false,
+							"tooltip": "Правила расчета цены продажи номенклатурной позиции",
+							"choice_links": [
+								{
+									"name": [
+										"selection",
+										"ЦенаВключаетНДС"
+									],
+									"path": [
+										"ЦенаВключаетНДС"
+									]
+								}
+							],
+							"choice_params": [
+								{
+									"name": "ИспользоватьПриПродаже",
+									"path": true
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ВидыЦен"
+								],
+								"is_ref": true
+							}
+						},
+						"Цена": {
+							"synonym": "Цена",
+							"multiline_mode": false,
+							"tooltip": "Фиксированная цена при продажах в рамках соглашения",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 15,
+								"fraction_figits": 2
+							}
+						},
+						"СрокПоставки": {
+							"synonym": "Срок поставки (дни)",
+							"multiline_mode": false,
+							"tooltip": "Срок поставки товаров, оказания услуг по заказу, оформленному в рамках соглашения",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 10,
+								"fraction_figits": 0
+							}
+						}
+					}
+				},
+				"ЦеновыеГруппы": {
+					"name": "ЦеновыеГруппы",
+					"synonym": "Ценовые группы",
+					"tooltip": "Каждой группе цен номенклатуры ставится в соответствие вид цен.",
+					"fields": {
+						"ЦеноваяГруппа": {
+							"synonym": "Ценовая группа",
+							"multiline_mode": false,
+							"tooltip": "Для ценовой группы задается вид цен ",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ЦеновыеГруппы"
+								],
+								"is_ref": true
+							}
+						},
+						"ВидЦен": {
+							"synonym": "Вид цен",
+							"multiline_mode": false,
+							"tooltip": "Назначается для ценовой группы номенклатуры",
+							"choice_links": [
+								{
+									"name": [
+										"selection",
+										"ЦенаВключаетНДС"
+									],
+									"path": [
+										"ЦенаВключаетНДС"
+									]
+								}
+							],
+							"choice_params": [
+								{
+									"name": "ИспользоватьПриПродаже",
+									"path": true
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.ВидыЦен"
+								],
+								"is_ref": true
+							}
+						},
+						"СрокПоставки": {
+							"synonym": "Срок поставки (дни)",
+							"multiline_mode": false,
+							"tooltip": "Срок поставки товаров, оказания услуг по заказу, оформленному в рамках соглашения",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 10,
+								"fraction_figits": 0
+							}
+						},
+						"ПроцентРучнойСкидки": {
+							"synonym": "Макс. % ручной скидки",
+							"multiline_mode": false,
+							"tooltip": "Максимально допустимый процент ручной скидки",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 5,
+								"fraction_figits": 2
+							}
+						},
+						"ПроцентРучнойНаценки": {
+							"synonym": "Макс. % ручной наценки",
+							"multiline_mode": false,
+							"tooltip": "Максимально допустимый процент ручной наценки",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 5,
+								"fraction_figits": 2
+							}
+						}
+					}
+				},
+				"extra_fields": {
+					"name": "ДополнительныеРеквизиты",
+					"synonym": "Дополнительные реквизиты",
+					"tooltip": "",
+					"fields": {
+						"property": {
+							"synonym": "Свойство",
+							"multiline_mode": false,
+							"tooltip": "Дополнительный реквизит",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cch.properties"
+								],
+								"is_ref": true
+							}
+						},
+						"value": {
+							"synonym": "Значение",
+							"multiline_mode": false,
+							"tooltip": "Значение дополнительного реквизита",
+							"choice_links": [
+								{
+									"name": [
+										"selection",
+										"owner"
+									],
+									"path": [
+										"extra_fields",
+										"property"
+									]
+								}
+							],
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"cat.Номенклатура",
+									"cch.СтатьиРасходов",
+									"cat.Валюты",
+									"cat.СегментыПартнеров",
+									"cat.ДоговорыКонтрагентов",
+									"cat.property_values_hierarchy",
+									"cat.Организации",
+									"cat.СтруктураПредприятия",
+									"boolean",
+									"cat.Пользователи",
+									"cat.property_values",
+									"cat.СтатьиДвиженияДенежныхСредств",
+									"cat.Контрагенты",
+									"cat.Файлы",
+									"cat.Партнеры",
+									"string",
+									"date",
+									"cat.ГруппыФинансовогоУчетаНоменклатуры",
+									"cat.СтраныМира",
+									"number",
+									"cat.НаправленияДеятельности",
+									"cch.СтатьиДоходов",
+									"cat.ФизическиеЛица",
+									"cat.СегментыНоменклатуры",
+									"cat.Проекты",
+									"cat.Склады"
+								],
+								"is_ref": true,
+								"str_len": 1024,
+								"date_part": "date_time",
+								"digits": 15,
+								"fraction_figits": 3
+							}
+						},
+						"ТекстоваяСтрока": {
+							"synonym": "Текстовая строка",
+							"multiline_mode": false,
+							"tooltip": "Полный текст строкового дополнительного реквизита",
+							"type": {
+								"types": [
+									"string"
+								],
+								"str_len": 0
+							}
+						}
+					}
+				},
+				"ЭтапыГрафикаОплаты": {
+					"name": "ЭтапыГрафикаОплаты",
+					"synonym": "Этапы графика оплаты",
+					"tooltip": "",
+					"fields": {
+						"ВариантОплаты": {
+							"synonym": "Вариант оплаты",
+							"multiline_mode": false,
+							"tooltip": "Определяет момент возникновения задолженности: аванс до  обеспечения, предоплата до отгрузки или кредит после отгрузки.",
+							"choice_groups_elm": "elm",
+							"type": {
+								"types": [
+									"enm.ВариантыОплатыКлиентом"
+								],
+								"is_ref": true
+							}
+						},
+						"Сдвиг": {
+							"synonym": "Срок (дн)",
+							"multiline_mode": false,
+							"tooltip": "Смещение в днях относительно момента возникновения задолженности.",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 10,
+								"fraction_figits": 0
+							}
+						},
+						"ПроцентПлатежа": {
+							"synonym": "% платежа",
+							"multiline_mode": false,
+							"tooltip": "Процент платежа по этапу от общей суммы документа продажи.",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 5,
+								"fraction_figits": 2
+							}
+						},
+						"ПроцентЗалогаЗаТару": {
+							"synonym": "% залога за тару",
+							"multiline_mode": false,
+							"tooltip": "Процент залога за многооборотную тару по этапу от общей суммы залога по документу продажи.",
+							"type": {
+								"types": [
+									"number"
+								],
+								"digits": 5,
+								"fraction_figits": 2
+							}
+						}
+					}
+				}
+			},
+			"cachable": false,
 			"hide": true
 		},
 		"СтатьиДвиженияДенежныхСредств": {
@@ -21220,89 +22364,6 @@
 			},
 			"tabular_sections": {}
 		},
-		"КоммерческоеПредложениеКлиенту": {
-			"name": "КоммерческоеПредложениеКлиенту",
-			"synonym": "Коммерческое предложение клиенту",
-			"illustration": "",
-			"obj_presentation": "",
-			"list_presentation": "Коммерческие предложения клиентам",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {
-				"Партнер": {
-					"synonym": "Клиент",
-					"multiline_mode": false,
-					"tooltip": "Получатель коммерческого предложения, являющийся существующим или потенциальным партнером предприятия",
-					"choice_params": [
-						{
-							"name": "Клиент",
-							"path": true
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Партнеры"
-						],
-						"is_ref": true
-					}
-				},
-				"СуммаДокумента": {
-					"synonym": "Сумма документа",
-					"multiline_mode": false,
-					"tooltip": "Сумма активного варианта коммерческого предложения",
-					"type": {
-						"types": [
-							"number"
-						],
-						"digits": 15,
-						"fraction_figits": 2
-					}
-				},
-				"Склад": {
-					"synonym": "Склад",
-					"multiline_mode": false,
-					"tooltip": "Предпочтительный склад отгрузки товаров по заказу",
-					"choice_params": [],
-					"type": {
-						"types": [
-							"cat.Склады"
-						],
-						"is_ref": true
-					}
-				},
-				"Организация": {
-					"synonym": "Организация",
-					"multiline_mode": false,
-					"tooltip": "Организация предприятия, от имени которой оформляется коммерческое предложение",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Организации"
-						],
-						"is_ref": true
-					}
-				},
-				"Комментарий": {
-					"synonym": "Комментарий",
-					"multiline_mode": true,
-					"tooltip": "Произвольный текст",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				}
-			},
-			"tabular_sections": {}
-		},
 		"ОперацияПоПлатежнойКарте": {
 			"name": "ОперацияПоПлатежнойКарте",
 			"synonym": "Операция по платежной карте",
@@ -21367,338 +22428,6 @@
 				}
 			},
 			"tabular_sections": {}
-		},
-		"ОтчетКомиссионера": {
-			"name": "ОтчетКомиссионера",
-			"synonym": "Отчет комиссионера (агента) о продажах",
-			"illustration": "Отчеты о продажах товаров, переданных на комиссию, предоставляемые комиссионерами предприятию (комитенту)",
-			"obj_presentation": "Отчет комиссионера (агента) о продажах",
-			"list_presentation": "Отчеты комиссионеров (агентов) о продажах",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {
-				"Организация": {
-					"synonym": "Организация",
-					"multiline_mode": false,
-					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Организации"
-						],
-						"is_ref": true
-					}
-				},
-				"Партнер": {
-					"synonym": "Комиссионер",
-					"multiline_mode": false,
-					"tooltip": "Комиссионер, которому переданы товары на комиссию.",
-					"choice_params": [
-						{
-							"name": "Клиент",
-							"path": true
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Партнеры"
-						],
-						"is_ref": true
-					}
-				},
-				"Контрагент": {
-					"synonym": "Контрагент",
-					"multiline_mode": false,
-					"tooltip": "Комиссионер (регл.), которому переданы товары на комиссию.",
-					"choice_links": [
-						{
-							"name": [
-								"selection",
-								"Партнер"
-							],
-							"path": [
-								"Партнер"
-							]
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Контрагенты"
-						],
-						"is_ref": true
-					}
-				},
-				"СуммаДокумента": {
-					"synonym": "Сумма документа",
-					"multiline_mode": false,
-					"tooltip": "Общая сумма документа.",
-					"type": {
-						"types": [
-							"number"
-						],
-						"digits": 15,
-						"fraction_figits": 2
-					}
-				},
-				"Комментарий": {
-					"synonym": "Комментарий",
-					"multiline_mode": true,
-					"tooltip": "Произвольный текст",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				},
-				"Договор": {
-					"synonym": "Договор",
-					"multiline_mode": false,
-					"tooltip": "Договор, в рамках которого оформляется отчет",
-					"choice_links": [
-						{
-							"name": [
-								"selection",
-								"ВалютаВзаиморасчетов"
-							],
-							"path": [
-								"Валюта"
-							]
-						},
-						{
-							"name": [
-								"selection",
-								"Контрагент"
-							],
-							"path": [
-								"Контрагент"
-							]
-						},
-						{
-							"name": [
-								"selection",
-								"Организация"
-							],
-							"path": [
-								"Организация"
-							]
-						},
-						{
-							"name": [
-								"Партнер"
-							],
-							"path": [
-								"Партнер"
-							]
-						},
-						{
-							"name": [
-								"Соглашение"
-							],
-							"path": [
-								"Соглашение"
-							]
-						}
-					],
-					"choice_params": [
-						{
-							"name": "Статус",
-							"path": "Действует"
-						},
-						{
-							"name": "ХозяйственнаяОперация",
-							"path": "ПередачаНаКомиссию"
-						},
-						{
-							"name": "deleted",
-							"path": false
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ДоговорыКонтрагентов"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {},
-			"hide": true
-		},
-		"ОтчетКомитенту": {
-			"name": "ОтчетКомитенту",
-			"synonym": "Отчет комитенту о продажах",
-			"illustration": "Отчеты о продажах комиссионных товаров, которые предприятие (комиссионер) предоставляет комитентам, либо о продажах агентских услуг которые предоставляет принципал",
-			"obj_presentation": "Отчет комитенту (принципалу) о продажах",
-			"list_presentation": "Отчеты комитентам (принципалам) о продажах",
-			"input_by_string": [
-				"number_doc"
-			],
-			"hierarchical": false,
-			"has_owners": false,
-			"group_hierarchy": false,
-			"main_presentation_name": false,
-			"code_length": 0,
-			"fields": {
-				"Организация": {
-					"synonym": "Организация",
-					"multiline_mode": false,
-					"tooltip": "Организация предприятия, от имени которой оформляется документ.",
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Организации"
-						],
-						"is_ref": true
-					}
-				},
-				"Партнер": {
-					"synonym": "Комитент",
-					"multiline_mode": false,
-					"tooltip": "Комитент, от которого получены товары на комиссию.",
-					"choice_params": [
-						{
-							"name": "Поставщик",
-							"path": true
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Партнеры"
-						],
-						"is_ref": true
-					}
-				},
-				"Контрагент": {
-					"synonym": "Контрагент",
-					"multiline_mode": false,
-					"tooltip": "Комитент (регл.), от которого получены товары на комиссию.",
-					"choice_links": [
-						{
-							"name": [
-								"selection",
-								"Партнер"
-							],
-							"path": [
-								"Партнер"
-							]
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.Контрагенты"
-						],
-						"is_ref": true
-					}
-				},
-				"СуммаДокумента": {
-					"synonym": "Сумма документа",
-					"multiline_mode": false,
-					"tooltip": "Общая сумма документа.",
-					"type": {
-						"types": [
-							"number"
-						],
-						"digits": 15,
-						"fraction_figits": 2
-					}
-				},
-				"Комментарий": {
-					"synonym": "Комментарий",
-					"multiline_mode": true,
-					"tooltip": "Произвольный текст",
-					"type": {
-						"types": [
-							"string"
-						],
-						"str_len": 0
-					}
-				},
-				"Договор": {
-					"synonym": "Договор",
-					"multiline_mode": false,
-					"tooltip": "Договор, в рамках которого оформляется отчет",
-					"choice_links": [
-						{
-							"name": [
-								"selection",
-								"ВалютаВзаиморасчетов"
-							],
-							"path": [
-								"Валюта"
-							]
-						},
-						{
-							"name": [
-								"selection",
-								"Контрагент"
-							],
-							"path": [
-								"Контрагент"
-							]
-						},
-						{
-							"name": [
-								"selection",
-								"Организация"
-							],
-							"path": [
-								"Организация"
-							]
-						},
-						{
-							"name": [
-								"Партнер"
-							],
-							"path": [
-								"Партнер"
-							]
-						},
-						{
-							"name": [
-								"Соглашение"
-							],
-							"path": [
-								"Соглашение"
-							]
-						}
-					],
-					"choice_params": [
-						{
-							"name": "Статус",
-							"path": "Действует"
-						},
-						{
-							"name": "ХозяйственнаяОперация",
-							"path": "ПриемНаКомиссию"
-						},
-						{
-							"name": "deleted",
-							"path": false
-						}
-					],
-					"choice_groups_elm": "elm",
-					"type": {
-						"types": [
-							"cat.ДоговорыКонтрагентов"
-						],
-						"is_ref": true
-					}
-				}
-			},
-			"tabular_sections": {},
-			"hide": true
 		},
 		"ПоступлениеБезналичныхДенежныхСредств": {
 			"name": "ПоступлениеБезналичныхДенежныхСредств",

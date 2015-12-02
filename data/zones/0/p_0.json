@@ -7223,6 +7223,68 @@
 				"lc_changed": 63539000000305
 			}
 		],
+		"РолиКонтактныхЛицПартнеров": [
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "b02e2858-720f-11df-b436-0015e92f2802",
+					"presentation": "Менеджер",
+					"type": "cat.РолиКонтактныхЛицПартнеров"
+				},
+				"deleted": false,
+				"name": "Менеджер",
+				"Описание": "",
+				"lc_changed": 63539000000040
+			},
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "5018186d-ddb3-11df-aeb7-0015e9b8c48d",
+					"presentation": "Влиятель",
+					"type": "cat.РолиКонтактныхЛицПартнеров"
+				},
+				"deleted": false,
+				"name": "Влиятель",
+				"Описание": "",
+				"lc_changed": 63539000000040
+			},
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "b02e2857-720f-11df-b436-0015e92f2802",
+					"presentation": "Курьер",
+					"type": "cat.РолиКонтактныхЛицПартнеров"
+				},
+				"deleted": false,
+				"name": "Курьер",
+				"Описание": "",
+				"lc_changed": 63539000000040
+			},
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "b6f11b39-d120-11df-aea9-0015e9b8c48d",
+					"presentation": "Директор магазина",
+					"type": "cat.РолиКонтактныхЛицПартнеров"
+				},
+				"deleted": false,
+				"name": "Директор магазина",
+				"Описание": "",
+				"lc_changed": 63539000000040
+			},
+			{
+				"predefined_name": "",
+				"ref": {
+					"ref": "b02e2859-720f-11df-b436-0015e92f2802",
+					"presentation": "Менеджер по продажам",
+					"type": "cat.РолиКонтактныхЛицПартнеров"
+				},
+				"deleted": false,
+				"name": "Менеджер по продажам",
+				"Описание": "",
+				"lc_changed": 63539000000040
+			}
+		],
 		"property_values": [
 			{
 				"predefined_name": "",
@@ -8051,121 +8113,6 @@
 				"name": "6",
 				"Вес": 0,
 				"lc_changed": 63540000000037
-			},
-			{
-				"predefined_name": "",
-				"ref": {
-					"ref": "14ed8b13-55bd-11d9-848a-00112f43529a",
-					"presentation": "7",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "14ed8b10-55bd-11d9-848a-00112f43529a",
-					"presentation": "Полнота (Женская обувь (Для характеристик))",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "7",
-				"Вес": 0,
-				"lc_changed": 63540000000038
-			},
-			{
-				"predefined_name": "",
-				"ref": {
-					"ref": "14ed8b14-55bd-11d9-848a-00112f43529a",
-					"presentation": "8",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "14ed8b10-55bd-11d9-848a-00112f43529a",
-					"presentation": "Полнота (Женская обувь (Для характеристик))",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "8",
-				"Вес": 0,
-				"lc_changed": 63540000000039
-			},
-			{
-				"predefined_name": "",
-				"ref": {
-					"ref": "14ed8b15-55bd-11d9-848a-00112f43529a",
-					"presentation": "9",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "14ed8b10-55bd-11d9-848a-00112f43529a",
-					"presentation": "Полнота (Женская обувь (Для характеристик))",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "9",
-				"Вес": 0,
-				"lc_changed": 63540000000040
-			},
-			{
-				"predefined_name": "",
-				"ref": {
-					"ref": "65fbdca4-85d6-11da-9aea-000d884f5d77",
-					"presentation": "KSF 32420",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "65fbdca3-85d6-11da-9aea-000d884f5d77",
-					"presentation": "Модель",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "KSF 32420",
-				"Вес": 0,
-				"lc_changed": 63540000000042
-			},
-			{
-				"predefined_name": "",
-				"ref": {
-					"ref": "1346015e-8390-11e5-8100-206a8a1a5bb0",
-					"presentation": "OLED",
-					"type": "cat.property_values"
-				},
-				"deleted": false,
-				"is_folder": false,
-				"owner": {
-					"ref": "1346015d-8390-11e5-8100-206a8a1a5bb0",
-					"presentation": "Тип (Телевизоры и плазменные панели)",
-					"type": "cch.properties"
-				},
-				"parent": {
-					"ref": "00000000-0000-0000-0000-000000000000",
-					"presentation": "",
-					"type": "cat.property_values"
-				},
-				"name": "OLED",
-				"Вес": 0,
-				"lc_changed": 63540000000043
 			}
 		]
 	},
@@ -8341,21 +8288,21 @@
 			},
 			{
 				"predefined_name": "",
-				"name": "Код в Яндекс.Маркет (Справочник \"Номенклатура\" (Общие))",
+				"name": "Код в Яндекс.Маркет (Вид номенклатуры)",
 				"deleted": false,
 				"ref": {
-					"ref": "b3134dfa-9066-11e5-8106-206a8a1a5bb0",
-					"presentation": "Код в Яндекс.Маркет (Справочник \"Номенклатура\" (Общие))",
+					"ref": "7f0ac9bf-9067-11e5-8106-206a8a1a5bb0",
+					"presentation": "Код в Яндекс.Маркет (Вид номенклатуры)",
 					"type": "cch.properties"
 				},
 				"Заголовок": "Код в Яндекс.Маркет",
 				"Виден": true,
 				"НаборСвойств": {
-					"ref": "fe9ee393-eb4f-4117-83c5-d1f78d1f244d",
-					"presentation": "Справочник \"Номенклатура\" (Общие)",
+					"ref": "8581c253-94e5-46d7-8f81-bc824357e07a",
+					"presentation": "Вид номенклатуры",
 					"type": "cat.НаборыДополнительныхРеквизитовИСведений"
 				},
-				"ЭтоДополнительноеСведение": false,
+				"ЭтоДополнительноеСведение": true,
 				"Доступен": true,
 				"ЗаполнятьОбязательно": false,
 				"МногострочноеПолеВвода": 0,
@@ -8383,21 +8330,21 @@
 			},
 			{
 				"predefined_name": "",
-				"name": "Код в Яндекс.Маркет (Вид номенклатуры)",
+				"name": "Код в Яндекс.Маркет (Справочник \"Номенклатура\" (Общие))",
 				"deleted": false,
 				"ref": {
-					"ref": "7f0ac9bf-9067-11e5-8106-206a8a1a5bb0",
-					"presentation": "Код в Яндекс.Маркет (Вид номенклатуры)",
+					"ref": "b3134dfa-9066-11e5-8106-206a8a1a5bb0",
+					"presentation": "Код в Яндекс.Маркет (Справочник \"Номенклатура\" (Общие))",
 					"type": "cch.properties"
 				},
 				"Заголовок": "Код в Яндекс.Маркет",
 				"Виден": true,
 				"НаборСвойств": {
-					"ref": "8581c253-94e5-46d7-8f81-bc824357e07a",
-					"presentation": "Вид номенклатуры",
+					"ref": "fe9ee393-eb4f-4117-83c5-d1f78d1f244d",
+					"presentation": "Справочник \"Номенклатура\" (Общие)",
 					"type": "cat.НаборыДополнительныхРеквизитовИСведений"
 				},
-				"ЭтоДополнительноеСведение": true,
+				"ЭтоДополнительноеСведение": false,
 				"Доступен": true,
 				"ЗаполнятьОбязательно": false,
 				"МногострочноеПолеВвода": 0,
@@ -9644,7 +9591,7 @@
 	},
 	"cacc": {},
 	"current": 380,
-	"cat_date": 63540000000043,
-	"count_all": 1096,
+	"cat_date": 63540000000037,
+	"count_all": 1101,
 	"files": 3
 }
