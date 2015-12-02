@@ -10,7 +10,11 @@ index.html
 //cdn.jsdelivr.net/jquery.nouislider/latest/nouislider.min.js
 
 # Эти позиции включаем только в продакшене
-#lib/metadata.min.js
+//oknosoft.github.io/metadata.js/dist/dhtmlx.min.js
+//oknosoft.github.io/metadata.js/dist/metadata.min.js
+//oknosoft.github.io/metadata.js/lib/qbb.min.js
+//oknosoft.github.io/metadata.js/lib/baron/baron.min.js
+//oknosoft.github.io/metastore/dist/metastore.min.js
 
 data/meta.json?v=201511300000
 data/meta_patch.json?v=201511300000
@@ -21,12 +25,14 @@ data/zones/0/ireg.json?v=201511300000
 
 # css и картинки
 //oknosoft.github.io/metastore/templates/imgs/fav-md32.png
-//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css
-templates/fontastic/styles.css
-templates/nouislider.css
+//oknosoft.github.io/metastore/templates/imgs/shop_splash.gif
 
-templates/imgs/fav-md32.png
-templates/imgs/shop_splash.gif
+//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css
+//oknosoft.github.io/metastore/templates/fontastic/styles.css
+//oknosoft.github.io/metastore/templates/nouislider.css
+//oknosoft.github.io/metastore/templates/checkout.css
+//oknosoft.github.io/metadata.js/lib/baron/baron.css
+//oknosoft.github.io/metastore/templates/baron.css
 
 
 # offline.html will be displayed if the user is offline

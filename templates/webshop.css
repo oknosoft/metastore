@@ -299,6 +299,11 @@ input.search {
 	font-size: 18px;
 }
 
+.dv_iconset_list {
+	margin-top: 6px;
+	font-size: 18px;
+}
+
 [class*="dv_icon_"] {
 	cursor: pointer;
 	color: #747f7f;

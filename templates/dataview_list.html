@@ -1,6 +1,14 @@
 <div>
     <div class='dv_list_image' style='{common.image()}'></div>
-    <div class='dv_price'>{common.price()}</div>
+    <div class='dv_price'>
+        {common.price()}
+        <div class='dv_iconset_list'>
+            <i class='fa fa-cart-plus dv_icon_cart' title='Добавить в корзину'></i>&nbsp;
+            <i class='fa fa-bar-chart dv_icon_add_compare' title='Добавить к сравнению'></i>&nbsp;
+            <i class='fa fa-search-plus dv_icon_detail' title='Карточка товара'></i>
+        </div>
+    </div>
+
     <div>
         <div>{obj.name}</div>
         <div class='font_smaller'>{common.manufacturer()}</div>

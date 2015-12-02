@@ -44,6 +44,11 @@ module.exports = function() {
 			' <i class="fa fa-rub" style="font-size: smaller; color: #747f7f"></i>';
 	}
 
+	function get_amount(o){
+		get_price(o);
+		return (o.Цена_Макс * o.count).toFixed(0) + ' <i class="fa fa-rub" style="font-size: smaller; color: #747f7f"></i>';
+	};
+
 	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
@@ -67,8 +72,8 @@ module.exports = function() {
 		margin: 2,
 		padding:0,
 		border: 1,
-		image:get_image_style,
-		price: get_price
+		image: get_image_style,
+		price: get_amount
 	});
 
 	dhtmlx.Type.add(dhtmlXDataView,{

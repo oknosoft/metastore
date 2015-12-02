@@ -53,6 +53,7 @@ $p.iface.view_cart = function (cell) {
 				_cell.setBubble(bubble);
 			else
 				_cell.clearBubble();
+			return bubble;
 		};
 
 		/**
@@ -160,9 +161,21 @@ $p.iface.view_cart = function (cell) {
 		 */
 		t.requery = function () {
 
-			t.bubble();
+			var val = {count: t.bubble(), amount: 0};   // количество и сумма
 
-			return _cart.requery_list(t.list());
+			return _cart.requery_list(t.list())
+				.then(function () {
+
+					t.list().forEach(function (o) {
+						var nom = $p.cat.Номенклатура.get(o.ref, false, true)
+						val.amount += o.count * nom.Цена_Макс;
+					});
+
+					_do_order.querySelector("[name=top1]").innerHTML = dhx4.template(require("cart_order_top1"), val);
+					_do_order.querySelector("[name=top2]").innerHTML = dhx4.template(require("cart_order_top2"), val);
+					_do_order.querySelector("[name=top3]").innerHTML = (val.amount * 0.07).toFixed(0);
+
+				});
 
 		};
 
@@ -247,10 +260,13 @@ $p.iface.view_cart = function (cell) {
 			t.bubble();
 
 			// обработчик кнопки "оформить"
-			_container_cart.querySelector("[name=order_order]").onclick =
-				_container_cart.querySelector(".dv_icon_card").onclick = function () {
+			_do_order.onclick = function (e) {
+				if(e.target.tagName == "A" || e.target.getAttribute("name") == "order_order"
+						|| e.path.indexOf(_do_order.querySelector(".dv_icon_card")) != -1){
 					_carousel.cells("checkout").setActive();
-				};
+					return $p.cancel_bubble(e);
+				}
+			};
 
 			// оформление заказа
 			_carousel.cells("checkout").attachHTMLString(require("checkout"));
