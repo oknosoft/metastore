@@ -11,6 +11,6 @@
  * @module  http_1c
  */
 
-module.exports = function ($p) {
+module.exports = function (attr) {
 
 };
