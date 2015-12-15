@@ -11,7 +11,7 @@ $p.iface.view_settings = function (cell) {
 
 	function view_settings(){
 		$p.iface._settings = {};
-		cell.attachHTMLString(require('settings'));
+		cell.attachHTMLString($p.injected_data['settings.html']);
 		$p.iface._settings._cell = cell.cell.querySelector(".dhx_cell_cont_sidebar");
 		$p.iface._settings._cell.style.overflow = "auto";
 		$p.iface._settings._form1 = $p.iface._settings._cell.querySelector("[name=form1]");
