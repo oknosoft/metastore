@@ -341,7 +341,50 @@
       }
     }
   },
-  "ireg": {},
+  "ireg": {
+    "ИнтеграцияДатыИзменения": {
+      "dimensions": {
+        "ref": {
+          "type": {
+            "types": [
+              "guid"
+            ]
+          }
+        }
+      },
+      "resources": {
+        "class_name": {
+          "synonym": "Идентификатор типа",
+          "multiline_mode": false,
+          "tooltip": "Имя типа удаленного объекта",
+          "type": {
+            "types": [
+              "string"
+            ],
+            "str_len": 255
+          }
+        },
+        "obj": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        }
+      }
+    },
+    "ИнтеграцияДатыУдаления": {
+      "dimensions": {
+        "ref": {
+          "type": {
+            "types": [
+              "guid"
+            ]
+          }
+        }
+      }
+    }
+  },
   "areg": {},
   "dp": {},
   "rep": {},
