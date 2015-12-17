@@ -68,7 +68,7 @@ $p.settings = function (prm, modifiers) {
 $p.eve.init_node(require('../lib/alasql/alasql.js'))
 
 	.then(function () {
-		$p.cat.Номенклатура.load_full()
+		return $p.cat.Номенклатура.load_full();
 	})
 
 	.then(function (meta) {
