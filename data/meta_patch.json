@@ -383,6 +383,42 @@
           }
         }
       }
+    },
+    "meta_objects": {
+      "dimensions": {
+        "class_name": {
+          "type": {
+            "types": [
+              "string"
+            ],
+            "str_len": 255
+          }
+        }
+      },
+      "resources": {
+        "meta": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        },
+        "meta_patch": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        },
+        "ref": {
+          "type": {
+            "types": [
+              "cat.ИдентификаторыОбъектовМетаданных"
+            ],
+            "is_ref": true
+          }
+        }
+      }
     }
   },
   "areg": {},

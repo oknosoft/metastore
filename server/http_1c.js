@@ -35,7 +35,7 @@ module.exports = function ($p) {
 		if($p.job_prm.network.socket)
 			$p.job_prm.network.socket.broadcast(rtext);
 
-		$p.wsql.postgres(function(err, client, done) {
+		$p.wsql.postgres.cnn(function(err, client, done) {
 
 			if(err)
 				return console.error('error fetching client from pool', err);
@@ -71,21 +71,14 @@ module.exports = function ($p) {
 
 	function get_meta(response){
 
-		$p.wsql.postgres(function(err, client, done) {
-
-			if(err)
-				return end_error(response, err, "error fetching client from pool");
-
-			client.query('SELECT * from meta;', [], function(err, result) {
-
-				if(err)
-					return end_error(response, err, "error running query", done);
-
+		$p.wsql.postgres('SELECT * from meta;')
+			.then(function (result) {
 				response.setHeader("Content-Type", "application/json");
 				response.end(JSON.stringify(result.rows));
-
+			})
+			.catch(function (err) {
+				end_error(response, err);
 			});
-		});
 	}
 
 	/**
@@ -220,13 +213,10 @@ module.exports = function ($p) {
 
 
 	function end_error(response, err, text, done){
-
 		if(done)
 			done();
-
 		response.statusCode = 500;
-		response.end(text);
-		return console.error(text, err);
+		response.end(text || err.toString());
 	}
 
 	function srv_1c(request, response) {

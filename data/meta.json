@@ -25203,14 +25203,14 @@
 			},
 			"cachable": "НаСервере"
 		},
-		"ИнтеграцияМетаданные": {
+		"meta_objects": {
 			"name": "ИнтеграцияМетаданные",
 			"splitted": false,
 			"note": "",
 			"synonym": "Интеграция (Метаданные обмена)",
 			"dimensions": {
-				"Объект": {
-					"synonym": "Объект",
+				"class_name": {
+					"synonym": "_Объект",
 					"multiline_mode": false,
 					"tooltip": "",
 					"type": {
@@ -25224,7 +25224,7 @@
 				}
 			},
 			"resources": {
-				"Кешировать": {
+				"cache": {
 					"synonym": "Кешировать",
 					"multiline_mode": false,
 					"tooltip": "Указывает способ кеширования объекта",
@@ -25245,8 +25245,8 @@
 						]
 					}
 				},
-				"ДиапазонДат": {
-					"synonym": "Диапазон дат",
+				"lc_changed_base": {
+					"synonym": "_Диапазон дат",
 					"multiline_mode": false,
 					"tooltip": "Условная дата для группировки редко изменяющихся справочников",
 					"type": {
@@ -25257,7 +25257,7 @@
 						"fraction_figits": 0
 					}
 				},
-				"РазрешенIREST": {
+				"irest_enabled": {
 					"synonym": "Разрешен IREST",
 					"multiline_mode": false,
 					"tooltip": "К объекту разрешен доступ через http-сервис библиотеки интеграции",
@@ -25267,7 +25267,7 @@
 						]
 					}
 				},
-				"ТипРегистрации": {
+				"reg_type": {
 					"synonym": "Тип регистрации",
 					"multiline_mode": false,
 					"tooltip": "Указывает, как регистрировать изменения и удаление объекта",
@@ -25279,7 +25279,7 @@
 						"is_ref": true
 					}
 				},
-				"Метаданные": {
+				"meta": {
 					"synonym": "Метаданные",
 					"multiline_mode": false,
 					"tooltip": "JSON описания метаданных",
@@ -25290,7 +25290,7 @@
 						"str_len": 0
 					}
 				},
-				"МетаданныеРасширение": {
+				"meta_patch": {
 					"synonym": "Метаданные расширение",
 					"multiline_mode": false,
 					"tooltip": "JSON расширения метаданных",
@@ -27936,7 +27936,8 @@
 		"Тип",
 		"ТипСчета",
 		"Число",
-		"ЭтоГруппа"
+		"ЭтоГруппа",
+		"ИнтеграцияМетаданные"
 	],
 	"syns_js": [
 		"boolean",
@@ -28005,6 +28006,7 @@
 		"type",
 		"account_type",
 		"number",
-		"is_folder"
+		"is_folder",
+		"meta_objects"
 	]
 }
