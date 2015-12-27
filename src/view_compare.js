@@ -261,7 +261,7 @@ $p.iface.view_compare = function (cell) {
 				for(var j in list){
 					nom = list[j];
 					if(fld == 0){
-						_row.push("<img class='compare_img' src='../templates/product_pics/" + nom.ФайлКартинки.ref + ".png' >");
+						_row.push("<img class='compare_img' src='templates/product_pics/" + nom.ФайлКартинки.ref + ".png' >");
 					}else if(fld == 1){
 						_row.push("<span style='font-size: large'>" + _price(nom) + "</span>");
 					}else{
