@@ -30,12 +30,8 @@ data/zones/0/ireg.json?v=201512270000
 //cdn.jsdelivr.net/fontawesome/latest/fonts/fontawesome-webfont.woff2?v=4.5.0
 
 //oknosoft.github.io/metastore/templates/imgs/fav-md32.png
-//oknosoft.github.io/metastore/templates/imgs/shop_splash.gif
 //oknosoft.github.io/metastore/templates/fontastic/styles.css
-//oknosoft.github.io/metastore/templates/nouislider.css
-//oknosoft.github.io/metastore/templates/checkout.css
-//oknosoft.github.io/metadata.js/lib/baron/baron.css
-//oknosoft.github.io/metastore/templates/baron.css
+//oknosoft.github.io/metastore/dist/metastore.css
 
 # offline.html will be displayed if the user is offline
 # FALLBACK:
