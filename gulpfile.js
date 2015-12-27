@@ -7,8 +7,8 @@
 
 var gulp = require('gulp');
 module.exports = gulp;
-//var changed = require('gulp-changed');
-//var concat = require('gulp-concat-sourcemap');
+var base64 = require('gulp-base64');
+var csso = require('gulp-csso');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var shell = require('gulp-shell');
@@ -29,6 +29,23 @@ gulp.task('injected', function(){
 		.pipe(gulp.dest('./data'));
 });
 
+// Сборка css
+gulp.task('css-base64', function () {
+	return gulp.src([
+			'./templates/nouislider.css',
+			'./templates/checkout.css',
+			'./lib/baron/baron.css',
+			'./templates/baron.css',
+			'./templates/buttons20.css'
+		])
+		.pipe(base64({
+			maxImageSize: 32*1024 // bytes
+		}))
+		.pipe(concat('metastore.css'))
+		.pipe(csso())
+		.pipe(gulp.dest('./dist'));
+});
+
 // Основная сборка проекта
 gulp.task('main', function(){
 	gulp.src([
@@ -40,6 +57,7 @@ gulp.task('main', function(){
 			'./src/wdg_product_card.js',
 			'./src/wdg_products_view.js',
 			'./src/wdg_reviews.js',
+
 			'./src/init.js',
 			'./src/view_catalog.js',
 			'./src/view_cart.js',
@@ -49,8 +67,9 @@ gulp.task('main', function(){
 			'./src/view_user.js',
 			'./src/view_content.js',
 			'./src/view_about.js',
-			'./data/merged_data.js',
-			'./templates/templates.js'
+			'./templates/templates.js',
+
+			'./data/merged_data.js'
 		])
 		.pipe(concat('metastore.js'))
 		.pipe(umd({

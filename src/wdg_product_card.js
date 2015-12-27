@@ -185,7 +185,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 				_carousel.base.style.display = "";
 				files.forEach(function (file) {
 					ids = _carousel.addCell();
-					_carousel.cells(ids).attachHTMLString('<img class="aligncenter" style="height: 100%" src="templates/product_pics/'+file.ref+'.'+file.ext+'" >');
+					_carousel.cells(ids).attachHTMLString('<img class="aligncenter" style="height: 100%" src="../templates/product_pics/'+file.ref+'.'+file.ext+'" >');
 				});
 
 			}else{

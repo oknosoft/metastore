@@ -71,7 +71,14 @@ $p.eve.init_node(require('../lib/alasql/alasql.js'))
 		return $p.cat.Номенклатура.load_full();
 	})
 
-	.then(function (meta) {
+	.then(function () {
+
+		// если указано использование взаимодействия с 1С - инициализируем
+		if($p.job_prm.network["adm"])
+			require('../designer/http_adm.js')($p);
+	})
+
+	.then(function () {
 
 		// если указано использование взаимодействия с 1С - инициализируем
 		if($p.job_prm.network["1c"])

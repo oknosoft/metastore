@@ -75,11 +75,10 @@ dhtmlXCellObject.prototype.attachDynDataView = function(mgr, attr) {
 	if(attr.custom_css && attr.custom_css.length > 1)
 		dv_tools = new $p.iface.OTooolBar({
 			wrapper: attr.outer_container || this.cell, width: '86px', height: '28px', bottom: '2px', right: '28px', name: 'dataview_tools',
-			image_path: dhtmlx.image_path + 'dhxdataview' + dhtmlx.skin_suffix(),
 			buttons: attr.buttons || [
-				{name: 'list', img: 'dataview_list.png', title: 'Список (детально)', float: 'left'},
-				{name: 'large', img: 'dataview_large.png', title: 'Крупные значки', float: 'left'},
-				{name: 'small', img: 'dataview_small.png', title: 'Мелкие значки', float: 'left'}
+				{name: 'list', css: 'tb_dv_list', title: 'Список (детально)', float: 'left'},
+				{name: 'large', css: 'tb_dv_large', title: 'Крупные значки', float: 'left'},
+				{name: 'small', css: 'tb_dv_small', title: 'Мелкие значки', float: 'left'}
 			],
 			onclick: function (name) {
 				var template = dhtmlXDataView.prototype.types[name];
