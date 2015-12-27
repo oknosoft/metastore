@@ -7,7 +7,7 @@
  * @module  templates.js
  */
 
-module.exports = function() {
+function init_templates() {
 
 	// строка стиля картинки
 	function get_image_style(o){
@@ -52,7 +52,7 @@ module.exports = function() {
 	// определяем представления DataView
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"list",
-		template: require("dataview_list"),
+		template: $p.injected_data["dataview_list.html"],
 		template_loading:"Загрузка данных...",
 		height: 96,
 		width: 900,
@@ -66,7 +66,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"cart",
-		template: require("dataview_cart"),
+		template: $p.injected_data["dataview_cart.html"],
 		height: 96,
 		width: 800,
 		margin: 2,
@@ -78,7 +78,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"large",
-		template: require("dataview_large"),
+		template: $p.injected_data["dataview_large.html"],
 		height: 210,
 		width: 380,
 		margin: 2,
@@ -91,7 +91,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"small",
-		template: require("dataview_small"),
+		template: $p.injected_data["dataview_small.html"],
 		height: 180,
 		width: 220,
 		margin: 2,
@@ -104,7 +104,7 @@ module.exports = function() {
 
 	dhtmlx.Type.add(dhtmlXDataView,{
 		name:"viewed",
-		template: require("dataview_viewed"),
+		template: $p.injected_data["dataview_viewed.html"],
 		height: 180,
 		width: 220,
 		margin: 2,

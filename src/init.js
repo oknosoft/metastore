@@ -33,14 +33,13 @@ $p.settings = function (prm, modifiers) {
 	prm.data_url = "data/";
 
 	// расположение файла инициализации базы sql
-	prm.create_tables = true;
-	prm.create_tables_sql = require('create_tables');
+	//prm.create_tables_sql = $p.injected_data['create_tables.sql'];
 
 	// расположение страницы настроек
 	prm.settings_url = "settings.html";
 
 	// разрешаем сообщения от других окон
-	prm.allow_post_message = "*";
+	// prm.allow_post_message = "*";
 
 	// используем геокодер
 	prm.use_ip_geo = true;
@@ -103,7 +102,7 @@ $p.iface.oninit = function() {
 
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
-				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
+				icons_path: "templates/imgs/dhxsidebar" + dhtmlx.skin_suffix(),
 				width: 110,
 				template: "icons_text",
 				items: items,
@@ -128,7 +127,7 @@ $p.iface.oninit = function() {
 		}else{
 			$p.iface.main = new dhtmlXSideBar({
 				parent: document.body,
-				icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
+				icons_path: "templates/imgs/dhxsidebar" + dhtmlx.skin_suffix(),
 				width: 180,
 				header: true,
 				template: "tiles",
@@ -157,8 +156,8 @@ $p.iface.oninit = function() {
 
 		});
 
-		// шаблоны ODynDataView инициализируем сразу
-		require('templates')();
+		// шаблоны инициализируем сразу
+		init_templates();
 
 		// еще, сразу инициализируем класс OViewCompare, т.к. в нём живут обработчики добавления в корзину и история просмотров
 		// и класс OViewCart, чтобы обрабатывать события добавления в корзину

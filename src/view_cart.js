@@ -171,8 +171,8 @@ $p.iface.view_cart = function (cell) {
 						val.amount += o.count * nom.Цена_Макс;
 					});
 
-					_do_order.querySelector("[name=top1]").innerHTML = dhx4.template(require("cart_order_top1"), val);
-					_do_order.querySelector("[name=top2]").innerHTML = dhx4.template(require("cart_order_top2"), val);
+					_do_order.querySelector("[name=top1]").innerHTML = dhx4.template($p.injected_data["cart_order_top1.html"], val);
+					_do_order.querySelector("[name=top2]").innerHTML = dhx4.template($p.injected_data["cart_order_top2.html"], val);
 					_do_order.querySelector("[name=top3]").innerHTML = (val.amount * 0.07).toFixed(0);
 
 				});
@@ -227,7 +227,7 @@ $p.iface.view_cart = function (cell) {
 			_carousel.addCell("checkout");
 
 			// корзина
-			_carousel.cells("cart").attachHTMLString(require("cart"));
+			_carousel.cells("cart").attachHTMLString($p.injected_data["cart.html"]);
 			_container_cart = _carousel.cells("cart").cell;
 			_container_cart.firstChild.style.overflow = "auto";
 			_content = _container_cart.querySelector(".md_column1300");
@@ -269,7 +269,7 @@ $p.iface.view_cart = function (cell) {
 			};
 
 			// оформление заказа
-			_carousel.cells("checkout").attachHTMLString(require("checkout"));
+			_carousel.cells("checkout").attachHTMLString($p.injected_data["checkout.html"]);
 			_container_order = _carousel.cells("checkout").cell;
 
 			baron({

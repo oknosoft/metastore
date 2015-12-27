@@ -1,197 +1,94 @@
 /**
- * Created by unpete on 02.04.2015.
+ *
+ * Created 12.12.2015<br />
+ * &copy; http://www.oknosoft.ru 2014-2015
+ * @license content of this file is covered by Oknosoft Commercial license. Usage without proper license is prohibited. To obtain it contact info@oknosoft.ru
+ * @author    Evgeniy Malyarov
+ * @module  server
  */
-
-	// WebSocket для серверных событий на клиенте
-var WebSocketServer = require('ws').Server,
-	ws_md = new WebSocketServer({ port: 8001 }),
-
-	http = require("http"),
-	// сервер http для взаимодействия с клиентами metadata
-	http_md = http.createServer(srv_md),
-	// сервер http для взаимодействия с 1С
-	http_1c = http.createServer(srv_1c),
-
-	// драйвер PostgreSQL
-	pg = require('pg'),
-	cnn_str = "postgres://md:md@localhost/md",
-
-	// metadata.js
-	$p = require('../lib/metadata.core.js'),
-
-	// market
-	market = {
-
-		auth: {
-			url: '',
-			headers: {"Authorization": "2nILdi1FctTJTkS07bNqElLDAzySyP"}
-		},
-
-		request: require('request'),
-
-		ws: {
-			opinion: function (ws, data) {
-
-				pg.connect(cnn_str, function(err, client, done) {
-
-					if(err){
-						done();
-						return console.error('error fetching client from pool', err);
-					}
-
-					client.query('SELECT * from market_opinions where model=$1;', [data.model], function(err, result) {
-						if(err){
-							done();
-							return console.error('error running query', err);
-						}
-
-						if(result.rows.length){
-							ws.send(JSON.stringify({
-								type: "opinion",
-								rows: result.rows
-							}));
-						}
-						done();
-
-					});
-
-				});
-			}
-		}
-	};
 
 /**
- * Реализует регистрацию объектов, изменённых в 1С
- * @method srv_1c
- * @param request
- * @param response
+ * Подключаем metadata.js
+ * @type {MetaEngine}
  */
-function srv_1c(request, response) {
+var $p = require('../lib/metadata.core.js');
 
-	var rtext="";
+/**
+ * Задаём базовые параметры нашего приложения
+ * @param prm
+ * @param modifiers
+ */
+$p.settings = function (prm, modifiers) {
 
-	/**
-	 * Регистрирует объект в таблице изменений
-	 */
-	function reg_from_1c() {
+	// для транспорта используем rest, а не сервис http
+	prm.rest = true;
+	prm.irest_enabled = true;
 
-		var robj, ref;
+	// разделитель для localStorage
+	prm.local_storage_prefix = "webshop_";
 
-		try {
-			robj = JSON.parse(rtext);
-			if($p.is_empty_guid(ref = $p.fix_guid(robj.obj.ref)))
-				return;
+	// расположение rest-сервиса ut
+	prm.rest_path = "http://localhost/a/ut11/odata/standard.odata/";
 
-		} catch (err){
-			return console.error('JSON.parse', err);
-		};
+	// расположение socket-сервера
+	//prm.ws_url = "ws://localhost:8001";
 
-		ws_md.broadcast(rtext);
+	// по умолчанию, обращаемся к зоне %%%
+	prm.zone = 0;
 
-		pg.connect(cnn_str, function(err, client, done) {
+	// расположение файлов данных
+	prm.data_url = "../data/";
 
-			if(err)
-				return console.error('error fetching client from pool', err);
+	prm["1c"] =  {
+		username: "БахшиевПИ (руководитель)",
+		password: "",
+		watchdog_timer: 300000, // каждые 5 минут проверяем состояние сервиса
+		sync_timer: 60000,      // каждую минуту проверяем актуальность синхронизации
+		request: require("request") // todo выяснить происхождение ошибок при запросе реквеста
+	};
+	prm["1c"].auth = "Basic " + new Buffer(prm["1c"].username + ":" + prm["1c"].password).toString("base64");
 
-			client.query('SELECT 1 from chlc where zone=$1 and ref=$2;', [robj.zone, ref], function(err, result) {
-				if(err){
-					done();
-					return console.error('error running query', err);
-				}
+	// номера портов сервисов сервера
+	prm.network = {
+		//http:   require('http'),
+		//https:  require('https'),
+		"1c":   8003,   //8003 - через этот порт 1С получает списки синонимов и метаданных и регистрирует изменения
+		md:     0,      //8002 - порт, через который сервер взаимодействует с веб-приложениями metadata.js
+		adm:    8004,   //8004 - порт административного интерфейса a-la конфигуратор 1С с деревом метаданных
+		socket: 0       //8001 - порт websocket сервера для взаимодействия с 1С и веб-приложениями metadata.js
+	};
 
-				if(result.rows.length){
-					client.query('UPDATE chlc SET lc_changed=$3, class_name=$4, obj=$5 WHERE zone=$1 and ref=$2;',
-						[robj.zone, ref, robj.lc_changed, robj.class_name, robj.obj], function(err, result) {
-							done();
-							if(err)
-								return console.error('error running query', err);
+	prm.pg_cnn = "postgres://md:md@localhost/md";
 
-						});
-
-				}else{
-					client.query('INSERT INTO chlc (zone, ref, lc_changed, class_name, obj) VALUES ($1, $2, $3, $4, $5);',
-						[robj.zone, ref, robj.lc_changed, robj.class_name, robj.obj], function(err, result) {
-							done();
-							if(err)
-								return console.error('error running query', err);
-
-						});
-				}
-
-				// console.log(result.rows[0]);
-
-			});
-		});
-	}
-
-	request.on("data", function(chunk) {
-		rtext+=chunk.toString();
-	});
-
-	request.on("end", function() {
-		response.end("404: Not Found: "+request.url);
-		reg_from_1c();
-	});
-
-}
-
-
-function srv_md(request, response) {
-
-	if (request.url.indexOf('/market') ==  0) {
-		market.auth.url = "https://api.content.market.yandex.ru/v1/model/8263881/opinion.json";
-		market.request(market.auth, function callback(error, market_response, body) {
-			if (!error && market_response.statusCode == 200) {
-				var info = JSON.parse(body);
-				console.log(info);
-				response.end(body);
-			}else
-				response.end("500: market_auth: "+request.url);
-
-		});
-
-	}else
-		response.end("404: Not Found: "+request.url + " : " + $p.version);
-}
-
-http_md.listen(8002);
-
-http_1c.listen(8003);
-
-ws_md.on('connection', function(ws) {
-
-	ws.on('message', function(data) {
-		try{
-			data = JSON.parse(data);
-
-			if(data.type == "opinion")
-				return market.ws.opinion(ws, data);
-
-			if(data.hasOwnProperty("zone"))
-				ws.zone = data.zone;
-			if(data.hasOwnProperty("browser_uid"))
-				ws.browser_uid = data.browser_uid;
-			if(data.hasOwnProperty("uid"))
-				ws.uid = data.uid;
-
-			ws_md.clients.forEach(function each(client) {
-				if(client != ws && (client.uid == data.uid || client.browser_uid == data.browser_uid))
-					client.send(data);
-			});
-
-			console.log(data);
-
-		}catch(err){
-			console.log(err);
-		}
-	});
-
-});
-
-ws_md.broadcast = function broadcast(data) {
-	ws_md.clients.forEach(function each(client) {
-		client.send(data);
-	});
 };
+
+/**
+ * Инициализируем параметры и выполняем действия при старте
+ */
+$p.eve.init_node(require('../lib/alasql/alasql.js'))
+
+	.then(function () {
+		return $p.cat.Номенклатура.load_full();
+	})
+
+	.then(function () {
+
+		// если указано использование взаимодействия с 1С - инициализируем
+		if($p.job_prm.network["adm"])
+			require('../designer/http_adm.js')($p);
+	})
+
+	.then(function () {
+
+		// если указано использование взаимодействия с 1С - инициализируем
+		if($p.job_prm.network["1c"])
+			require('./http_1c.js')($p);
+	})
+
+	.catch(function (err) {
+		console.log(err);
+	});
+
+
 
 

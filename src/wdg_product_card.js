@@ -25,7 +25,7 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	if(!attr)
 		attr = {};
 
-	this.attachHTMLString(require('product_card'));
+	this.attachHTMLString($p.injected_data['product_card.html']);
 
 	baron({
 		root: '.wdg_product_accordion',

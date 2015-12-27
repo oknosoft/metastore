@@ -341,7 +341,86 @@
       }
     }
   },
-  "ireg": {},
+  "ireg": {
+    "ИнтеграцияДатыИзменения": {
+      "dimensions": {
+        "ref": {
+          "type": {
+            "types": [
+              "guid"
+            ]
+          }
+        }
+      },
+      "resources": {
+        "class_name": {
+          "synonym": "Идентификатор типа",
+          "multiline_mode": false,
+          "tooltip": "Имя типа удаленного объекта",
+          "type": {
+            "types": [
+              "string"
+            ],
+            "str_len": 255
+          }
+        },
+        "obj": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        }
+      }
+    },
+    "ИнтеграцияДатыУдаления": {
+      "dimensions": {
+        "ref": {
+          "type": {
+            "types": [
+              "guid"
+            ]
+          }
+        }
+      }
+    },
+    "meta_objects": {
+      "dimensions": {
+        "class_name": {
+          "type": {
+            "types": [
+              "string"
+            ],
+            "str_len": 255
+          }
+        }
+      },
+      "resources": {
+        "meta": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        },
+        "meta_patch": {
+          "type": {
+            "types": [
+              "json"
+            ]
+          }
+        },
+        "ref": {
+          "type": {
+            "types": [
+              "cat.ИдентификаторыОбъектовМетаданных"
+            ],
+            "is_ref": true
+          }
+        }
+      }
+    }
+  },
   "areg": {},
   "dp": {},
   "rep": {},

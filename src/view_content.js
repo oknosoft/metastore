@@ -12,7 +12,7 @@ $p.iface.view_content = function (cell) {
 	function view_content(){
 		// http://html.metaphorcreations.com/apex/
 		$p.iface._content = {};
-		cell.attachHTMLString(require("content"));
+		cell.attachHTMLString($p.injected_data["content.html"]);
 		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 	}
 

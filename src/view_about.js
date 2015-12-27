@@ -11,7 +11,7 @@ $p.iface.view_about = function (cell) {
 
 	function view_about(){
 		$p.iface._about = {};
-		cell.attachHTMLString(require('about'));
+		cell.attachHTMLString($p.injected_data['about.html']);
 		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
 	}
 
