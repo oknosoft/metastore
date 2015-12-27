@@ -7,13 +7,17 @@
  * @module  view_about
  */
 
-$p.iface.set_view_about = function (cell) {
+$p.iface.view_about = function (cell) {
 
-	if($p.iface._about)
-		return;
+	function view_about(){
+		$p.iface._about = {};
+		cell.attachHTMLString($p.injected_data['about.html']);
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._about = {};
-	cell.attachHTMLString(require('about'));
-	cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	if(!$p.iface._about)
+		view_about();
+
+	return $p.iface._about;
 
 };

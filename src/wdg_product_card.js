@@ -17,7 +17,7 @@
  *
  * @class OProductCard
  * @param attr {Object} - параметры создаваемого компонента
- * @param attr.ref {String|DataObj} - ссылка или номенклатура
+ * @param [attr.ref] {String|DataObj} - ссылка или номенклатура
  * @constructor
  */
 dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
@@ -25,53 +25,88 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	if(!attr)
 		attr = {};
 
-	var _cell = this,
-		toolbar = _cell.attachToolbar({
-			icons_size: 24,
-			icons_path: dhtmlx.image_path + "dhxsidebar" + dhtmlx.skin_suffix(),
-			items: [
-				{type: "text", id: "title", text: "&nbsp;"},
-				{type: "spacer"},
-				{type: "button", id: "back", img: "back_48.png", title: "Вернуться к списку"}
-			]
-		}),
-		accordion = _cell.attachAccordion({
+	this.attachHTMLString($p.injected_data['product_card.html']);
 
-			multi_mode: false,           // boolean, true to enable multimode
+	baron({
+		root: '.wdg_product_accordion',
+		scroller: '.scroller',
+		bar: '.scroller__bar',
+		barOnCls: 'baron',
 
-			items: [    // accordion cells section
-				{
-					id:     "main",     // item id, required
-					text:   "Text",     // string, header's text (html allowed)
-					open:   true,       // boolean, true to open/false to close item on init
-					height: 600         // number, cell's height (multimode only)
-				},
-				{
-					id:     "description",
-					text:   "Описание и характеристики"
-				},
-				{
-					id:     "notes",
-					text:   "Комментарии, обзоры, вопрос-ответ"
-				},
-				{
-					id:     "download",
-					text:   "Драйверы и файлы"
-				}
-			],
+		$: $,   // Local copy of jQuery-like utility
 
-			offsets: {
-				top: 0,
-				right: 4,
-				bottom: 0,
-				left: 0
+		event: function(elem, event, func, mode) { // Events manager
+			if (mode == 'trigger') {
+				mode = 'fire';
 			}
+			bean[mode || 'on'](elem, event, func);
+		}
+	}).fix({
+		elements: '.header__title',
+		outside: 'header__title_state_fixed',
+		before: 'header__title_position_top',
+		after: 'header__title_position_bottom',
+		clickable: true
+	}).pull({
+		block: '.load',
+		elements: [{
+			self: '.load__value',
+			property: 'width'
+		}],
+		limit: 115,
+		onExpand: function() {
+			$('.load').css('background', 'grey');
+		}
+	});
 
-		}),
-		_main = new CardMain(accordion.cells("main"));
 
-	if($p.device_type != "desktop")
-		accordion.cells("download").hide();
+	var _cell = this.cell,
+		res = {
+			container: _cell.querySelector(".wdg_product_accordion"),
+			header: _cell.querySelector("[name=header]"),
+			title: _cell.querySelector("[name=title]"),
+			path: _cell.querySelector("[name=path]"),
+			main: new CardMain(_cell.querySelector("[name=main]")),
+			description: _cell.querySelector("[name=description]"),
+			properties: _cell.querySelector("[name=properties]"),
+			notes: new OMarketReviews(_cell.querySelector("[name=notes]")),
+			download: _cell.querySelector("[name=download]"),
+			head_layout: null,
+			head_fields: null
+		},
+
+		path = new $p.iface.CatalogPath(res.path, function (e) {
+			var hprm = $p.job_prm.parse_url();
+			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
+			return $p.cancel_bubble(e)
+		});
+
+	//if($p.device_type != "desktop")
+	//	res.download.style.visibility = "hidden";
+
+	// кнопка "вернуться к списку"
+	new $p.iface.OTooolBar({
+		wrapper: res.header,
+		width: '28px',
+		height: '29px',
+		top: '0px',
+		right: '20px',
+		name: 'back',
+		class_name: "",
+		buttons: [
+			{name: 'back', text: '<i class="fa fa-long-arrow-left fa-lg" style="vertical-align: 15%;"></i>', title: 'Вернуться к списку', float: 'right'}
+		],
+		onclick: function (name) {
+			switch (name) {
+				case "back":
+					var hprm = $p.job_prm.parse_url();
+					$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
+					if($p.iface.popup)
+						$p.iface.popup.hide();
+					break;
+			}
+		}
+	});
 
 	/**
 	 * Перезаполняет все ячейки аккордеона
@@ -80,90 +115,159 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	function requery(ref){
 
 		// информацию про номенклатуру, полученную ранее используем сразу
-		var nom = $p.cat.Номенклатура.get(ref, false);
-		_main.requery_short(nom);
+		var nom = res.nom = $p.cat.Номенклатура.get(ref, false);
+		res.main.requery_short(nom);
 
 		// дополнительное описание получаем с сервера и перезаполняем аккордеон
-		if(!nom.Файлы){
-			attr.url = "";
-			$p.ajax.default_attr(attr, $p.job_prm.irest_url());
-			attr.url += attr.rest_name + "(guid'" + ref + "')";
-			if(!nom.name)
-				attr.url += "?full=true";
-			if(dhx4.isIE)
-				attr.url = encodeURI(attr.url);
-			$p.ajax.get_ex(attr.url, attr)
-				.then(function (req) {
-					var data = JSON.parse(req.response);
-					data.Файлы = JSON.stringify(data.Файлы);
-					nom._mixin(data);
-					_main.requery_long(nom);
-				})
+		if(nom.is_new()){
+
+			nom.load()
+				.then(res.main.requery_long)
 				.catch($p.record_log);
 		}else
-			_main.requery_long(nom);
+			res.main.requery_long(nom);
 
 	}
 
 	/**
 	 * Изображение, цена и кнопки купить - сравнить - добавить
-	 * @param cell
+	 * @param cell {HTMLElement}
 	 * @constructor
 	 */
 	function CardMain(cell){
 
-		var _div = document.createElement('div'),
-			_img = document.createElement('div'),
-			_act = document.createElement('div');
-		cell.attachObject(_div);
-		_div.appendChild(_img);
-		_div.appendChild(_act);
+		var _img = cell.querySelector(".product_img"),
+			_title = cell.querySelector("[name=order_title]"),
+			_price = cell.querySelector("[name=order_price]"),
+			_brand = cell.querySelector("[name=order_brand]"),
+			_carousel = new dhtmlXCarousel({
+				parent:         cell.querySelector(".product_carousel"),
+				offset_left:    0,      // number, offset between cell and left/right edges
+				offset_top:     0,      // number, offset between cell and top/bottom edges
+				offset_item:    0,      // number, offset between two nearest cells
+				touch_scroll:   true    // boolean, true to enable scrolling cells with touch
+		});
 
+		function set_title(nom){
+			_title.innerHTML = res.title.innerHTML = nom.НаименованиеПолное || nom.name;
+		}
+
+		// короткое обновление свойств без обращения к серверу
 		this.requery_short = function (nom) {
-			cell.setText(nom.НаименованиеПолное || nom.name);
+			set_title(nom);
+			_price.innerHTML = dhtmlXDataView.prototype.types.list.price(nom);
+			_img.src = "templates/product_pics/" + nom.ФайлКартинки.ref + ".png";
+			if(!nom.Файлы){
+				_carousel.base.style.display = "none";
+				_img.style.display = "";
+			}
+
+			// сбрасываем текст отзывов с маркета
+			res.notes.model = nom.МаркетИд;
 		};
 
+		// длинное обновление свойств после ответа сервера
 		this.requery_long = function (nom) {
-			var files = JSON.parse(nom.Файлы);
+			var files = JSON.parse(nom.Файлы || "[]");
+
 			if(files.length){
-				// рисуем карусель
+				// удаляем страницы карусели
+				var ids = [];
+				_carousel.forEachCell(function(item){
+					ids.push(item.getId());
+				});
+				ids.forEach(function (id) {
+					_carousel.cells(id).remove();
+				});
+
+				// рисуем новые страницы
+				_img.style.display = "none";
+				_carousel.base.style.display = "";
+				files.forEach(function (file) {
+					ids = _carousel.addCell();
+					_carousel.cells(ids).attachHTMLString('<img class="aligncenter" style="height: 100%" src="templates/product_pics/'+file.ref+'.'+file.ext+'" >');
+				});
+
 			}else{
 				// одиночное изображение
+				_carousel.base.style.display = "none";
+				_img.style.display = "";
 			}
+
+			// обновляем наименование - оно могло измениться
+			set_title(nom);
+
+			//
+			if(nom.Марка != $p.blank.guid)
+				_brand.innerHTML = "Марка (бренд): " + nom.Марка.presentation;
+
+			else if(nom.Производитель != $p.blank.guid){
+				_brand.innerHTML = "Производитель: " + nom.Производитель.presentation;
+
+			}
+
+			// описание и свойства
+			if(nom.ФайлОписанияДляСайта.empty()){
+				// если у номенклатуры нет описания, скрываем блок
+				res.description.style.display = "none";
+			}else {
+				res.description.style.display = "";
+				$p.ajax.get("templates/product_descriptions/" + nom.ФайлОписанияДляСайта.ref + ".html")
+					.then(function (req) {
+						res.description.innerHTML = req.response;
+					})
+					.catch(function (err) {
+						$p.record_log(nom.ФайлОписанияДляСайта.ref)
+					});
+			}
+
+			// таблица реквизитов объекта
+			if(!res.head_layout){
+				res.head_layout = new dhtmlXLayoutObject({
+					parent:     res.properties,
+					pattern:    "1C",
+					offsets: {
+						top:    8,
+						right:  0,
+						bottom: 0,
+						left:   0
+					},
+					cells: [
+						{
+							id:     "a",
+							text:   "Свойства и категории",
+							header: false
+						}
+					]
+				});
+			}
+			if(res.head_fields)
+				res.head_layout.cells("a").detachObject(true);
+			res.head_fields = res.head_layout.cells("a").attachHeadFields({obj: nom});
+			res.head_fields.setEditable(false);
+
+			// текст отзывов с маркета
+			res.notes.model = nom.МаркетИд;
+
 		};
 
 		// подписываемся на событие изменения размера
 		dhx4.attachEvent("layout_resize", function (layout) {
-
+			$p.record_log("");
 		});
+
+		// навешиваем обработчики на кнопки - генерируем широковещательное событие
+		function btn_msg(){
+			dhx4.callEvent(this.name, [res.nom]);
+		}
+		["order_cart", "order_compare"].forEach(function (name) {
+			cell.querySelector("[name=" + name + "]").onclick = btn_msg;
+		})
+
 
 	}
 
-	toolbar.attachEvent("onClick", function(id){
-		switch (id) {
-			case "back":
-				var hprm = $p.job_prm.parse_url();
-				$p.iface.set_hash(hprm.obj, "", hprm.frm, hprm.view);
-				break;
-		}
-	});
 
-	// хлебные крошки
-	var div_head = toolbar.cont.querySelector(".dhx_toolbar_text"),
-		btn = toolbar.cont.querySelector(".dhxtoolbar_float_right"),
-		path = new $p.iface.CatalogPath(div_head, function (e) {
-			var hprm = $p.job_prm.parse_url();
-			$p.iface.set_hash(this.ref, "", hprm.frm, hprm.view);
-			return $p.cancel_bubble(e)
-		}),
-		old_css = [];
-	div_head.classList.forEach(function (class_name) {
-		old_css.push(class_name);
-	});
-	old_css.forEach(function (class_name) {
-		div_head.classList.remove(class_name);
-	});
-	btn.style.paddingRight = "8px";
 
 	// обработчик маршрутизации
 	$p.eve.hash_route.push(function (hprm){
@@ -176,6 +280,6 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 		delete attr.ref;
 	}
 
-	return accordion;
+	return res;
 
 };

@@ -7,7 +7,7 @@
  * @module  view_catalog
  */
 
-$p.iface.set_view_catalog = function (cell) {
+$p.iface.view_catalog = function (cell) {
 
 	// Динамический фильтр
 	function prop_filter(){
@@ -65,7 +65,7 @@ $p.iface.set_view_catalog = function (cell) {
 	}
 
 	// Разбивка в зависимости от типов устройств
-	function main_layout(){
+	function view_catalog(){
 
 		$p.iface._catalog = {};
 		if($p.device_type == "desktop"){
@@ -152,11 +152,26 @@ $p.iface.set_view_catalog = function (cell) {
 		// подписываемся на маршрутизацию
 		$p.eve.hash_route.push(function (hprm){
 
+			var nom = $p.cat.Номенклатура.get(hprm.ref, false, true);
+
 			if(hprm.view == "catalog"){
 
 				// при непустой ссылке, показываем карточку товара
-				if($p.is_guid(hprm.ref) && !$p.is_empty_guid(hprm.ref)){
-					product_card($p.iface._catalog.carousel.cells("goods"), hprm.ref)
+				// если ссылка является номенклатурой - устанавливаем вид номенклатуры
+				if(nom && !nom.empty()){
+
+					if(hprm.obj != nom.ВидНоменклатуры.ref)
+						hprm.obj = nom.ВидНоменклатуры.ref;
+					if(hprm.obj != $p.iface._catalog.tree.getSelectedItemId())
+						$p.iface._catalog.tree.selectItem(hprm.obj, false);
+
+					product_card($p.iface._catalog.carousel.cells("goods"), hprm.ref);
+
+				}
+				// если указан пустой вид номенклатуры - используем текущий элемент дерева
+				else if(!$p.cat.ВидыНоменклатуры.get(hprm.obj, false, true) || $p.cat.ВидыНоменклатуры.get(hprm.obj, false, true).empty()){
+					if(!$p.is_empty_guid($p.iface._catalog.tree.getSelectedItemId()))
+						hprm.obj = $p.iface._catalog.tree.getSelectedItemId();
 
 				}
 				// иначе - переключаемся на закладку списка
@@ -170,7 +185,7 @@ $p.iface.set_view_catalog = function (cell) {
 
 	// создаём элементы
 	if(!$p.iface._catalog)
-		main_layout();
+		view_catalog();
 
-
+	return $p.iface._catalog;
 };

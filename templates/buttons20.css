@@ -1,0 +1,7 @@
+[class*="tb_"] {
+	background-repeat: no-repeat;
+	background-position: 4px;
+}
+.tb_dv_list { background-image: url(../lib/imgs/dhxdataview_terrace/dataview_list.png);}
+.tb_dv_large { background-image: url(../lib/imgs/dhxdataview_terrace/dataview_large.png);}
+.tb_dv_small { background-image: url(../lib/imgs/dhxdataview_terrace/dataview_small.png);}

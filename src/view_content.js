@@ -7,12 +7,18 @@
  * @module  view_content
  */
 
-$p.iface.set_view_content = function (cell) {
+$p.iface.view_content = function (cell) {
 
-	if($p.iface._content)
-		return;
+	function view_content(){
+		// http://html.metaphorcreations.com/apex/
+		$p.iface._content = {};
+		cell.attachHTMLString($p.injected_data["content.html"]);
+		cell.cell.querySelector(".dhx_cell_cont_sidebar").style.overflow = "auto";
+	}
 
-	$p.iface._content = {};
-	cell.attachHTMLString("<div>Статьи пока не написаны</div>");
+	if(!$p.iface._content)
+		view_content();
+
+	return $p.iface._content;
 
 };
