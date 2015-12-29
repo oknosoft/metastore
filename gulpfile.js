@@ -49,27 +49,34 @@ gulp.task('css-base64', function () {
 // Основная сборка проекта
 gulp.task('main', function(){
 	gulp.src([
-			'./src/wdg_dyn_dataview.js',
-			'./src/wdg_metastore_common.js',
-			'./src/wdg_filter_prop.js',
-			'./src/wdg_multi_checkbox.js',
-			'./src/wdg_range_slider.js',
-			'./src/wdg_product_card.js',
-			'./src/wdg_products_view.js',
-			'./src/wdg_reviews.js',
+		'./lib/qwery/qwery.js',
+		'./lib/bonzo/bonzo.js',
+		'./lib/bean/bean.js',
+		'./lib/qwery_bonzo_bean.js',
+		'./lib/baron/baron.js',
 
-			'./src/init.js',
-			'./src/view_catalog.js',
-			'./src/view_cart.js',
-			'./src/view_compare.js',
-			'./src/view_orders.js',
-			'./src/view_settings.js',
-			'./src/view_user.js',
-			'./src/view_content.js',
-			'./src/view_about.js',
-			'./templates/templates.js',
+		'./src/wdg_dyn_dataview.js',
+		'./src/wdg_metastore_common.js',
+		'./src/wdg_filter_prop.js',
+		'./src/wdg_multi_checkbox.js',
+		'./src/wdg_range_slider.js',
+		'./src/wdg_product_card.js',
+		'./src/wdg_products_view.js',
+		'./src/wdg_reviews.js',
 
-			'./data/merged_data.js'
+		'./src/init.js',
+		'./src/view_catalog.js',
+		'./src/view_cart.js',
+		'./src/view_compare.js',
+		'./src/view_orders.js',
+		'./src/view_settings.js',
+		'./src/view_user.js',
+		'./src/view_content.js',
+		'./src/view_about.js',
+		'./templates/templates.js',
+
+		'./data/merged_data.js'
+
 		])
 		.pipe(concat('metastore.js'))
 		.pipe(umd({
