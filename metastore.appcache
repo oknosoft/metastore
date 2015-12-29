@@ -6,10 +6,15 @@ CACHE:
 
 # Заголовок и библиотеки
 index.html
-//cdn.jsdelivr.net/g/alasql,metadata@0.9.203(dhtmlx.min.js+metadata.min.js),jquery.nouislider
+#//cdn.jsdelivr.net/g/alasql,metadata@0.9.203(dhtmlx.min.js+metadata.min.js),jquery.nouislider
+
+//cdn.jsdelivr.net/alasql/latest/alasql.min.js
+//oknosoft.github.io/metadata.js/dist/dhtmlx.min.js
+//oknosoft.github.io/metadata.js/dist/metadata.min.js
 
 # Эти позиции включаем только в продакшене
 //oknosoft.github.io/metastore/dist/metastore.min.js
+//oknosoft.github.io/metadata.js/lib/metrika.js
 
 data/meta.json?v=201512270000
 data/meta_patch.json?v=201512270000
