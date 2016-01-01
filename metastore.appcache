@@ -8,7 +8,7 @@ CACHE:
 index.html
 #//cdn.jsdelivr.net/g/alasql,metadata@0.9.203(dhtmlx.min.js+metadata.min.js),jquery.nouislider
 
-//cdn.jsdelivr.net/alasql/latest/alasql.min.js
+//cdn.jsdelivr.net/g/alasql,jquery.nouislider
 //oknosoft.github.io/metadata.js/dist/dhtmlx.min.js
 //oknosoft.github.io/metadata.js/dist/metadata.min.js
 
