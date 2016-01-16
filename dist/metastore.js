@@ -4791,16 +4791,21 @@ $p.iface.oninit = function() {
 		$p.wsql.set_user_param("last_hash_url", $p.job_prm.parse_url())
 	});
 
+	// подписываемся на событие готовности метаданных - после него можно грузить данные
+	dhx4.attachEvent("meta", function () {
 
-	$p.eve.auto_log_in()
-		.then(oninit)
-		.catch(function (err) {
-			console.log(err);
-		})
-		.then(function (err) {
-			if($p.iface.sync)
-				$p.iface.sync.close();
-		});
+		$p.eve.auto_log_in()
+			.then(oninit)
+			.catch(function (err) {
+				console.log(err);
+			})
+			.then(function (err) {
+				if($p.iface.sync)
+					$p.iface.sync.close();
+			});
+
+	});
+
 };
 
 /**
