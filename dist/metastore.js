@@ -4634,7 +4634,7 @@ $p.settings = function (prm, modifiers) {
 	prm.use_ip_geo = true;
 
 	// полноэкранный режим на мобильных
-	prm.request_full_screen = true;
+	//prm.request_full_screen = true;
 
 	// логин гостевого пользователя
 	prm.guest_name = "АлхимовАА";
