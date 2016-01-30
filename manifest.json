@@ -4,12 +4,12 @@
   "short_name": "MetaStore",
   "icons": [
     {
-      "src": "/metastore/templates/imgs/fav-md32.png",
+      "src": "//oknosoft.github.io/metastore/templates/imgs/fav-md32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "/metastore/templates/imgs/fav-md144.png",
+      "src": "//oknosoft.github.io/metastore/templates/imgs/fav-md144.png",
       "sizes": "144x144",
       "type": "image/png"
     }],
