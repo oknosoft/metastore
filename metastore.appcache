@@ -21,8 +21,8 @@ data/zones/0/ireg.json?v=201601220000
 
 # css и картинки
 
-//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css
-//cdn.jsdelivr.net/fontawesome/latest/fonts/fontawesome-webfont.woff2?v=4.5.0
+//cdn.jsdelivr.net/fontawesome/4.5/css/font-awesome.min.css
+//cdn.jsdelivr.net/fontawesome/4.5/fonts/fontawesome-webfont.woff2?v=4.5.0
 
 //oknosoft.github.io/metastore/templates/imgs/fav-md32.png
 //oknosoft.github.io/metastore/templates/imgs/fav-md144.png

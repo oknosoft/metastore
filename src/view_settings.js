@@ -10,6 +10,7 @@
 $p.iface.view_settings = function (cell) {
 
 	function view_settings(){
+
 		$p.iface._settings = {};
 		cell.attachHTMLString($p.injected_data['settings.html']);
 		$p.iface._settings._cell = cell.cell.querySelector(".dhx_cell_cont_sidebar");

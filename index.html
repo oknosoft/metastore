@@ -12,7 +12,7 @@
     <!-- Startup configuration -->
     <link rel="manifest" href="manifest.json">
 
-    <script>if (location.protocol !== "https:") location.protocol = "https:";</script>
+    <script>if (location.protocol == 'http:') location.href = location.href.replace(/^http:/, 'https:')</script>
 
 
     <link rel="icon" href="//oknosoft.github.io/metastore/templates/imgs/fav-md32.png" type="image/png">
@@ -47,12 +47,12 @@
 <div id="webshop_splash"></div>
 
 <!--дополнительные стили. основные загрузятся кодом в зависимости от скина-->
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fontawesome/latest/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fontawesome/4.5/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/templates/fontastic/styles.css">
 <link rel="stylesheet" type="text/css" href="//oknosoft.github.io/metastore/dist/metastore.css">
 
 <!-- библиотеки -->
-<script src="//cdn.jsdelivr.net/g/alasql,metadata@0.9.205(dhtmlx.min.js+metadata.min.js),jquery.nouislider"></script>
+<script src="//cdn.jsdelivr.net/g/alasql,metadata@0.9.206(dhtmlx.min.js+metadata.min.js),jquery.nouislider"></script>
 <!--script src="//cdn.jsdelivr.net/g/alasql,jquery.nouislider"></script>
 <script src="//oknosoft.github.io/metadata.js/dist/dhtmlx.min.js"></script>
 <script src="//oknosoft.github.io/metadata.js/dist/metadata.min.js"></script-->
