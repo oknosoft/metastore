@@ -49,10 +49,6 @@ gulp.task('css-base64', function () {
 // Основная сборка проекта
 gulp.task('main', function(){
 	gulp.src([
-		'./lib/qwery/qwery.js',
-		'./lib/bonzo/bonzo.js',
-		'./lib/bean/bean.js',
-		'./lib/qwery_bonzo_bean.js',
 		'./lib/baron/baron.js',
 
 		'./src/wdg_dyn_dataview.js',

@@ -6,7 +6,7 @@ CACHE:
 
 # Заголовок и библиотеки
 index.html
-//cdn.jsdelivr.net/g/alasql,metadata@0.9.205(dhtmlx.min.js+metadata.min.js),jquery.nouislider
+//cdn.jsdelivr.net/g/alasql,metadata@0.9.206(dhtmlx.min.js+metadata.min.js),jquery@2.2.0,jquery.nouislider
 
 # Эти позиции включаем только в продакшене
 //oknosoft.github.io/metastore/dist/metastore.min.js

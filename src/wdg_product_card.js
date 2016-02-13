@@ -28,37 +28,18 @@ dhtmlXCellObject.prototype.attachOProductCard = function(attr) {
 	this.attachHTMLString($p.injected_data['product_card.html']);
 
 	baron({
+		cssGuru: true,
 		root: '.wdg_product_accordion',
 		scroller: '.scroller',
 		bar: '.scroller__bar',
-		barOnCls: 'baron',
-
-		$: $,   // Local copy of jQuery-like utility
-
-		event: function(elem, event, func, mode) { // Events manager
-			if (mode == 'trigger') {
-				mode = 'fire';
-			}
-			bean[mode || 'on'](elem, event, func);
-		}
+		barOnCls: 'baron'
 	}).fix({
 		elements: '.header__title',
 		outside: 'header__title_state_fixed',
 		before: 'header__title_position_top',
 		after: 'header__title_position_bottom',
 		clickable: true
-	}).pull({
-		block: '.load',
-		elements: [{
-			self: '.load__value',
-			property: 'width'
-		}],
-		limit: 115,
-		onExpand: function() {
-			$('.load').css('background', 'grey');
-		}
 	});
-
 
 	var _cell = this.cell,
 		res = {
