@@ -11,7 +11,6 @@ var base64 = require('gulp-base64');
 var csso = require('gulp-csso');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var shell = require('gulp-shell');
 var rename = require('gulp-rename');
 var resources = require('./lib/gulp-resource-concat.js');
 var path = require('path');
@@ -54,7 +53,7 @@ gulp.task('main', function(){
 		'./src/wdg_dyn_dataview.js',
 		'./src/wdg_metastore_common.js',
 		'./src/wdg_filter_prop.js',
-		'./src/wdg_multi_checkbox.js',
+		'./src/widgets/multi_checkbox.js',
 		'./src/wdg_range_slider.js',
 		'./src/wdg_product_card.js',
 		'./src/wdg_products_view.js',
